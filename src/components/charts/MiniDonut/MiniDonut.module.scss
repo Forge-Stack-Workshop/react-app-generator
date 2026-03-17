@@ -1,0 +1,26 @@
+@use "../../../styles/mixins" as m;
+
+/* ===========================
+   DONUT SVG
+   =========================== */
+.donut {
+  transform: rotate(-90deg);
+}
+
+/* ===========================
+   BACKGROUND RING
+   =========================== */
+.donutBg {
+  fill: none;
+  stroke: var(--surface-strong);
+  opacity: 0.25;
+}
+
+/* ===========================
+   VALUE RING
+   =========================== */
+.donutValue {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.3s ease;
+}

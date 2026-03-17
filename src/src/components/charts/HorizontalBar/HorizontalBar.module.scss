@@ -1,0 +1,50 @@
+@use "../../../styles/mixins" as m;
+
+/* ===========================
+   BAR ROW
+   =========================== */
+.barRow {
+  @include m.flex-between;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ===========================
+   LABEL
+   =========================== */
+.barLabel {
+  width: 80px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ===========================
+   BAR CONTAINER
+   =========================== */
+.barContainer {
+  flex: 1;
+  height: 8px;
+  background: var(--surface);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* ===========================
+   BAR FILL
+   =========================== */
+.barFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.25s ease-out;
+}
+
+/* ===========================
+   VALUE TEXT
+   =========================== */
+.barValue {
+  width: 24px;
+  text-align: right;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text);
+}

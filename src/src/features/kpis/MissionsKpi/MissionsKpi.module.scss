@@ -1,0 +1,22 @@
+@use "../../../styles/mixins" as m;
+@use "../../../styles/variables" as v;
+
+/* ===========================
+   WRAPPER
+   =========================== */
+.wrapper {
+  @include m.flex-column;
+  @include m.flex-center;        // vertical + horizontal centering
+  height: var(--card-height, 160px);
+  padding: var(--spacing-lg, 1rem);
+}
+
+/* ===========================
+   PLACEHOLDER TEXT
+   =========================== */
+.placeholder {
+  font-size: var(--font-sm, 0.9rem);
+  @include m.text-muted;
+  opacity: 0.6;
+  text-align: center;
+}

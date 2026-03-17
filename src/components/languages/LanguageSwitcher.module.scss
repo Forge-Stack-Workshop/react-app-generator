@@ -1,0 +1,61 @@
+/* ===========================
+   WRAPPER DU SWITCHER
+   - inline-flex pour s'intégrer dans le header
+   - flex-shrink: 0 pour éviter l'écrasement
+   =========================== */
+.switcher {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ===========================
+   FLAG DANS LE HEADER
+   - taille par défaut
+   =========================== */
+.switcher img {
+  width: 28px;
+  height: 20px;
+  border-radius: 3px;
+}
+
+/* ===========================
+   MENU DÉROULANT
+   - positionné sous le switcher
+   - fond + bordure cohérents avec ton thème
+   =========================== */
+.menu {
+  position: absolute;
+  top: 35px;
+  right: 0;
+
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  z-index: 9999;
+}
+
+/* ===========================
+   FLAGS DANS LE DROPDOWN
+   - même style que le header
+   - hover léger
+   =========================== */
+.menu img {
+  width: 28px;
+  height: 20px;
+  border-radius: 3px;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}

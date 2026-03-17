@@ -1,0 +1,36 @@
+.monitoring {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: var(--bg);
+  min-height: 100vh;
+  position: relative; /* IMPORTANT pour la map */
+}
+
+/* Map card full width */
+.mapRow {
+  width: 100%;
+}
+
+/* Zone KPI + panneau latéral */
+.kpiArea {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  width: 100%;
+}
+
+/* 4 KPI cards in a 2x2 grid */
+.kpiGrid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .kpiGrid {
+    grid-template-columns: 1fr;
+  }
+}

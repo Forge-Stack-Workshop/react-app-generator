@@ -1,0 +1,54 @@
+{
+  "loading": "Loading...",
+  "language": {
+    "fr": "Français",
+    "en": "Anglais"
+  },
+  "sidebar": {
+    "weather": "Météo",
+    "territories": "Territoires",
+    "shuttles": "Navettes",
+    "providers": "Fournisseurs"
+  },
+  "theme": {
+    "light": "Light mode",
+    "dark": "Dark mode"
+  },
+  "actions": {
+    "save": "Sauvegarder",
+    "cancel": "Cancel",
+    "delete": "Supprimer",
+    "edit": "Editer"
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "unexpected": "An unexpected error occurred"
+  },
+  "searchbar_placeholder": "Rechercher un territoire...",
+  "searchbar_all_territories": "Tout les territoires",
+  "kpi": {
+    "users": "Utilisateurs",
+    "missions": "Missions",
+    "shuttles": "Véhicules",
+    "territory": "Territoires"
+  },
+  "users_kpi_title": "Utilisateurs",
+  "users_connected": "utilisateurs connectés",
+  "users_total": "sur {{total}}",
+  "shuttles_kpi_title": "Véhicules",
+  "shuttles_online": "En ligne",
+  "shuttles_unstable": "Instables",
+  "shuttles_error": "En erreur",
+  "shuttles_offline": "Hors ligne",
+  "shuttles_availability": "Taux de disponibilité",
+  "shuttles_issues": "Taux d'incidents",
+  "territories_kpi_title": "Statut des territoires",
+  "territories_total": "Total",
+  "territories_online": "En ligne",
+  "territories_unstable": "Instable",
+  "territories_error": "En erreur",
+  "territories_offline": "Hors ligne",
+  "missions_kpi_title": "Missions",
+  "missions_placeholder": "Aucune donnée pour le moment"
+
+}

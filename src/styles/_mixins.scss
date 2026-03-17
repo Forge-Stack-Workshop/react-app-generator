@@ -1,0 +1,65 @@
+/* Flex helpers */
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-center-y {
+  display: flex;
+  align-items: center;
+}
+
+/* Card base */
+@mixin card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+/* Text helpers */
+@mixin text-muted {
+  color: var(--text-muted);
+}
+
+@mixin text-strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Shadow */
+@mixin shadow-soft {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* Transition */
+@mixin smooth {
+  transition: all 0.2s ease;
+}
+
+/*Spinner */ 
+@mixin spinner($size, $color) {
+  width: $size;
+  height: $size;
+  border: 6px solid var(--border-strong);
+  border-top-color: $color;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

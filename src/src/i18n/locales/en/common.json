@@ -1,0 +1,54 @@
+{
+  "loading": "Loading...",
+  "language": {
+    "fr": "French",
+    "en": "English"
+  },
+  "sidebar": {
+    "weather": "Weather",
+    "territories": "Territories",
+    "shuttles": "Shuttles",
+    "providers": "Providers"
+  },
+  "theme": {
+    "light": "Light mode",
+    "dark": "Dark mode"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit"
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "unexpected": "An unexpected error occurred"
+  },
+  "searchbar_placeholder": "Search teritory...",
+  "searchbar_all_territories": "All Territories",
+  "kpi": {
+    "users": "Users",
+    "missions": "Missions",
+    "shuttles": "Shuttles",
+    "territory": "Territories"
+  },
+  "users_kpi_title": "Users",
+  "users_connected": "connected users",
+  "users_total": "out of {{total}}",
+  "shuttles_kpi_title": "Shuttles",
+  "shuttles_online": "Online",
+  "shuttles_unstable": "Unstable",
+  "shuttles_error": "Errors",
+  "shuttles_offline": "Offline",
+  "shuttles_availability": "Availability rate",
+  "shuttles_issues": "Issues rate",
+  "territories_kpi_title": "Territories status",
+  "territories_total": "Total",
+  "territories_online": "Online",
+  "territories_unstable": "Unstable",
+  "territories_error": "Error",
+  "territories_offline": "Offline",
+  "missions_kpi_title": "Missions",
+  "missions_placeholder": "No data yet"
+
+}
