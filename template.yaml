@@ -1,0 +1,91 @@
+# ============================================================
+# Forge-Stack React Template Manifest
+# Read by scaffold.mjs to drive interactive project generation
+# ============================================================
+
+meta:
+  name: forge-react-template
+  version: 1.0.0
+  description: React template — Vite, TypeScript, SCSS, React Query
+  author: Forge Stack Workshop
+
+# ----------------------------------------------------------
+# Base dependencies — always installed regardless of features
+# ----------------------------------------------------------
+dependencies:
+  - react@^19.2.0
+  - react-dom@^19.2.0
+  - react-router-dom@^7.13.1
+  - "@tanstack/react-query@^5.90.21"
+  - lucide-react@^0.576.0
+
+devDependencies:
+  - vite@^7.3.1
+  - typescript@~5.9.3
+  - "@vitejs/plugin-react@^5.1.4"
+  - "@types/react@^19.2.7"
+  - "@types/react-dom@^19.2.3"
+  - "@types/node@^24.10.1"
+  - sass-embedded@^1.97.3
+  - "@eslint/js@^9.39.1"
+  - eslint@^9.39.1
+  - eslint-plugin-react-hooks@^7.0.1
+  - eslint-plugin-react-refresh@^0.4.24
+  - globals@^16.5.0
+  - typescript-eslint@^8.48.0
+
+# ----------------------------------------------------------
+# Features — toggled interactively during scaffolding
+# deps/devDeps are merged into package.json only when enabled
+# ----------------------------------------------------------
+features:
+  - id: i18n
+    name: Internationalisation (i18n)
+    description: i18next, browser language detection, LanguageSwitcher component
+    default: true
+    deps:
+      - i18next@^25.8.13
+      - react-i18next@^16.5.4
+      - i18next-browser-languagedetector@^8.2.1
+    options:
+      languages:
+        - id: fr
+          name: Français
+          flag: fr.svg
+        - id: en
+          name: English
+          flag: en.svg
+
+  - id: theming
+    name: Light / Dark theme
+    description: CSS variables for dark mode, useTheme hook, Header toggle
+    default: true
+
+  - id: mock
+    name: MSW Mock API
+    description: Mock Service Worker — intercepts /api/* requests in the browser
+    default: true
+    workerDirectory: public
+    devDeps:
+      - msw@^2.12.10
+
+# ----------------------------------------------------------
+# Domains — scaffold.mjs prompts for these interactively.
+# Each entry generates: types.ts, queries.ts, mapper.ts, index.ts
+# and a matching page + MSW handler (if mock is enabled).
+# Leave empty to define domains only at prompt time.
+# ----------------------------------------------------------
+domains: []
+
+# ----------------------------------------------------------
+# Code conventions
+# ----------------------------------------------------------
+conventions:
+  styling: scss-modules        # CSS Modules + SCSS
+  stateManagement: react-query # No global store — server state only
+  routing: react-router-dom-v7
+  mock: msw-browser
+  components: functional-tsx
+  exports: barrel              # index.ts per domain folder
+  apiBaseUrl: /api
+  timeout: 8000

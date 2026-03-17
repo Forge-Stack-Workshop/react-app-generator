@@ -1,0 +1,27 @@
+@use "../../styles/mixins" as m;
+@use "../../styles/variables" as v;
+
+/* ===========================
+   SKELETON BASE
+   =========================== */
+.skeleton {
+  background: var(--skeleton-base);
+  border-radius: inherit;
+  animation: skeleton-pulse var(--skeleton-speed, 1.6s) ease-in-out infinite;
+  opacity: var(--skeleton-opacity, 0.85);
+}
+
+/* ===========================
+   ANIMATION
+   =========================== */
+@keyframes skeleton-pulse {
+  0% {
+    opacity: var(--skeleton-opacity, 0.85);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: var(--skeleton-opacity, 0.85);
+  }
+}

@@ -1,0 +1,25 @@
+@use "../../styles/mixins" as m;
+@use "../../styles/variables" as v;
+
+/* ===========================
+   OVERLAY
+   =========================== */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  @include m.flex-center;
+
+  background: var(--surface);     // cohérent avec ton thème
+  z-index: var(--z-overlay);      // défini dans variables globales
+}
+
+/* ===========================
+   SPINNER
+   =========================== */
+.spinner {
+  @include m.spinner(48px, var(--primary));   // ← ton nouveau mixin global
+}

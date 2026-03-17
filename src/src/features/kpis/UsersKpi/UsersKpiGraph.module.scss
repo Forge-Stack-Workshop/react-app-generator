@@ -1,0 +1,35 @@
+.graphContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.graphRow {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.axisY {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-right: 4px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.graphSpace {
+  flex: 1;
+  height: 90px;
+  overflow: visible;
+  position: relative;
+}
+
+.axisXLabels {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 4px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}

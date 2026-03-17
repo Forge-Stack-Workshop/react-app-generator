@@ -1,0 +1,44 @@
+/* ===========================
+   WRAPPER PRINCIPAL
+   =========================== */
+.usersKpi {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.25rem 0 0.5rem 0;
+}
+
+/* ===========================
+   VALEUR PRINCIPALE
+   =========================== */
+.hero {
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--text-strong);
+  line-height: 1.1;
+}
+
+/* ===========================
+   LABELS SECONDAIRES
+   =========================== */
+.sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.total {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* ===========================
+   GRAPHIQUE (footer)
+   =========================== */
+.graphWrapper {
+  width: 100%;
+  padding: 0.5rem 0.75rem 0.75rem 0.75rem;
+  box-sizing: border-box;
+  display: flex; /* ← FIX CRITIQUE */
+}

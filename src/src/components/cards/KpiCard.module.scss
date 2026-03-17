@@ -1,0 +1,56 @@
+@use "../../styles/mixins" as m;
+@use "../../styles/variables" as v;
+
+/* ===========================
+   CARD CONTAINER
+   =========================== */
+.card {
+  @include m.card;
+  @include m.flex-column;
+  padding: var(--space-md);
+  gap: var(--space-md);
+}
+
+/* ===========================
+   HEADER (icon + title)
+   =========================== */
+.header {
+  @include m.flex-center-y;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.icon {
+  font-size: var(--font-lg);
+  color: var(--text-strong);
+}
+
+.title {
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ===========================
+   CONTENT (main KPI value)
+   =========================== */
+.content {
+  @include m.flex-column;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs); // léger espace pour respirer
+}
+
+.value {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 700;
+  color: var(--text-strong);
+  line-height: 1;
+}
+
+/* ===========================
+   FOOTER (optional)
+   =========================== */
+.footer {
+  margin-top: var(--space-sm);
+  display: flex; 
+}

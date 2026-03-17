@@ -1,0 +1,102 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.gaugeWrapper {
+  position: relative;
+  width: 100%;
+  height: 120px;
+}
+
+.gaugeCenter {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-strong);
+
+  span {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+}
+
+.separator {
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 0.5rem 0 0.25rem 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+}
+
+.item {
+  background: var(--surface);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.count {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.online   { background: var(--status-online); }
+.unstable { background: var(--status-unstable); }
+.error    { background: var(--status-error); }
+.offline  { background: var(--status-offline); }
+
+.dropdown {
+  margin-top: 0.4rem;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.territory {
+  font-size: 0.80rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+.territory:hover {
+  background: var(--surface-hover);
+}
+
+.territoryActive {
+  background: var(--surface-hover);
+  font-weight: 600;
+  color: var(--text);
+}

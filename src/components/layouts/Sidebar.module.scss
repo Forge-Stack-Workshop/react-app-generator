@@ -1,0 +1,88 @@
+@use "../../styles/mixins" as m;
+
+/* ===========================
+   SIDEBAR WRAPPER
+   =========================== */
+.sidebar {
+  @include m.flex-column;
+  width: 180px;
+  height: 100vh;
+  padding: 16px;
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  box-sizing: border-box;
+  transition: width 0.25s ease;
+}
+
+.collapsed {
+  width: 72px;
+}
+
+/* ===========================
+   TOP SECTION
+   =========================== */
+.top {
+  @include m.flex-between;
+  margin-bottom: 24px;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ===========================
+   COLLAPSE BUTTON
+   =========================== */
+.toggleBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: 6px;
+  @include m.smooth;
+
+  &:hover {
+    background: var(--bg);
+  }
+}
+
+/* ===========================
+   NAVIGATION
+   =========================== */
+.nav {
+  @include m.flex-column;
+  gap: 8px;
+}
+
+/* ===========================
+   NAV LINK
+   =========================== */
+.link {
+  @include m.flex-center-y;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 15px;
+  @include m.smooth;
+
+  &:hover {
+    background: var(--bg);
+  }
+
+  &.active {
+    background: var(--primary);
+    color: white;
+  }
+}
+
+/* ===========================
+   COLLAPSED MODE
+   =========================== */
+.collapsed .link span {
+  display: none;
+}
