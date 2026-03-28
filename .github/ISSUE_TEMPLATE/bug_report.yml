@@ -1,0 +1,74 @@
+name: Bug Report
+description: Report a bug in the react-app-generator template
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this bug!
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the template is affected?
+      options:
+        - Scaffold / template generation
+        - Application structure
+        - Build / Vite configuration
+        - CI/CD workflow
+        - Pre-commit hooks
+        - Makefile
+        - Dependencies
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the bug.
+      placeholder: Describe the bug...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Provide steps to reproduce the behavior.
+      placeholder: |
+        1. Run `make ...`
+        2. See error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        Please complete the following:
+      value: |
+        - OS:
+        - Node version:
+        - npm version:
+        - Branch:
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context, screenshots or logs.

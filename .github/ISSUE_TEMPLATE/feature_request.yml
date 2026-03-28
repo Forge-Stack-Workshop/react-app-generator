@@ -1,0 +1,56 @@
+name: Feature Request
+description: Suggest an improvement or new feature for the react-app-generator template
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement!
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the template would benefit from this feature?
+      options:
+        - Scaffold / template generation
+        - Application structure
+        - Build / Vite configuration
+        - CI/CD workflow
+        - Pre-commit hooks
+        - Makefile
+        - Dependencies
+        - Developer experience
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: Is your feature request related to a problem? Describe it.
+      placeholder: "I'm frustrated when..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the solution you'd like.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Have you considered other approaches?
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Any additional context, links or examples.
