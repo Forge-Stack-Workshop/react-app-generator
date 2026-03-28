@@ -1,0 +1,66 @@
+repos:
+  # ── Standard hooks ──────────────────────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: detect-private-key
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: no-commit-to-branch
+        args: [--branch=main, --branch=master]
+
+  # ── Gitleaks (secrets detection) ────────────────────────────────────────────
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.23.3
+    hooks:
+      - id: gitleaks
+
+  # ── Console & debug detection (JS/TS) ───────────────────────────────────────
+  - repo: https://github.com/chrysa/pre-commit-tools
+    rev: 0.0.60
+    hooks:
+      - id: console-debug-detection
+      - id: console-log-detection
+      - id: console-table-detection
+
+  # ── Changelog generation ────────────────────────────────────────────────────
+  - repo: https://github.com/chrysa/pre-commit-hooks-changelog
+    rev: v0.1.4
+    hooks:
+      - id: generate-changelog
+
+  # ── Prettier (JS/TS/JSON/YAML formatting) ───────────────────────────────────
+  - repo: https://github.com/rbubley/mirrors-prettier
+    rev: v3.5.3
+    hooks:
+      - id: prettier
+        types_or: [javascript, jsx, ts, tsx, css, scss, json, yaml, markdown]
+        exclude: |
+          (?x)^(
+            package-lock\.json|
+            public/mockServiceWorker\.js
+          )$
+
+  # ── ESLint ──────────────────────────────────────────────────────────────────
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.22.0
+    hooks:
+      - id: eslint
+        files: \.(ts|tsx)$
+        types: [file]
+        additional_dependencies:
+          - eslint@9.39.1
+          - typescript@5.9.3
+          - typescript-eslint@8.48.0
+          - eslint-plugin-react-hooks@7.0.1
+          - eslint-plugin-react-refresh@0.4.24
+          - "@eslint/js@9.39.1"
+          - globals@16.5.0
