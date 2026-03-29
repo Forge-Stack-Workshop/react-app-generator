@@ -1,5 +1,14 @@
 # Forge-Stack React Template
 
+[![CI](https://github.com/Forge-Stack-Workshop/react-app-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/Forge-Stack-Workshop/react-app-generator/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Forge-Stack-Workshop/react-app-generator?sort=semver&label=release)](https://github.com/Forge-Stack-Workshop/react-app-generator/releases/latest)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Forge-Stack-Workshop_react-app-generator&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Forge-Stack-Workshop_react-app-generator)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Forge-Stack-Workshop_react-app-generator&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Forge-Stack-Workshop_react-app-generator)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Forge-Stack-Workshop_react-app-generator&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Forge-Stack-Workshop_react-app-generator)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Forge-Stack-Workshop_react-app-generator&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Forge-Stack-Workshop_react-app-generator)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A production-ready React starter built with **Vite**, **TypeScript**, **SCSS Modules** and **React Query**. Features are opt-in and selected interactively via the scaffolder.
 
 ---
@@ -56,7 +65,7 @@ Selected interactively during scaffolding. Each feature adds its own dependencie
 ```
 src/
 ├── api/
-│   ├── http/         # Axios client + request/response interceptors
+│   ├── http/         # native fetch typed wrapper + interceptors
 │   └── mock/         # MSW handlers + fixture data  [feature: mock]
 ├── assets/           # Static files (SVGs, images, flag icons)
 ├── components/
