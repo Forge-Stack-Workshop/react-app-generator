@@ -1,6 +1,5 @@
 version: 2
 updates:
-  # ── npm dependencies ────────────────────────────────────────────────────────
   - package-ecosystem: npm
     directory: /
     schedule:
@@ -33,7 +32,6 @@ updates:
         patterns:
           - "@tanstack/*"
 
-  # ── GitHub Actions ──────────────────────────────────────────────────────────
   - package-ecosystem: github-actions
     directory: /
     schedule:
@@ -42,7 +40,6 @@ updates:
       time: "09:00"
     open-pull-requests-limit: 10
 
-  # ── pre-commit hooks ────────────────────────────────────────────────────────
   - package-ecosystem: pip
     directory: /
     schedule:
