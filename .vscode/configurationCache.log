@@ -1,0 +1,1 @@
+{"buildTargets":["build","ci","clean","clean-all","dev","format","help","install","install-ci","lint","msw-init","pre-commit-install","pre-commit-run","pre-commit-update","preview","test","test-ci","typecheck"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}
