@@ -1,7 +1,7 @@
 repos:
   # ── Standard hooks ──────────────────────────────────────────────────────────
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: f1dff44d3a9ae852957f34def96390f28719c232
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -19,13 +19,13 @@ repos:
 
   # ── Gitleaks (secrets detection) ────────────────────────────────────────────
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.23.3
+    rev: 8863af47d64c3681422523e36837957c74d4af4b
     hooks:
       - id: gitleaks
 
   # ── Console & debug detection (JS/TS) ───────────────────────────────────────
   - repo: https://github.com/chrysa/pre-commit-tools
-    rev: 0.0.60
+    rev: b97ae91d8a45eb6f556fe938fa8bd58294c9a5e6
     hooks:
       - id: console-debug-detection
       - id: console-log-detection
@@ -33,13 +33,13 @@ repos:
 
   # ── Changelog generation ────────────────────────────────────────────────────
   - repo: https://github.com/chrysa/pre-commit-hooks-changelog
-    rev: v0.1.4
+    rev: 40d13585c4c845c36108a565f00c23f2b946e9d9
     hooks:
       - id: generate-changelog
 
   # ── Prettier (JS/TS/JSON/YAML formatting) ───────────────────────────────────
   - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.5.3
+    rev: v3.8.1
     hooks:
       - id: prettier
         types_or: [javascript, jsx, ts, tsx, css, scss, json, yaml, markdown]
@@ -51,7 +51,7 @@ repos:
 
   # ── ESLint ──────────────────────────────────────────────────────────────────
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.22.0
+    rev: v10.1.0
     hooks:
       - id: eslint
         files: \.(ts|tsx)$
