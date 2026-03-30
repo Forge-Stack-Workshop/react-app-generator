@@ -44,8 +44,6 @@ export default function Monitoring() {
           <MissionsKpi selectedTerritory={selectedTerritory} />
           <UsersKpi selectedTerritory={selectedTerritory} />
         </div>
-
-    
       </div>
     </div>
   );

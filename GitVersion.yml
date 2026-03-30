@@ -1,14 +1,14 @@
 branches:
-    fix:
-        increment: Patch
-        label: fix
-        regex: ^fix[/-]
-        source-branches:
-            - main
-    release:
-        increment: Patch
-        label: rc
-        regex: ^release[/-]
-        source-branches:
-            - main
+  fix:
+    increment: Patch
+    label: fix
+    regex: ^fix[/-]
+    source-branches:
+      - main
+  release:
+    increment: Patch
+    label: rc
+    regex: ^release[/-]
+    source-branches:
+      - main
 workflow: GitHubFlow/v1

@@ -27,16 +27,13 @@ export default function UsersKpi({ selectedTerritory }) {
   const { data: history } = useUsersHistoryQuery(selectedTerritory.id);
 
   if (isLoading || !data) {
-    return (
-      <KpiCard title={t("users_kpi_title")} icon={<FaUser />} isLoading />
-    );
+    return <KpiCard title={t("users_kpi_title")} icon={<FaUser />} isLoading />;
   }
 
   // Logique métier externalisée
   const metrics = computeUsersMetrics(data, selectedTerritory);
   console.log("HISTORY RAW", history);
-console.log("selectedTerritory.id", selectedTerritory.id);
-
+  console.log("selectedTerritory.id", selectedTerritory.id);
 
   return (
     <KpiCard

@@ -15,7 +15,6 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const { t } = useTranslation("common");
 
-
   return (
     <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ""}`}>
       <div className={styles.top}>

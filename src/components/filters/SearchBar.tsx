@@ -24,7 +24,7 @@ function SearchBarContent({ items, onSelect, placeholder }) {
   const filtered = useMemo(() => {
     if (!query) return items;
     return items.filter((t) =>
-      t.name.toLowerCase().includes(query.toLowerCase())
+      t.name.toLowerCase().includes(query.toLowerCase()),
     );
   }, [items, query]);
 

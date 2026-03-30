@@ -47,7 +47,7 @@ COPILOT_OTEL_EXPORTER_TYPE = file
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # default
-.VARIABLES := 
+.VARIABLES :=
 # environment
 PWD = /home/anthony/Documents/perso/projects/Forge-Stack-Workshop/template-react
 # automatic
@@ -69,7 +69,7 @@ LANG = C
 # environment
 XAUTHORITY = /run/user/1000/xauth_FGJTqM
 # default
-.LOADED := 
+.LOADED :=
 # default
 .INCLUDE_DIRS := /usr/local/include /usr/include
 # environment
@@ -149,7 +149,7 @@ MAKE = $(MAKE_COMMAND)
 # environment
 PATH = /home/anthony/.local/share/pnpm:/home/anthony/.local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
 # default
-MAKEFILES := 
+MAKEFILES :=
 # automatic
 ^F = $(notdir $^)
 # environment
@@ -177,9 +177,9 @@ LESS = -R
 # environment
 DESKTOP_SESSION = plasma
 # 'override' directive
-GNUMAKEFLAGS := 
+GNUMAKEFLAGS :=
 # environment
- 
+
 CLUTTER_IM_MODULE = ibus
 # environment
 LOGNAME = anthony
@@ -240,11 +240,11 @@ XDG_SESSION_ID = 2
 # environment
 IM_CONFIG_PHASE = 1
 # default
-.RECIPEPREFIX := 
+.RECIPEPREFIX :=
 # automatic
 <F = $(notdir $<)
 # default
-SUFFIXES := 
+SUFFIXES :=
 # environment
 QT_AUTO_SCREEN_SCALE_FACTOR = 0
 # environment
@@ -354,7 +354,7 @@ preview:
 
 dev:
 #  Phony target (prerequisite of .PHONY).
- 
+
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
@@ -494,5 +494,3 @@ msw-init:
 # hash-table stats:
 # Load=47/8192=1%, Rehash=0, Collisions=0/91=0%
 # Finished Make data base on Sun Mar 29 20:10:43 2026
-
- 

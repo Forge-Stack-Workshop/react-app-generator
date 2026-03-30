@@ -24,4 +24,3 @@ export interface UsersHistoryPoint {
 export interface UsersHistoryResponse {
   points: UsersHistoryPoint[];
 }
-

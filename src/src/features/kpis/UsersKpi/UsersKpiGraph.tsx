@@ -9,11 +9,11 @@ export default function UsersKpiGraph({ data = [] as Point[] }) {
 
   // Toujours 12 derniers points
   const cleaned = [...data]
-    .filter((p, i, arr) => arr.findIndex(x => x.hour === p.hour) === i)
+    .filter((p, i, arr) => arr.findIndex((x) => x.hour === p.hour) === i)
     .sort((a, b) => a.hour - b.hour)
     .slice(-12);
 
-  const maxY = Math.max(...cleaned.map(p => p.connected), 0) || 1;
+  const maxY = Math.max(...cleaned.map((p) => p.connected), 0) || 1;
   const n = cleaned.length;
 
   // Cas 1 : un seul point → afficher un point

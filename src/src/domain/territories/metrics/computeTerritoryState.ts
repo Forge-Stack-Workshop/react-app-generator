@@ -4,7 +4,7 @@ export function computeTerritoryState(territory) {
   const all = [
     ...(territory.shuttles ?? []),
     ...(territory.dispatch ?? []),
-    ...(territory.security ?? [])
+    ...(territory.security ?? []),
   ];
 
   if (all.length === 0) return "unknown";

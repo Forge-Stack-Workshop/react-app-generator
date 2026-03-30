@@ -16,7 +16,9 @@ export function useUsersHistoryQuery(territoryId: string) {
   return useQuery<UsersHistoryResponse>({
     queryKey: ["users-history", territoryId],
     queryFn: async () => {
-      const res = await fetch(`/api/kpis/users/history?territory=${territoryId}`);
+      const res = await fetch(
+        `/api/kpis/users/history?territory=${territoryId}`,
+      );
       if (!res.ok) throw new Error("Failed to load users history");
       return res.json();
     },

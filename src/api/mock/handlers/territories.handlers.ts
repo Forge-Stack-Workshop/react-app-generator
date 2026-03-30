@@ -11,5 +11,5 @@ export const territoriesHandlers = [
   http.get("/api/territories/providers", async () => {
     await new Promise((r) => setTimeout(r, 800));
     return HttpResponse.json(territoryProviders);
-  })
+  }),
 ];

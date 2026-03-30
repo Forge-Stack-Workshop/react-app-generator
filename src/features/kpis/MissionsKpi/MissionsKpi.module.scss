@@ -6,7 +6,7 @@
    =========================== */
 .wrapper {
   @include m.flex-column;
-  @include m.flex-center;        // vertical + horizontal centering
+  @include m.flex-center; // vertical + horizontal centering
   height: var(--card-height, 160px);
   padding: var(--spacing-lg, 1rem);
 }

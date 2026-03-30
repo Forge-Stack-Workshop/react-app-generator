@@ -18,14 +18,11 @@ export const shuttlesHandlers = [
     const points = Array.from({ length: 12 }).map((_, i) => {
       const hour = (new Date().getHours() - (11 - i) + 24) % 24;
 
-      const value = Math.max(
-        0,
-        Math.floor(base * (0.6 + Math.random() * 0.4))
-      );
+      const value = Math.max(0, Math.floor(base * (0.6 + Math.random() * 0.4)));
 
       return { hour, value };
     });
 
     return HttpResponse.json({ points });
-  })
+  }),
 ];

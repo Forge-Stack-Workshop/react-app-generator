@@ -5,7 +5,7 @@ export function setupInterceptors(http) {
       // config.headers.Authorization = `Bearer ${token}`;
       return config;
     },
-    (error) => Promise.reject(error)
+    (error) => Promise.reject(error),
   );
 
   http.interceptors.response.use(
@@ -13,6 +13,6 @@ export function setupInterceptors(http) {
     (error) => {
       console.error("API error:", error);
       return Promise.reject(error);
-    }
+    },
   );
 }

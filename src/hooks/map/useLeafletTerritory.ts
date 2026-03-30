@@ -3,8 +3,8 @@ import { useTerritoriesQuery } from "../../domain/territories/queries";
 
 // Calcule la dispersion géographique des territoires
 function getTerritorySpread(coordsList: [number, number][]) {
-  const lats = coordsList.map(c => c[0]);
-  const lngs = coordsList.map(c => c[1]);
+  const lats = coordsList.map((c) => c[0]);
+  const lngs = coordsList.map((c) => c[1]);
 
   const latSpread = Math.max(...lats) - Math.min(...lats);
   const lngSpread = Math.max(...lngs) - Math.min(...lngs);
@@ -21,8 +21,8 @@ export function useLeafletTerritory(map: any, selectedTerritory: any) {
     // 🔥 Cas ALL → zoom global sur toutes les pins
     if (selectedTerritory?.id === "ALL") {
       const coordsList = territories
-        .filter(t => t.id !== "ALL" && t.coords)
-        .map(t => t.coords as [number, number]);
+        .filter((t) => t.id !== "ALL" && t.coords)
+        .map((t) => t.coords as [number, number]);
 
       if (coordsList.length === 0) return;
 
@@ -36,7 +36,7 @@ export function useLeafletTerritory(map: any, selectedTerritory: any) {
 
       map.fitBounds(coordsList, {
         padding: [80, 80],
-        maxZoom: 8
+        maxZoom: 8,
       });
 
       return;
