@@ -5,7 +5,13 @@
 
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
-import { readFileSync, writeFileSync, mkdirSync, existsSync, cpSync } from "node:fs";
+import {
+  readFileSync,
+  writeFileSync,
+  mkdirSync,
+  existsSync,
+  cpSync,
+} from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
@@ -148,7 +154,9 @@ async function confirm(rl, question, defaultVal = true) {
 
 async function select(rl, question, choices) {
   console.log(`\n  ${cyan("?")} ${bold(question)}`);
-  choices.forEach((c, i) => console.log(`  ${dim(`${i + 1}.`)} ${c.label ?? c}`));
+  choices.forEach((c, i) =>
+    console.log(`  ${dim(`${i + 1}.`)} ${c.label ?? c}`),
+  );
   const ans = await ask(rl, `Enter number (default 1): `);
   const idx = parseInt(ans.trim(), 10);
   if (isNaN(idx) || idx < 1 || idx > choices.length) return choices[0];
@@ -156,10 +164,14 @@ async function select(rl, question, choices) {
 }
 
 async function multiSelect(rl, question, choices) {
-  console.log(`\n  ${cyan("?")} ${bold(question)} ${dim("(comma-separated numbers, Enter = all defaults)")}`);
+  console.log(
+    `\n  ${cyan("?")} ${bold(question)} ${dim("(comma-separated numbers, Enter = all defaults)")}`,
+  );
   choices.forEach((c, i) => {
     const def = c.default !== false ? green("✓") : dim("○");
-    console.log(`  ${def} ${dim(`${i + 1}.`)} ${bold(c.name ?? c.id)} ${dim("—")} ${c.description ?? ""}`);
+    console.log(
+      `  ${def} ${dim(`${i + 1}.`)} ${bold(c.name ?? c.id)} ${dim("—")} ${c.description ?? ""}`,
+    );
   });
   const ans = await ask(rl, `Selection: `);
   if (!ans.trim()) return choices.filter((c) => c.default !== false);
@@ -266,7 +278,7 @@ function genTsConfigApp() {
       include: ["src"],
     },
     null,
-    2
+    2,
   );
 }
 
@@ -286,7 +298,7 @@ function genTsConfigNode() {
       include: ["vite.config.ts"],
     },
     null,
-    2
+    2,
   );
 }
 
@@ -294,10 +306,13 @@ function genTsConfig() {
   return JSON.stringify(
     {
       files: [],
-      references: [{ path: "./tsconfig.app.json" }, { path: "./tsconfig.node.json" }],
+      references: [
+        { path: "./tsconfig.app.json" },
+        { path: "./tsconfig.node.json" },
+      ],
     },
     null,
-    2
+    2,
   );
 }
 
@@ -384,7 +399,10 @@ createRoot(root).render(
 function genAppTsx(config) {
   const pages = [
     { name: "Home", path: "/" },
-    ...config.domains.map((d) => ({ name: d.page ?? capitalize(d.id), path: `/${d.id}` })),
+    ...config.domains.map((d) => ({
+      name: d.page ?? capitalize(d.id),
+      path: `/${d.id}`,
+    })),
     { name: "NotFound", path: "*" },
   ];
 
@@ -394,7 +412,8 @@ function genAppTsx(config) {
 
   const routes = pages
     .map((p) => {
-      if (p.path === "*") return `            <Route path="*" element={<NotFound />} />`;
+      if (p.path === "*")
+        return `            <Route path="*" element={<NotFound />} />`;
       return `            <Route path="${p.path}" element={<${p.name} />} />`;
     })
     .join("\n");
@@ -565,7 +584,9 @@ html.dark {
 }
 
 function genI18nIndex(languages) {
-  const imports = languages.map((l) => `import ${l.id} from "./locales/${l.id}/common.json";`).join("\n");
+  const imports = languages
+    .map((l) => `import ${l.id} from "./locales/${l.id}/common.json";`)
+    .join("\n");
   const resources = languages
     .map((l) => `      ${l.id}: { common: ${l.id} },`)
     .join("\n");
@@ -675,7 +696,9 @@ export function onError(error: unknown): never {
 
 function genMockServer(domains) {
   const imports = domains
-    .map((d) => `import { ${d.id}Handlers } from "./handlers/${d.id}.handlers";`)
+    .map(
+      (d) => `import { ${d.id}Handlers } from "./handlers/${d.id}.handlers";`,
+    )
     .join("\n");
   const spread = domains.map((d) => `...${d.id}Handlers`).join(", ");
 
@@ -754,7 +777,9 @@ export * from "./queries";
 }
 
 function genPageTsx(name, hasScss = true) {
-  const cssImport = hasScss ? `import styles from "./${name}.module.scss";\n` : "";
+  const cssImport = hasScss
+    ? `import styles from "./${name}.module.scss";\n`
+    : "";
   return `${cssImport}
 export default function ${name}() {
   return (
@@ -839,12 +864,16 @@ function genHeaderTsx(config) {
   const hasTheme = config.features.some((f) => f.id === "theming");
   const hasI18n = config.features.some((f) => f.id === "i18n");
 
-  const themeImport = hasTheme ? `import { useTheme } from "../../hooks/useTheme";\n` : "";
+  const themeImport = hasTheme
+    ? `import { useTheme } from "../../hooks/useTheme";\n`
+    : "";
   const i18nImport = hasI18n
     ? `import LanguageSwitcher from "../languages/LanguageSwitcher";\n`
     : "";
 
-  const themeHook = hasTheme ? `\n  const { theme, setTheme } = useTheme();` : "";
+  const themeHook = hasTheme
+    ? `\n  const { theme, setTheme } = useTheme();`
+    : "";
   const themeButton = hasTheme
     ? `\n        <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
           {theme === "dark" ? "☀️" : "🌙"}
@@ -894,7 +923,10 @@ function genHeaderScss() {
 function genSidebarTsx(config) {
   const links = [
     { path: "/", label: "Home" },
-    ...config.domains.map((d) => ({ path: `/${d.id}`, label: d.name ?? capitalize(d.id) })),
+    ...config.domains.map((d) => ({
+      path: `/${d.id}`,
+      label: d.name ?? capitalize(d.id),
+    })),
   ];
 
   const navLinks = links
@@ -1004,7 +1036,10 @@ export function useTheme() {
 
 function genUseLanguage(languages) {
   const langMap = languages
-    .map((l) => `  ${l.id}: { label: "${l.name}", flag: "${l.flag ?? l.id + ".svg"}" },`)
+    .map(
+      (l) =>
+        `  ${l.id}: { label: "${l.name}", flag: "${l.flag ?? l.id + ".svg"}" },`,
+    )
     .join("\n");
 
   return `import { useTranslation } from "react-i18next";
@@ -1130,7 +1165,10 @@ function generate(config) {
   if (config.features.some((f) => f.id === "mock")) {
     write(join(src, "api/mock/server.ts"), genMockServer(config.domains));
     for (const d of config.domains) {
-      write(join(src, `api/mock/handlers/${d.id}.handlers.ts`), genMockHandler(d));
+      write(
+        join(src, `api/mock/handlers/${d.id}.handlers.ts`),
+        genMockHandler(d),
+      );
     }
     // public/mockServiceWorker.js needs to be initialized via `npx msw init`
     mkdir(join(out, "public"));
@@ -1170,16 +1208,19 @@ function generate(config) {
 
   // components/loaders/
   write(join(src, "components/loaders/GlobalLoader.tsx"), genGlobalLoader());
-  write(join(src, "components/loaders/GlobalLoader.module.scss"), genGlobalLoaderScss());
+  write(
+    join(src, "components/loaders/GlobalLoader.module.scss"),
+    genGlobalLoaderScss(),
+  );
 
   // components/ui/ — placeholder
   write(
     join(src, "components/ui/Skeleton.tsx"),
-    `import styles from "./Skeleton.module.scss";\n\ninterface Props { width?: string; height?: string; radius?: string; }\n\nexport default function Skeleton({ width = "100%", height = "16px", radius }: Props) {\n  return <div className={styles.skeleton} style={{ width, height, borderRadius: radius }} />;\n}\n`
+    `import styles from "./Skeleton.module.scss";\n\ninterface Props { width?: string; height?: string; radius?: string; }\n\nexport default function Skeleton({ width = "100%", height = "16px", radius }: Props) {\n  return <div className={styles.skeleton} style={{ width, height, borderRadius: radius }} />;\n}\n`,
   );
   write(
     join(src, "components/ui/Skeleton.module.scss"),
-    `.skeleton {\n  background: var(--skeleton-base);\n  animation: shimmer 1.5s infinite;\n}\n\n@keyframes shimmer {\n  0%, 100% { opacity: 1; }\n  50% { opacity: 0.5; }\n}\n`
+    `.skeleton {\n  background: var(--skeleton-base);\n  animation: shimmer 1.5s infinite;\n}\n\n@keyframes shimmer {\n  0%, 100% { opacity: 1; }\n  50% { opacity: 0.5; }\n}\n`,
   );
 
   // hooks/
@@ -1189,14 +1230,22 @@ function generate(config) {
 
   const i18nFeat = config.features.find((f) => f.id === "i18n");
   if (i18nFeat) {
-    const langs = i18nFeat.options?.languages ?? [{ id: "en", name: "English" }];
+    const langs = i18nFeat.options?.languages ?? [
+      { id: "en", name: "English" },
+    ];
     write(join(src, "hooks/useLanguage.ts"), genUseLanguage(langs));
     write(join(src, "i18n/index.ts"), genI18nIndex(langs));
     for (const l of langs) {
       write(join(src, `i18n/locales/${l.id}/common.json`), genCommonJson(l.id));
     }
-    write(join(src, "components/languages/LanguageSwitcher.tsx"), genLanguageSwitcher());
-    write(join(src, "components/languages/LanguageSwitcher.module.scss"), genLanguageSwitcherScss());
+    write(
+      join(src, "components/languages/LanguageSwitcher.tsx"),
+      genLanguageSwitcher(),
+    );
+    write(
+      join(src, "components/languages/LanguageSwitcher.module.scss"),
+      genLanguageSwitcherScss(),
+    );
   }
 
   // utils/
@@ -1245,16 +1294,24 @@ ${domainsList}
 // ── Prompts ───────────────────────────────────────────────────────────────────
 async function promptDomains(rl) {
   const domains = [];
-  console.log(`\n  ${cyan("?")} ${bold("Define your domain modules")} ${dim("(empty name to stop)")}`);
+  console.log(
+    `\n  ${cyan("?")} ${bold("Define your domain modules")} ${dim("(empty name to stop)")}`,
+  );
 
   while (true) {
-    const id = (await ask(rl, `Domain id (e.g. products): `)).trim().toLowerCase();
+    const id = (await ask(rl, `Domain id (e.g. products): `))
+      .trim()
+      .toLowerCase();
     if (!id) break;
     if (!/^[a-z][a-z0-9_-]*$/.test(id)) {
-      console.log(`  ${yellow("⚠")} Invalid id — use lowercase letters, numbers, hyphens only.`);
+      console.log(
+        `  ${yellow("⚠")} Invalid id — use lowercase letters, numbers, hyphens only.`,
+      );
       continue;
     }
-    const name = (await ask(rl, `Display name (e.g. Products): `)).trim() || capitalize(id);
+    const name =
+      (await ask(rl, `Display name (e.g. Products): `)).trim() ||
+      capitalize(id);
     const route = `/${id}`;
     const page = capitalize(id);
     domains.push({ id, name, route, page });
@@ -1278,21 +1335,29 @@ async function main() {
   printBanner(manifest.meta ?? { version: "1.0.0", description: "" });
 
   // 1. Project name
-  const projectName = (
-    await ask(rl, `Project name ${dim("(default: my-app)")}: `)
-  ).trim() || "my-app";
+  const projectName =
+    (await ask(rl, `Project name ${dim("(default: my-app)")}: `)).trim() ||
+    "my-app";
 
   if (!/^[a-z][a-z0-9_-]*$/.test(projectName)) {
-    console.log(yellow("⚠  Project name should be lowercase with hyphens. Continuing..."));
+    console.log(
+      yellow("⚠  Project name should be lowercase with hyphens. Continuing..."),
+    );
   }
 
   // 2. Output directory
   const defaultOut = resolve(process.cwd(), projectName);
-  const outAnswer = (await ask(rl, `Output directory ${dim(`(default: ${defaultOut})`)}: `)).trim();
+  const outAnswer = (
+    await ask(rl, `Output directory ${dim(`(default: ${defaultOut})`)}: `)
+  ).trim();
   const outputDir = outAnswer ? resolve(process.cwd(), outAnswer) : defaultOut;
 
   if (existsSync(outputDir)) {
-    const overwrite = await confirm(rl, `${yellow("⚠")} Directory already exists. Overwrite?`, false);
+    const overwrite = await confirm(
+      rl,
+      `${yellow("⚠")} Directory already exists. Overwrite?`,
+      false,
+    );
     if (!overwrite) {
       console.log(dim("Aborted."));
       rl.close();
@@ -1311,7 +1376,11 @@ async function main() {
 
   // 4. Features
   const availableFeatures = manifest.features ?? [];
-  const selectedFeatures = await multiSelect(rl, "Select features to enable", availableFeatures);
+  const selectedFeatures = await multiSelect(
+    rl,
+    "Select features to enable",
+    availableFeatures,
+  );
 
   // 5. Domains
   const domains = await promptDomains(rl);
@@ -1324,10 +1393,10 @@ async function main() {
     features: selectedFeatures,
     domains,
     baseDeps: Object.fromEntries(
-      (manifest.dependencies ?? []).map((d) => splitPackage(d))
+      (manifest.dependencies ?? []).map((d) => splitPackage(d)),
     ),
     baseDevDeps: Object.fromEntries(
-      (manifest.devDependencies ?? []).map((d) => splitPackage(d))
+      (manifest.devDependencies ?? []).map((d) => splitPackage(d)),
     ),
   };
 
@@ -1349,19 +1418,30 @@ async function main() {
   if (selectedFeatures.some((f) => f.id === "mock")) {
     console.log(`${bold("Initializing MSW Service Worker...")}`);
     try {
-      execSync(`${pm === "npm" ? "npx" : pm + " exec"} msw init public/ --save`, {
-        cwd: outputDir,
-        stdio: "inherit",
-      });
+      execSync(
+        `${pm === "npm" ? "npx" : pm + " exec"} msw init public/ --save`,
+        {
+          cwd: outputDir,
+          stdio: "inherit",
+        },
+      );
     } catch {
-      console.log(yellow("⚠  Could not auto-init MSW. Run manually: npx msw init public/ --save"));
+      console.log(
+        yellow(
+          "⚠  Could not auto-init MSW. Run manually: npx msw init public/ --save",
+        ),
+      );
     }
   }
 
   // 9. Install deps
   const install = await (async () => {
     const rl2 = createInterface({ input, output });
-    const ans = await confirm(rl2, `Install dependencies with ${bold(pm)}?`, true);
+    const ans = await confirm(
+      rl2,
+      `Install dependencies with ${bold(pm)}?`,
+      true,
+    );
     rl2.close();
     return ans;
   })();

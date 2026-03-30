@@ -2,7 +2,7 @@ import KpiCard from "../../../components/cards/KpiCard";
 import { FaMapMarkedAlt } from "react-icons/fa";
 import {
   useTerritoriesQuery,
-  useTerritoriesProvidersQuery
+  useTerritoriesProvidersQuery,
 } from "../../../domain/territories/queries";
 import HalfDonutGauge from "../../../components/charts/HalfDonutGauge/HalfDonutGauge";
 import { useTranslation } from "react-i18next";
@@ -11,13 +11,16 @@ import { useState, useEffect, useRef } from "react";
 import {
   buildTerritoriesKpi,
   computeTerritoryMetrics,
-  normalizeMetrics
+  normalizeMetrics,
 } from "../../../domain/territories/useTerritoryStatus";
 
 import TerritorySidePanel from "../TerritorySidePanel/TerritorySidePanel";
 import styles from "./TerritoriesKpi.module.scss";
 
-export default function TerritoriesKpi({ selectedTerritory, onTerritoryClick }) {
+export default function TerritoriesKpi({
+  selectedTerritory,
+  onTerritoryClick,
+}) {
   const { t } = useTranslation("common");
 
   const { data: territories, isLoading: loadingTerritories } =
@@ -28,7 +31,7 @@ export default function TerritoriesKpi({ selectedTerritory, onTerritoryClick }) 
   const [open, setOpen] = useState<string | null>(null);
   const [localPanel, setLocalPanel] = useState<string | null>(null);
   const [activeTerritoryId, setActiveTerritoryId] = useState<string | null>(
-    selectedTerritory?.id ?? null
+    selectedTerritory?.id ?? null,
   );
 
   const wrapperRef = useRef(null);
@@ -67,7 +70,7 @@ export default function TerritoriesKpi({ selectedTerritory, onTerritoryClick }) 
     { key: "online", color: styles.online, list: rawMetrics.online },
     { key: "unstable", color: styles.unstable, list: rawMetrics.unstable },
     { key: "error", color: styles.error, list: rawMetrics.error },
-    { key: "offline", color: styles.offline, list: rawMetrics.offline }
+    { key: "offline", color: styles.offline, list: rawMetrics.offline },
   ];
 
   return (
@@ -133,13 +136,11 @@ export default function TerritoriesKpi({ selectedTerritory, onTerritoryClick }) 
                               : ""
                           }`}
                           onClick={() => {
-                            const key = territoryId.toLowerCase();   // 🔥 FIX
+                            const key = territoryId.toLowerCase(); // 🔥 FIX
                             setLocalPanel(key);
                             setActiveTerritoryId(key);
                             onTerritoryClick?.(key);
                           }}
-
-
                         >
                           {territoryId}
                         </div>

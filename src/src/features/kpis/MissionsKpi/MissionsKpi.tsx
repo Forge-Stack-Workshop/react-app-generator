@@ -12,9 +12,7 @@ export default function MissionsKpi() {
       icon={<FaTasks />}
       value={
         <div className={styles.wrapper}>
-          <div className={styles.placeholder}>
-            {t("missions_placeholder")}
-          </div>
+          <div className={styles.placeholder}>{t("missions_placeholder")}</div>
         </div>
       }
     />

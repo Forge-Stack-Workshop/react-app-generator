@@ -1,6 +1,6 @@
 make --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/anthony/Documents/perso/projects/Forge-Stack-Workshop/template-react'
- 
+
 echo "==================================================================="
 echo "  react-app-generator"
 echo "==================================================================="
@@ -30,4 +30,3 @@ echo "Environment Variables:"
 echo "  PROJECT_NAME=react-app-generator"
 echo "==================================================================="
 make: Leaving directory '/home/anthony/Documents/perso/projects/Forge-Stack-Workshop/template-react'
- 

@@ -7,6 +7,6 @@ export function useShuttlesKpiQuery() {
     queryFn: async () => {
       const res = await fetch("/api/kpis/shuttles");
       return res.json();
-    }
+    },
   });
 }

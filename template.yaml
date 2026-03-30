@@ -81,11 +81,11 @@ domains: []
 # Code conventions
 # ----------------------------------------------------------
 conventions:
-  styling: scss-modules        # CSS Modules + SCSS
+  styling: scss-modules # CSS Modules + SCSS
   stateManagement: react-query # No global store — server state only
   routing: react-router-dom-v7
   mock: msw-browser
   components: functional-tsx
-  exports: barrel              # index.ts per domain folder
+  exports: barrel # index.ts per domain folder
   apiBaseUrl: /api
   timeout: 8000

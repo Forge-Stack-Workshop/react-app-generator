@@ -8,7 +8,7 @@ export default function TerritorySidePanel({ territoryId, onClose }) {
   const sections = [
     { key: "shuttles", label: "Shuttles" },
     { key: "dispatch", label: "Dispatch" },
-    { key: "security", label: "Sécurité" }
+    { key: "security", label: "Sécurité" },
   ];
 
   const getStateClass = (state) => {
@@ -29,7 +29,9 @@ export default function TerritorySidePanel({ territoryId, onClose }) {
 
   return (
     <div className={styles.panel}>
-      <button className={styles.close} onClick={onClose}>×</button>
+      <button className={styles.close} onClick={onClose}>
+        ×
+      </button>
 
       {!p ? (
         <div className={styles.empty}>Aucune donnée</div>
@@ -48,7 +50,9 @@ export default function TerritorySidePanel({ territoryId, onClose }) {
                   <ul className={styles.providersList}>
                     {list.map((prov, i) => (
                       <li key={i} className={styles.providerRow}>
-                        <span className={`${styles.statusIcon} ${getStateClass(prov.state)}`} />
+                        <span
+                          className={`${styles.statusIcon} ${getStateClass(prov.state)}`}
+                        />
                         <span className={styles.providerName}>{prov.name}</span>
                       </li>
                     ))}

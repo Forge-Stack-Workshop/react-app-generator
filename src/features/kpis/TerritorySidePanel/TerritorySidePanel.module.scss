@@ -8,7 +8,7 @@
   border: 1px solid var(--border);
   border-radius: 8px;
 
-  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 
   padding: 16px 20px;
   z-index: 9999;
@@ -71,15 +71,33 @@
 }
 
 @keyframes pulseGreen {
-  0%   { transform: scale(1);   box-shadow: 0 0 0 0 rgba(63,191,127,0.35); }
-  70%  { transform: scale(1.12); box-shadow: 0 0 0 6px rgba(63,191,127,0); }
-  100% { transform: scale(1);   box-shadow: 0 0 0 0 rgba(63,191,127,0); }
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(63, 191, 127, 0.35);
+  }
+  70% {
+    transform: scale(1.12);
+    box-shadow: 0 0 0 6px rgba(63, 191, 127, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(63, 191, 127, 0);
+  }
 }
 
 @keyframes pulseRed {
-  0%   { transform: scale(1);   box-shadow: 0 0 0 0 rgba(224,82,82,0.35); }
-  70%  { transform: scale(1.12); box-shadow: 0 0 0 6px rgba(224,82,82,0); }
-  100% { transform: scale(1);   box-shadow: 0 0 0 0 rgba(224,82,82,0); }
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(224, 82, 82, 0.35);
+  }
+  70% {
+    transform: scale(1.12);
+    box-shadow: 0 0 0 6px rgba(224, 82, 82, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(224, 82, 82, 0);
+  }
 }
 
 .on {

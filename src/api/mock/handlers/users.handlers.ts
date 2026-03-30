@@ -29,7 +29,7 @@ export const usersKpiHandlers = [
       connected:
         territory === "ALL"
           ? usersKpiData.connected // KPI global
-          : usersKpiData.byTerritory[territory]?.connected ?? 0, // KPI territoire
+          : (usersKpiData.byTerritory[territory]?.connected ?? 0), // KPI territoire
     });
 
     return HttpResponse.json({

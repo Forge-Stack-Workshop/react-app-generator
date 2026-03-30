@@ -15,8 +15,8 @@ import styles from "./MiniDonut.module.scss";
 
 type MiniDonutProps = {
   value: number;
-  className?: string;       // pour wrapper <svg>
-  valueClassName?: string;  // pour la valeur (couleur)
+  className?: string; // pour wrapper <svg>
+  valueClassName?: string; // pour la valeur (couleur)
 };
 
 export default function MiniDonut({

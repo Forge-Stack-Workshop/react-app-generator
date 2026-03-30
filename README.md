@@ -25,17 +25,17 @@ npm run dev
 
 ## Tech stack
 
-| Layer | Tool |
-|---|---|
-| Bundler | Vite 7 |
-| Language | TypeScript 5 (strict) |
-| UI | React 19 |
-| Routing | React Router v7 |
-| Server state | TanStack React Query v5 |
-| HTTP client | native `fetch` (typed wrapper) |
-| Styling | SCSS Modules + CSS variables |
-| Icons | Lucide React |
-| Linting | ESLint 9 + typescript-eslint |
+| Layer        | Tool                           |
+| ------------ | ------------------------------ |
+| Bundler      | Vite 7                         |
+| Language     | TypeScript 5 (strict)          |
+| UI           | React 19                       |
+| Routing      | React Router v7                |
+| Server state | TanStack React Query v5        |
+| HTTP client  | native `fetch` (typed wrapper) |
+| Styling      | SCSS Modules + CSS variables   |
+| Icons        | Lucide React                   |
+| Linting      | ESLint 9 + typescript-eslint   |
 
 ---
 
@@ -43,11 +43,11 @@ npm run dev
 
 Selected interactively during scaffolding. Each feature adds its own dependencies and generated files.
 
-| Feature | Default | Adds |
-|---|---|---|
-| **i18n** | ✓ | `i18next`, `react-i18next`, `LanguageSwitcher`, locale files |
-| **Theming** | ✓ | CSS variables for dark mode, `useTheme` hook, Header toggle |
-| **Mock API** | ✓ | MSW v2 — intercepts `/api/*` requests in the browser |
+| Feature      | Default | Adds                                                         |
+| ------------ | ------- | ------------------------------------------------------------ |
+| **i18n**     | ✓       | `i18next`, `react-i18next`, `LanguageSwitcher`, locale files |
+| **Theming**  | ✓       | CSS variables for dark mode, `useTheme` hook, Header toggle  |
+| **Mock API** | ✓       | MSW v2 — intercepts `/api/*` requests in the browser         |
 
 ---
 
@@ -112,8 +112,8 @@ npm run preview  # Preview the production build
 ## Scaffolder manifest
 
 [`template.yaml`](./template.yaml) is the single source of truth for:
+
 - base dependencies
 - available features and their optional dependencies
 - pre-declared domain modules
 - code conventions
-

@@ -32,24 +32,16 @@ export function computeShuttleMetrics(metrics: {
   offline: number;
 }) {
   const total =
-    metrics.online +
-    metrics.unstable +
-    metrics.error +
-    metrics.offline;
+    metrics.online + metrics.unstable + metrics.error + metrics.offline;
 
-  const availability =
-    total === 0 ? 0 : metrics.online / total;
+  const availability = total === 0 ? 0 : metrics.online / total;
 
   const issues =
     total === 0
       ? 0
       : (metrics.unstable + metrics.error + metrics.offline) / total;
 
-  const maxValue = Math.max(
-    metrics.unstable,
-    metrics.error,
-    metrics.offline
-  );
+  const maxValue = Math.max(metrics.unstable, metrics.error, metrics.offline);
 
   return {
     total,

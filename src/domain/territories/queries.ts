@@ -8,7 +8,7 @@ export function useTerritoriesQuery() {
       const res = await fetch("/api/territories");
       if (!res.ok) throw new Error("Failed to fetch territories");
       return res.json();
-    }
+    },
   });
 }
 
@@ -19,6 +19,6 @@ export function useTerritoriesProvidersQuery() {
       const res = await fetch("/api/territories/providers");
       if (!res.ok) throw new Error("Failed to fetch territories providers");
       return res.json();
-    }
+    },
   });
 }
