@@ -14,7 +14,7 @@ export default function Monitoring() {
   const { t } = useTranslation("common");
 
   const [selectedTerritory, setSelectedTerritory] = useState(ALL_TERRITORY);
-  const [_panelTerritory, setPanelTerritory] = useState<string | null>(null);
+  const [, setPanelTerritory] = useState<string | null>(null);
 
   const handleSelect = (territory) => {
     setSelectedTerritory(territory);
