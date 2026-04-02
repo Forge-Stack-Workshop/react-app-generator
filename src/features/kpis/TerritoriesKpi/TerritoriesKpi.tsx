@@ -30,9 +30,9 @@ export default function TerritoriesKpi({
 
   const [open, setOpen] = useState<string | null>(null);
   const [localPanel, setLocalPanel] = useState<string | null>(null);
-  const [activeTerritoryId, setActiveTerritoryId] = useState<string | null>(
-    selectedTerritory?.id ?? null,
-  );
+  const [userSelectedId, setUserSelectedId] = useState<string | null>(null);
+  // Derive activeTerritoryId from user selection or incoming prop (avoids setState in useEffect)
+  const activeTerritoryId = userSelectedId ?? selectedTerritory?.id ?? null;
 
   const wrapperRef = useRef(null);
 
@@ -45,12 +45,6 @@ export default function TerritoriesKpi({
     document.addEventListener("click", close);
     return () => document.removeEventListener("click", close);
   }, []);
-
-  useEffect(() => {
-    if (selectedTerritory?.id) {
-      setActiveTerritoryId(selectedTerritory.id);
-    }
-  }, [selectedTerritory?.id]);
 
   if (loadingTerritories || loadingProviders || !territories || !providers) {
     return (
@@ -138,7 +132,7 @@ export default function TerritoriesKpi({
                           onClick={() => {
                             const key = territoryId.toLowerCase(); // 🔥 FIX
                             setLocalPanel(key);
-                            setActiveTerritoryId(key);
+                            setUserSelectedId(key);
                             onTerritoryClick?.(key);
                           }}
                         >
