@@ -1,22 +1,2 @@
 next-version: 0.1.0
-branches:
-  fix:
-    increment: Patch
-    label: fix
-    regex: ^fix[/-]
-    source-branches:
-      - main
-  release:
-    increment: Patch
-    label: rc
-    regex: ^release[/-]
-    source-branches:
-      - main
-  chore:
-    increment: Patch
-    label: chore
-    regex: ^chore[/-]
-    source-branches:
-      - main
-      - develop
 workflow: GitHubFlow/v1

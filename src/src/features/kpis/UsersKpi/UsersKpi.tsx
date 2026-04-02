@@ -32,8 +32,6 @@ export default function UsersKpi({ selectedTerritory }) {
 
   // Logique métier externalisée
   const metrics = computeUsersMetrics(data, selectedTerritory);
-  console.log("HISTORY RAW", history);
-  console.log("selectedTerritory.id", selectedTerritory.id);
 
   return (
     <KpiCard
