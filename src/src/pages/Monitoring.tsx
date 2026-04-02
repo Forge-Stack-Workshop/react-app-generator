@@ -10,13 +10,11 @@ import MissionsKpi from "../features/kpis/MissionsKpi/MissionsKpi";
 import UsersKpi from "../features/kpis/UsersKpi/UsersKpi";
 import { ALL_TERRITORY } from "../domain/territories/territory.types";
 
-import TerritorySidePanel from "../features/kpis/TerritorySidePanel/TerritorySidePanel";
-
 export default function Monitoring() {
   const { t } = useTranslation("common");
 
   const [selectedTerritory, setSelectedTerritory] = useState(ALL_TERRITORY);
-  const [panelTerritory, setPanelTerritory] = useState<string | null>(null);
+  const [_panelTerritory, setPanelTerritory] = useState<string | null>(null);
 
   const handleSelect = (territory) => {
     setSelectedTerritory(territory);

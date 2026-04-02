@@ -1,6 +1,5 @@
 import styles from "./Header.module.scss";
 import { useTheme } from "../../hooks/useTheme";
-import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../languages/LanguageSwitcher";
 
 import logoLight from "../../assets/img/logo-light.svg";
@@ -8,7 +7,6 @@ import logoDark from "../../assets/img/logo-dark.svg";
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
-  const { t } = useTranslation("common");
 
   const logo = theme === "light" ? logoLight : logoDark;
 

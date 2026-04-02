@@ -12,7 +12,19 @@ function getTerritorySpread(coordsList: [number, number][]) {
   return Math.max(latSpread, lngSpread);
 }
 
-export function useLeafletTerritory(map: any, selectedTerritory: any) {
+// Partial Leaflet Map interface — only the methods used in this hook
+interface LeafletMapRef {
+  setMinZoom: (zoom: number) => void;
+  fitBounds: (bounds: [number, number][], options?: { padding: number[]; maxZoom: number }) => void;
+  setView: (coords: [number, number], zoom: number) => void;
+}
+
+interface TerritoryRef {
+  id?: string;
+  coords?: [number, number];
+}
+
+export function useLeafletTerritory(map: LeafletMapRef | null, selectedTerritory: TerritoryRef | null) {
   const { data: territories } = useTerritoriesQuery();
 
   const refocus = useCallback(() => {

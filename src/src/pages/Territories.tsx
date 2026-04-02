@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
 import styles from "./Territories.module.scss";
-import { useTranslation } from "react-i18next";
 
 export default function Territories() {
   return (
