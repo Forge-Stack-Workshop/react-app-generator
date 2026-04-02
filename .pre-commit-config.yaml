@@ -32,12 +32,6 @@ repos:
       - id: console-log-detection
       - id: console-table-detection
 
-  # ── Changelog generation ────────────────────────────────────────────────────
-  - repo: https://github.com/chrysa/pre-commit-hooks-changelog
-    rev: 40d13585c4c845c36108a565f00c23f2b946e9d9
-    hooks:
-      - id: generate-changelog
-
   # ── Prettier (JS/TS/JSON/YAML formatting) ───────────────────────────────────
   - repo: https://github.com/rbubley/mirrors-prettier
     rev: v3.8.1
