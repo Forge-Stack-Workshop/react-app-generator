@@ -16,10 +16,14 @@ import {
 
 import TerritorySidePanel from "../TerritorySidePanel/TerritorySidePanel";
 import styles from "./TerritoriesKpi.module.scss";
+import type { Territory } from "../../../domain/territories/territory.types";
 
 export default function TerritoriesKpi({
   selectedTerritory,
   onTerritoryClick,
+}: {
+  selectedTerritory: Territory;
+  onTerritoryClick: (id: string) => void;
 }) {
   const { t } = useTranslation("common");
 
@@ -34,11 +38,11 @@ export default function TerritoriesKpi({
   // Derive activeTerritoryId from user selection or incoming prop (avoids setState in useEffect)
   const activeTerritoryId = userSelectedId ?? selectedTerritory?.id ?? null;
 
-  const wrapperRef = useRef(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const close = (e) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+    const close = (e: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
         setLocalPanel(null);
       }
     };

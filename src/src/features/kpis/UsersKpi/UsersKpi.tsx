@@ -19,8 +19,13 @@ import { computeUsersMetrics } from "../../../domain/users/useUsersMetrics";
 
 import styles from "./UsersKpi.module.scss";
 import { useTranslation } from "react-i18next";
+import type { Territory } from "../../../domain/territories/territory.types";
 
-export default function UsersKpi({ selectedTerritory }) {
+export default function UsersKpi({
+  selectedTerritory,
+}: {
+  selectedTerritory: Territory;
+}) {
   const { t } = useTranslation("common");
 
   const { data, isLoading } = useUsersKpiQuery();
@@ -48,7 +53,15 @@ export default function UsersKpi({ selectedTerritory }) {
       }
       footer={
         <div className={styles.graphWrapper}>
-          <UsersKpiGraph data={history?.points ?? []} />
+          <UsersKpiGraph
+            data={(history?.points ?? []).map((p) => ({
+              hour:
+                typeof p.hour === "string"
+                  ? parseInt(p.hour.split(":")[0], 10)
+                  : Number(p.hour),
+              connected: p.connected,
+            }))}
+          />
         </div>
       }
     />

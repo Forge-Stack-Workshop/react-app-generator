@@ -64,8 +64,13 @@ export function computeTerritoryMetrics(
   };
 }
 
-export function normalizeMetrics(metrics) {
-  const count = (v) =>
+export function normalizeMetrics(metrics: {
+  online: string[] | number;
+  unstable: string[] | number;
+  error: string[] | number;
+  offline: string[] | number;
+}) {
+  const count = (v: string[] | number) =>
     Array.isArray(v) ? v.length : typeof v === "number" ? v : 0;
 
   const safe = {

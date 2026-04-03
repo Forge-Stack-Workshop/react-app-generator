@@ -18,7 +18,7 @@
 
 import KpiCardSkeleton from "../skeletons/KpiCardSkeleton";
 import styles from "./KpiCard.module.scss";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 type KpiCardProps = {
   title: string;

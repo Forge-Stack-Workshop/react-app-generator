@@ -18,7 +18,9 @@ export const usersKpiHandlers = [
     const key = territory === "ALL" ? "ALL" : territory.toLowerCase();
 
     // On clone la série pour éviter de muter le mock
-    const series = [...(usersHistoryData[key] ?? [])];
+    const series = [
+      ...((usersHistoryData as Record<string, { hour: number; connected: number }[]>)[key] ?? []),
+    ];
 
     // On ajoute le point courant pour cohérence KPI/graph
     const now = new Date();
@@ -29,7 +31,7 @@ export const usersKpiHandlers = [
       connected:
         territory === "ALL"
           ? usersKpiData.connected // KPI global
-          : (usersKpiData.byTerritory[territory]?.connected ?? 0), // KPI territoire
+          : ((usersKpiData.byTerritory as Record<string, { total: number; connected: number }>)[territory]?.connected ?? 0), // KPI territoire
     });
 
     return HttpResponse.json({

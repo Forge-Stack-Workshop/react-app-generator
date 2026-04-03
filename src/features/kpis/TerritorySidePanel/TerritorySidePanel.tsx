@@ -1,17 +1,24 @@
 import styles from "./TerritorySidePanel.module.scss";
 import { useTerritoriesProvidersQuery } from "../../../domain/territories/queries";
+import type { ProviderState, Provider } from "../../../domain/territories/territory.types";
 
-export default function TerritorySidePanel({ territoryId, onClose }) {
+export default function TerritorySidePanel({
+  territoryId,
+  onClose,
+}: {
+  territoryId: string;
+  onClose: () => void;
+}) {
   const { data: providers } = useTerritoriesProvidersQuery();
   const p = providers?.[territoryId];
 
-  const sections = [
+  const sections: Array<{ key: "shuttles" | "dispatch" | "security"; label: string }> = [
     { key: "shuttles", label: "Shuttles" },
     { key: "dispatch", label: "Dispatch" },
     { key: "security", label: "Sécurité" },
   ];
 
-  const getStateClass = (state) => {
+  const getStateClass = (state: ProviderState | string) => {
     switch (state) {
       case "on":
         return styles.on;
@@ -48,7 +55,7 @@ export default function TerritorySidePanel({ territoryId, onClose }) {
                   <p className={styles.emptySmall}>Aucun provider</p>
                 ) : (
                   <ul className={styles.providersList}>
-                    {list.map((prov, i) => (
+                    {list.map((prov: Provider, i: number) => (
                       <li key={i} className={styles.providerRow}>
                         <span
                           className={`${styles.statusIcon} ${getStateClass(prov.state)}`}
