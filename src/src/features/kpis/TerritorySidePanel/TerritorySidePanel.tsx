@@ -1,6 +1,9 @@
 import styles from "./TerritorySidePanel.module.scss";
 import { useTerritoriesProvidersQuery } from "../../../domain/territories/queries";
-import type { ProviderState, Provider } from "../../../domain/territories/territory.types";
+import type {
+  ProviderState,
+  Provider,
+} from "../../../domain/territories/territory.types";
 
 export default function TerritorySidePanel({
   territoryId,
@@ -12,7 +15,10 @@ export default function TerritorySidePanel({
   const { data: providers } = useTerritoriesProvidersQuery();
   const p = providers?.[territoryId];
 
-  const sections: Array<{ key: "shuttles" | "dispatch" | "security"; label: string }> = [
+  const sections: Array<{
+    key: "shuttles" | "dispatch" | "security";
+    label: string;
+  }> = [
     { key: "shuttles", label: "Shuttles" },
     { key: "dispatch", label: "Dispatch" },
     { key: "security", label: "Sécurité" },
