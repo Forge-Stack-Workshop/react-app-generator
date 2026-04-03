@@ -3,7 +3,12 @@ import { FaTasks } from "react-icons/fa";
 import styles from "./MissionsKpi.module.scss";
 import { useTranslation } from "react-i18next";
 
-export default function MissionsKpi(_props: { selectedTerritory?: unknown }) {
+export default function MissionsKpi({
+  selectedTerritory,
+}: {
+  selectedTerritory?: unknown;
+}) {
+  void selectedTerritory;
   const { t } = useTranslation("common");
 
   return (

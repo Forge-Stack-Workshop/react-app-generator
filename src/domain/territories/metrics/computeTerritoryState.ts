@@ -1,6 +1,8 @@
 import type { TerritoryProviders } from "../territory.types";
 
-export function computeTerritoryState(territory: TerritoryProviders | null | undefined) {
+export function computeTerritoryState(
+  territory: TerritoryProviders | null | undefined,
+) {
   if (!territory) return "unknown";
 
   const all = [

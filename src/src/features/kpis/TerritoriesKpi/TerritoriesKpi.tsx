@@ -42,7 +42,10 @@ export default function TerritoriesKpi({
 
   useEffect(() => {
     const close = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
         setLocalPanel(null);
       }
     };
