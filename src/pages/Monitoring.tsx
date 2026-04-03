@@ -9,14 +9,16 @@ import ShuttlesKpi from "../features/kpis/ShuttlesKpi/ShuttlesKpi";
 import MissionsKpi from "../features/kpis/MissionsKpi/MissionsKpi";
 import UsersKpi from "../features/kpis/UsersKpi/UsersKpi";
 import { ALL_TERRITORY } from "../domain/territories/territory.types";
+import type { Territory } from "../domain/territories/territory.types";
 
 export default function Monitoring() {
   const { t } = useTranslation("common");
 
-  const [selectedTerritory, setSelectedTerritory] = useState(ALL_TERRITORY);
+  const [selectedTerritory, setSelectedTerritory] =
+    useState<Territory>(ALL_TERRITORY);
   const [, setPanelTerritory] = useState<string | null>(null);
 
-  const handleSelect = (territory) => {
+  const handleSelect = (territory: Territory) => {
     setSelectedTerritory(territory);
   };
 

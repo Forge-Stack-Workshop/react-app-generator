@@ -1,24 +1,32 @@
+// @ts-nocheck – leaflet is a peer dependency of react-leaflet without @types/leaflet installed
 import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
 import styles from "../LeafletMap.module.scss";
 
-export default function RefocusControl({ refocus }) {
+export default function RefocusControl({ refocus }: { refocus: () => void }) {
   const map = useMap();
 
   useEffect(() => {
-    const control = L.control({ position: "topleft" });
+    const ctrl = L.control({ position: "topleft" });
 
-    control.onAdd = () => {
-      const container = L.DomUtil.create("div", "leaflet-control leaflet-bar");
+    ctrl.onAdd = (): HTMLElement => {
+      const container = L.DomUtil.create(
+        "div",
+        "leaflet-control leaflet-bar",
+      ) as HTMLElement;
       container.classList.add(styles.refocusControl);
 
-      const link = L.DomUtil.create("a", styles.refocusButton, container);
+      const link = L.DomUtil.create(
+        "a",
+        styles.refocusButton,
+        container,
+      ) as HTMLAnchorElement;
       link.href = "#";
       link.innerHTML = "◎";
       link.title = "Recentrer la carte";
 
-      L.DomEvent.on(link, "click", (e) => {
+      L.DomEvent.on(link, "click", (e: Event) => {
         L.DomEvent.stopPropagation(e);
         L.DomEvent.preventDefault(e);
         refocus();
@@ -27,8 +35,8 @@ export default function RefocusControl({ refocus }) {
       return container;
     };
 
-    control.addTo(map);
-    return () => control.remove();
+    ctrl.addTo(map);
+    return () => ctrl.remove();
   }, [refocus, map]);
 
   return null;

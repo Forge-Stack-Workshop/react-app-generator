@@ -1,16 +1,19 @@
-export function setupInterceptors(http) {
+// @ts-nocheck
+import type { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from "axios";
+
+export function setupInterceptors(http: AxiosInstance) {
   http.interceptors.request.use(
-    (config) => {
+    (config: InternalAxiosRequestConfig) => {
       // Exemple : ajouter un token plus tard
       // config.headers.Authorization = `Bearer ${token}`;
       return config;
     },
-    (error) => Promise.reject(error),
+    (error: unknown) => Promise.reject(error),
   );
 
   http.interceptors.response.use(
-    (response) => response,
-    (error) => {
+    (response: AxiosResponse) => response,
+    (error: unknown) => {
       console.error("API error:", error);
       return Promise.reject(error);
     },

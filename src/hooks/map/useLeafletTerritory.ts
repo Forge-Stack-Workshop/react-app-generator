@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from "react";
 import { useTerritoriesQuery } from "../../domain/territories/queries";
+import type { Map as LeafletMap } from "leaflet";
 
 // Calcule la dispersion géographique des territoires
 function getTerritorySpread(coordsList: [number, number][]) {
@@ -12,23 +13,14 @@ function getTerritorySpread(coordsList: [number, number][]) {
   return Math.max(latSpread, lngSpread);
 }
 
-// Partial Leaflet Map interface — only the methods used in this hook
-interface LeafletMapRef {
-  setMinZoom: (zoom: number) => void;
-  fitBounds: (
-    bounds: [number, number][],
-    options?: { padding: number[]; maxZoom: number },
-  ) => void;
-  setView: (coords: [number, number], zoom: number) => void;
-}
-
 interface TerritoryRef {
   id?: string;
-  coords?: [number, number];
+  lat?: number;
+  lng?: number;
 }
 
 export function useLeafletTerritory(
-  map: LeafletMapRef | null,
+  map: LeafletMap | null,
   selectedTerritory: TerritoryRef | null,
 ) {
   const { data: territories } = useTerritoriesQuery();
@@ -39,8 +31,8 @@ export function useLeafletTerritory(
     // 🔥 Cas ALL → zoom global sur toutes les pins
     if (selectedTerritory?.id === "ALL") {
       const coordsList = territories
-        .filter((t) => t.id !== "ALL" && t.coords)
-        .map((t) => t.coords as [number, number]);
+        .filter((t) => t.id !== "ALL" && t.lat != null && t.lng != null)
+        .map((t): [number, number] => [t.lat, t.lng]);
 
       if (coordsList.length === 0) return;
 
@@ -61,8 +53,8 @@ export function useLeafletTerritory(
     }
 
     // 🔥 Cas territoire individuel
-    if (selectedTerritory?.coords) {
-      map.setView(selectedTerritory.coords, 11);
+    if (selectedTerritory?.lat != null && selectedTerritory?.lng != null) {
+      map.setView([selectedTerritory.lat, selectedTerritory.lng], 11);
     }
   }, [map, territories, selectedTerritory]);
 
