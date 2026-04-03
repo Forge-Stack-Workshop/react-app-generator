@@ -15,7 +15,18 @@
  *   }
  */
 
-export function computeUsersMetrics(data, selectedTerritory) {
+import type { Territory } from "../territories/territory.types";
+
+type UsersKpiData = {
+  total: number;
+  connected: number;
+  byTerritory: Record<string, { total: number; connected: number }>;
+};
+
+export function computeUsersMetrics(
+  data: UsersKpiData | null | undefined,
+  selectedTerritory: Territory,
+) {
   if (!data) {
     return { total: 0, connected: 0 };
   }

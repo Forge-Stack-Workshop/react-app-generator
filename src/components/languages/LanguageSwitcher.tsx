@@ -15,11 +15,11 @@ export default function LanguageSwitcher() {
 
   return (
     <div className={styles.switcher} onClick={toggle}>
-     <img
-  src={languages[current].flag}
-  alt={current}
-  className={styles.icon}
-/>
+      <img
+        src={languages[current].flag}
+        alt={current}
+        className={styles.icon}
+      />
       {open && (
         <div className={styles.menu}>
           {Object.entries(languages)
@@ -38,7 +38,6 @@ export default function LanguageSwitcher() {
             ))}
         </div>
       )}
-
     </div>
   );
 }

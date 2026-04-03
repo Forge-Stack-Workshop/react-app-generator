@@ -9,7 +9,7 @@ export function useLanguage() {
 
   const languages: Record<Lang, { label: string; flag: string }> = {
     fr: { label: "Français", flag: frFlag },
-    en: { label: "English", flag: enFlag }
+    en: { label: "English", flag: enFlag },
   };
 
   const current = (i18n.language as Lang) || "fr";

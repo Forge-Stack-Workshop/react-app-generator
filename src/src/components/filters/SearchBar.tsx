@@ -3,16 +3,28 @@ import { useTerritoriesQuery } from "../../domain/territories/queries";
 import { useTranslation } from "react-i18next";
 import SearchBarSkeleton from "../skeletons/SearchBarSkeleton";
 import styles from "./SearchBar.module.scss";
+import type { Territory } from "../../domain/territories/territory.types";
 
-function SearchBarContent({ items, onSelect, placeholder }) {
+function SearchBarContent({
+  items,
+  onSelect,
+  placeholder,
+}: {
+  items: Territory[];
+  onSelect: (territory: Territory) => void;
+  placeholder: string;
+}) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
 
-  const wrapperRef = useRef(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
       }
     };
@@ -24,7 +36,7 @@ function SearchBarContent({ items, onSelect, placeholder }) {
   const filtered = useMemo(() => {
     if (!query) return items;
     return items.filter((t) =>
-      t.name.toLowerCase().includes(query.toLowerCase())
+      t.name.toLowerCase().includes(query.toLowerCase()),
     );
   }, [items, query]);
 
@@ -33,7 +45,7 @@ function SearchBarContent({ items, onSelect, placeholder }) {
     setQuery("");
   };
 
-  const handleSelect = (t) => {
+  const handleSelect = (t: Territory) => {
     onSelect(t);
     setQuery(t.name);
     setOpen(false);
@@ -71,11 +83,17 @@ function SearchBarContent({ items, onSelect, placeholder }) {
   );
 }
 
-export default function SearchBar({ onSelect, placeholder }) {
+export default function SearchBar({
+  onSelect,
+  placeholder,
+}: {
+  onSelect: (territory: Territory) => void;
+  placeholder: string;
+}) {
   const { data, isLoading } = useTerritoriesQuery();
   const { t } = useTranslation("common");
 
-  if (isLoading) {
+  if (isLoading || !data) {
     return (
       <div className={styles.wrapper}>
         <SearchBarSkeleton />
