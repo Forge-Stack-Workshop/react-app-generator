@@ -24,7 +24,10 @@ const baseTotals: Record<string, number> = {
 };
 
 export const shuttlesKpiData = (() => {
-  const byTerritory: Record<string, ReturnType<typeof generateTerritoryKpi>> = {};
+  const byTerritory: Record<
+    string,
+    ReturnType<typeof generateTerritoryKpi>
+  > = {};
 
   territoriesData.forEach((t) => {
     byTerritory[t.id] = generateTerritoryKpi(baseTotals[t.id]);
