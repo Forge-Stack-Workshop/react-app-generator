@@ -3,7 +3,9 @@
  * On normalise simplement l'heure et on formate le label.
  */
 
-export function buildUsersGraphSlots(data) {
+export function buildUsersGraphSlots(
+  data: Array<{ hour: number | string; connected: number }>,
+) {
   if (!data || data.length === 0) return [];
 
   return data.map((p) => {

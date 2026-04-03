@@ -2,7 +2,7 @@ import KpiCard from "../../../components/cards/KpiCard";
 import { FaMapMarkedAlt } from "react-icons/fa";
 import {
   useTerritoriesQuery,
-  useTerritoriesProvidersQuery
+  useTerritoriesProvidersQuery,
 } from "../../../domain/territories/queries";
 import HalfDonutGauge from "../../../components/charts/HalfDonutGauge/HalfDonutGauge";
 import { useTranslation } from "react-i18next";
@@ -11,13 +11,20 @@ import { useState, useEffect, useRef } from "react";
 import {
   buildTerritoriesKpi,
   computeTerritoryMetrics,
-  normalizeMetrics
+  normalizeMetrics,
 } from "../../../domain/territories/useTerritoryStatus";
 
 import TerritorySidePanel from "../TerritorySidePanel/TerritorySidePanel";
 import styles from "./TerritoriesKpi.module.scss";
+import type { Territory } from "../../../domain/territories/territory.types";
 
-export default function TerritoriesKpi({ selectedTerritory, onTerritoryClick }) {
+export default function TerritoriesKpi({
+  selectedTerritory,
+  onTerritoryClick,
+}: {
+  selectedTerritory: Territory;
+  onTerritoryClick: (id: string) => void;
+}) {
   const { t } = useTranslation("common");
 
   const { data: territories, isLoading: loadingTerritories } =
@@ -27,27 +34,24 @@ export default function TerritoriesKpi({ selectedTerritory, onTerritoryClick }) 
 
   const [open, setOpen] = useState<string | null>(null);
   const [localPanel, setLocalPanel] = useState<string | null>(null);
-  const [activeTerritoryId, setActiveTerritoryId] = useState<string | null>(
-    selectedTerritory?.id ?? null
-  );
+  const [userSelectedId, setUserSelectedId] = useState<string | null>(null);
+  // Derive activeTerritoryId from user selection or incoming prop (avoids setState in useEffect)
+  const activeTerritoryId = userSelectedId ?? selectedTerritory?.id ?? null;
 
-  const wrapperRef = useRef(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const close = (e) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+    const close = (e: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
         setLocalPanel(null);
       }
     };
     document.addEventListener("click", close);
     return () => document.removeEventListener("click", close);
   }, []);
-
-  useEffect(() => {
-    if (selectedTerritory?.id) {
-      setActiveTerritoryId(selectedTerritory.id);
-    }
-  }, [selectedTerritory?.id]);
 
   if (loadingTerritories || loadingProviders || !territories || !providers) {
     return (
@@ -67,7 +71,7 @@ export default function TerritoriesKpi({ selectedTerritory, onTerritoryClick }) 
     { key: "online", color: styles.online, list: rawMetrics.online },
     { key: "unstable", color: styles.unstable, list: rawMetrics.unstable },
     { key: "error", color: styles.error, list: rawMetrics.error },
-    { key: "offline", color: styles.offline, list: rawMetrics.offline }
+    { key: "offline", color: styles.offline, list: rawMetrics.offline },
   ];
 
   return (
@@ -133,13 +137,11 @@ export default function TerritoriesKpi({ selectedTerritory, onTerritoryClick }) 
                               : ""
                           }`}
                           onClick={() => {
-                            const key = territoryId.toLowerCase();   // 🔥 FIX
+                            const key = territoryId.toLowerCase(); // 🔥 FIX
                             setLocalPanel(key);
-                            setActiveTerritoryId(key);
+                            setUserSelectedId(key);
                             onTerritoryClick?.(key);
                           }}
-
-
                         >
                           {territoryId}
                         </div>

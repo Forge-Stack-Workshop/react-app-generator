@@ -1,13 +1,13 @@
 # api/http/
 
-The **transport layer** of the application. Defines *how* the app communicates with an API (real or mocked), with no business logic.
+The **transport layer** of the application. Defines _how_ the app communicates with an API (real or mocked), with no business logic.
 
 ## Files
 
-| File | Role |
-|---|---|
-| `client.ts` | Typed `fetch` wrapper with timeout, JSON parsing and HTTP error handling |
-| `interceptors.ts` | Hooks for auth token injection and error logging |
+| File              | Role                                                                     |
+| ----------------- | ------------------------------------------------------------------------ |
+| `client.ts`       | Typed `fetch` wrapper with timeout, JSON parsing and HTTP error handling |
+| `interceptors.ts` | Hooks for auth token injection and error logging                         |
 
 ## Responsibilities
 

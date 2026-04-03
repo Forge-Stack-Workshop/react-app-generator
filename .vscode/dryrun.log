@@ -1,0 +1,32 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/anthony/Documents/perso/projects/Forge-Stack-Workshop/template-react'
+
+echo "==================================================================="
+echo "  react-app-generator"
+echo "==================================================================="
+echo ""
+echo "Available commands:"
+echo ""
+grep -E '^[a-zA-Z_-]+(\([^)]*\))?:.*?## .*$' Makefile 2>/dev/null | sort | \
+	awk 'BEGIN {FS = ":.*?## "}; { \
+		cmd = $1; \
+		desc = $2; \
+		if (match(cmd, /\([^)]+\)/)) { \
+			args = substr(cmd, RSTART+1, RLENGTH-2); \
+			gsub(/\([^)]+\)/, "", cmd); \
+			printf "  \033[36m%-20s\033[0m \033[33m%-15s\033[0m %s\n", cmd, args, desc; \
+		} else { \
+			printf "  \033[36m%-20s\033[0m \033[33m%-15s\033[0m %s\n", cmd, "", desc; \
+		} \
+	}'
+echo ""
+echo "📝 EXAMPLES:"
+echo "  make dev              # Start development server"
+echo "  make build            # Build for production"
+echo "  make lint             # Lint the code"
+echo "  make format           # Format code"
+echo ""
+echo "Environment Variables:"
+echo "  PROJECT_NAME=react-app-generator"
+echo "==================================================================="
+make: Leaving directory '/home/anthony/Documents/perso/projects/Forge-Stack-Workshop/template-react'

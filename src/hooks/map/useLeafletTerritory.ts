@@ -1,10 +1,11 @@
 import { useEffect, useCallback } from "react";
 import { useTerritoriesQuery } from "../../domain/territories/queries";
+import type { Map as LeafletMap } from "leaflet";
 
 // Calcule la dispersion géographique des territoires
 function getTerritorySpread(coordsList: [number, number][]) {
-  const lats = coordsList.map(c => c[0]);
-  const lngs = coordsList.map(c => c[1]);
+  const lats = coordsList.map((c) => c[0]);
+  const lngs = coordsList.map((c) => c[1]);
 
   const latSpread = Math.max(...lats) - Math.min(...lats);
   const lngSpread = Math.max(...lngs) - Math.min(...lngs);
@@ -12,7 +13,16 @@ function getTerritorySpread(coordsList: [number, number][]) {
   return Math.max(latSpread, lngSpread);
 }
 
-export function useLeafletTerritory(map: any, selectedTerritory: any) {
+interface TerritoryRef {
+  id?: string;
+  lat?: number;
+  lng?: number;
+}
+
+export function useLeafletTerritory(
+  map: LeafletMap | null,
+  selectedTerritory: TerritoryRef | null,
+) {
   const { data: territories } = useTerritoriesQuery();
 
   const refocus = useCallback(() => {
@@ -21,8 +31,8 @@ export function useLeafletTerritory(map: any, selectedTerritory: any) {
     // 🔥 Cas ALL → zoom global sur toutes les pins
     if (selectedTerritory?.id === "ALL") {
       const coordsList = territories
-        .filter(t => t.id !== "ALL" && t.coords)
-        .map(t => t.coords as [number, number]);
+        .filter((t) => t.id !== "ALL" && t.lat != null && t.lng != null)
+        .map((t): [number, number] => [t.lat, t.lng]);
 
       if (coordsList.length === 0) return;
 
@@ -36,15 +46,15 @@ export function useLeafletTerritory(map: any, selectedTerritory: any) {
 
       map.fitBounds(coordsList, {
         padding: [80, 80],
-        maxZoom: 8
+        maxZoom: 8,
       });
 
       return;
     }
 
     // 🔥 Cas territoire individuel
-    if (selectedTerritory?.coords) {
-      map.setView(selectedTerritory.coords, 11);
+    if (selectedTerritory?.lat != null && selectedTerritory?.lng != null) {
+      map.setView([selectedTerritory.lat, selectedTerritory.lng], 11);
     }
   }, [map, territories, selectedTerritory]);
 

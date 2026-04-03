@@ -12,6 +12,6 @@ export const usersKpiData = {
     bruxelles: { total: 10, connected: 4 },
     amsterdam: { total: 9, connected: 3 },
     berlin: { total: 12, connected: 5 },
-    madrid: { total: 8, connected: 3 }
-  }
+    madrid: { total: 8, connected: 3 },
+  },
 };

@@ -3,6 +3,7 @@
 Ce fichier expose le **client HTTP unique** utilisé par toute l’application.
 
 Il encapsule :
+
 - la baseURL
 - les headers par défaut
 - le timeout
@@ -15,6 +16,7 @@ Il encapsule :
 ## Objectif
 
 Fournir un client HTTP :
+
 - centralisé
 - configurable
 - stable

@@ -1,10 +1,14 @@
-export function computeTerritoryState(territory) {
+import type { TerritoryProviders } from "../territory.types";
+
+export function computeTerritoryState(
+  territory: TerritoryProviders | null | undefined,
+) {
   if (!territory) return "unknown";
 
   const all = [
     ...(territory.shuttles ?? []),
     ...(territory.dispatch ?? []),
-    ...(territory.security ?? [])
+    ...(territory.security ?? []),
   ];
 
   if (all.length === 0) return "unknown";

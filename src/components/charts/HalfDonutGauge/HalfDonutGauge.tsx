@@ -7,7 +7,12 @@ type Props = {
   offline: number | undefined;
 };
 
-export default function HalfDonutGauge({ online, unstable, error, offline }: Props) {
+export default function HalfDonutGauge({
+  online,
+  unstable,
+  error,
+  offline,
+}: Props) {
   // Sécurisation anti-NaN
   const safeOnline = Number(online) || 0;
   const safeUnstable = Number(unstable) || 0;
@@ -23,7 +28,7 @@ export default function HalfDonutGauge({ online, unstable, error, offline }: Pro
     { title: "Online", value: safeOnline, color: "var(--status-online)" },
     { title: "Unstable", value: safeUnstable, color: "var(--status-unstable)" },
     { title: "Error", value: safeError, color: "var(--status-error)" },
-    { title: "Offline", value: safeOffline, color: "var(--status-offline)" }
+    { title: "Offline", value: safeOffline, color: "var(--status-offline)" },
   ];
 
   return (
