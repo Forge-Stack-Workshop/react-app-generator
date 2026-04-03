@@ -11,7 +11,7 @@ export const ALL_TERRITORY: Territory = {
   id: "ALL",
   name: "Tous les territoires",
   lat: 46.5,
-  lng: 2.5
+  lng: 2.5,
 };
 
 // Statuts possibles d'un territoire

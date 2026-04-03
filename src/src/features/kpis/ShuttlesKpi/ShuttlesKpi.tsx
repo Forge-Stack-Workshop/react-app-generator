@@ -61,7 +61,6 @@ export default function ShuttlesKpi({ selectedTerritory }: ShuttlesKpiProps) {
       icon={<FaShuttleVan />}
       value={
         <div className={styles.wrapper}>
-
           {/* Valeur principale */}
           <div className={styles.mainValue}>
             <div className={styles.mainNumber}>{metrics.online}</div>
@@ -95,18 +94,26 @@ export default function ShuttlesKpi({ selectedTerritory }: ShuttlesKpiProps) {
           {/* Donuts */}
           <div className={styles.metricsRow}>
             <div className={styles.metricBlock}>
-              <MiniDonut value={availability} valueClassName={styles.availability} />
-              <div className={styles.metricLabel}>{t("shuttles_availability")}</div>
-              <div className={styles.metricValue}>{Math.round(availability * 100)}%</div>
+              <MiniDonut
+                value={availability}
+                valueClassName={styles.availability}
+              />
+              <div className={styles.metricLabel}>
+                {t("shuttles_availability")}
+              </div>
+              <div className={styles.metricValue}>
+                {Math.round(availability * 100)}%
+              </div>
             </div>
 
             <div className={styles.metricBlock}>
               <MiniDonut value={issues} valueClassName={styles.issues} />
               <div className={styles.metricLabel}>{t("shuttles_issues")}</div>
-              <div className={styles.metricValue}>{Math.round(issues * 100)}%</div>
+              <div className={styles.metricValue}>
+                {Math.round(issues * 100)}%
+              </div>
             </div>
           </div>
-
         </div>
       }
     />

@@ -2,19 +2,19 @@ import { computeTerritoryState } from "./metrics/computeTerritoryState";
 import type {
   Territory,
   TerritoryKpi,
-  TerritoryProviders
+  TerritoryProviders,
 } from "./territory.types";
 
 export function buildTerritoriesKpi(
   territories: Territory[],
-  providersByTerritory: Record<string, TerritoryProviders>
+  providersByTerritory: Record<string, TerritoryProviders>,
 ): TerritoryKpi {
   const kpi: TerritoryKpi = {
     total: territories.length,
     online: [],
     unstable: [],
     error: [],
-    offline: []
+    offline: [],
   };
 
   for (const t of territories) {
@@ -40,7 +40,7 @@ export function getTerritoryStatus(data: TerritoryKpi, name: string) {
 
 export function computeTerritoryMetrics(
   data: TerritoryKpi,
-  selectedTerritory: Territory
+  selectedTerritory: Territory,
 ) {
   if (selectedTerritory.id === "ALL") {
     return {
@@ -48,7 +48,7 @@ export function computeTerritoryMetrics(
       unstable: data.unstable,
       error: data.error,
       offline: data.offline,
-      total: data.total
+      total: data.total,
     };
   }
 
@@ -60,23 +60,27 @@ export function computeTerritoryMetrics(
     unstable: status === "unstable" ? [name] : [],
     error: status === "error" ? [name] : [],
     offline: status === "offline" ? [name] : [],
-    total: 1
+    total: 1,
   };
 }
 
-export function normalizeMetrics(metrics) {
-  const count = (v) =>
+export function normalizeMetrics(metrics: {
+  online: string[] | number;
+  unstable: string[] | number;
+  error: string[] | number;
+  offline: string[] | number;
+}) {
+  const count = (v: string[] | number) =>
     Array.isArray(v) ? v.length : typeof v === "number" ? v : 0;
 
   const safe = {
     online: count(metrics.online),
     unstable: count(metrics.unstable),
     error: count(metrics.error),
-    offline: count(metrics.offline)
+    offline: count(metrics.offline),
   };
 
-  const total =
-    safe.online + safe.unstable + safe.error + safe.offline;
+  const total = safe.online + safe.unstable + safe.error + safe.offline;
 
   return { safe, total };
 }

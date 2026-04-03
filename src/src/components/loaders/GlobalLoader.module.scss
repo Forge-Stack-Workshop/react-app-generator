@@ -13,13 +13,13 @@
 
   @include m.flex-center;
 
-  background: var(--surface);     // cohérent avec ton thème
-  z-index: var(--z-overlay);      // défini dans variables globales
+  background: var(--surface); // cohérent avec ton thème
+  z-index: var(--z-overlay); // défini dans variables globales
 }
 
 /* ===========================
    SPINNER
    =========================== */
 .spinner {
-  @include m.spinner(48px, var(--primary));   // ← ton nouveau mixin global
+  @include m.spinner(48px, var(--primary)); // ← ton nouveau mixin global
 }

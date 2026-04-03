@@ -40,7 +40,7 @@
 
 /* Shadow */
 @mixin shadow-soft {
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 /* Transition */
@@ -48,7 +48,7 @@
   transition: all 0.2s ease;
 }
 
-/*Spinner */ 
+/*Spinner */
 @mixin spinner($size, $color) {
   width: $size;
   height: $size;

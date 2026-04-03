@@ -3,7 +3,12 @@ import { FaTasks } from "react-icons/fa";
 import styles from "./MissionsKpi.module.scss";
 import { useTranslation } from "react-i18next";
 
-export default function MissionsKpi() {
+export default function MissionsKpi({
+  selectedTerritory,
+}: {
+  selectedTerritory?: unknown;
+}) {
+  void selectedTerritory;
   const { t } = useTranslation("common");
 
   return (
@@ -12,9 +17,7 @@ export default function MissionsKpi() {
       icon={<FaTasks />}
       value={
         <div className={styles.wrapper}>
-          <div className={styles.placeholder}>
-            {t("missions_placeholder")}
-          </div>
+          <div className={styles.placeholder}>{t("missions_placeholder")}</div>
         </div>
       }
     />

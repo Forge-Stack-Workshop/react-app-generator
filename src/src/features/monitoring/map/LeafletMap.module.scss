@@ -36,7 +36,9 @@
   justify-content: center;
   user-select: none;
   text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
     background: var(--bg-hover) !important;

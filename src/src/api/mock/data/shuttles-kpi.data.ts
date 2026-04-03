@@ -2,7 +2,7 @@ import { territoriesData } from "./territories.data";
 
 function generateTerritoryKpi(total: number) {
   const online = Math.floor(total * (0.55 + Math.random() * 0.15)); // 55–70%
-  const unstable = Math.floor(total * (0.10 + Math.random() * 0.10)); // 10–20%
+  const unstable = Math.floor(total * (0.1 + Math.random() * 0.1)); // 10–20%
   const error = Math.floor(total * (0.05 + Math.random() * 0.05)); // 5–10%
   const offline = total - online - unstable - error;
 
@@ -20,11 +20,14 @@ const baseTotals: Record<string, number> = {
   bruxelles: 210,
   amsterdam: 240,
   berlin: 300,
-  madrid: 260
+  madrid: 260,
 };
 
 export const shuttlesKpiData = (() => {
-  const byTerritory: Record<string, any> = {};
+  const byTerritory: Record<
+    string,
+    ReturnType<typeof generateTerritoryKpi>
+  > = {};
 
   territoriesData.forEach((t) => {
     byTerritory[t.id] = generateTerritoryKpi(baseTotals[t.id]);
@@ -37,14 +40,13 @@ export const shuttlesKpiData = (() => {
       online: acc.online + t.online,
       unstable: acc.unstable + t.unstable,
       error: acc.error + t.error,
-      offline: acc.offline + t.offline
+      offline: acc.offline + t.offline,
     }),
-    { total: 0, online: 0, unstable: 0, error: 0, offline: 0 }
+    { total: 0, online: 0, unstable: 0, error: 0, offline: 0 },
   );
 
   return {
     ...allTotals,
-    byTerritory
+    byTerritory,
   };
 })();
-

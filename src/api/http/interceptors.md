@@ -1,4 +1,3 @@
-
 ---
 
 # 📄 `api/http/interceptors.md`
@@ -48,9 +47,8 @@ client.interceptors.response.use(
       // refresh token ou redirection login
     }
     return Promise.reject(error);
-  }
+  },
 );
-
 ```
 
 ## Pourquoi séparer client et interceptors ?
