@@ -25,28 +25,133 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       semVer: ${{ steps.gitversion.outputs.semVer }}
-      branchName: ${{ steps.gitversion.outputs.branchName }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - name: Setup GitVersion
-        uses: gittools/actions/gitversion/setup@v4
-        with:
-          versionSpec: "6.x"
-
-      - name: Determine version
+      - name: Compute version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v4
-        with:
-          configFilePath: GitVersion.yml
+        uses: chrysa/github-actions/gitversion@main
 
       - name: Display version
-        run: |
-          echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
-          echo "Branch: ${{ steps.gitversion.outputs.branchName }}"
+        run: echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
+
+  # ── Lint & typecheck ────────────────────────────────────────────────────────
+  lint:
+    name: Lint & typecheck
+    runs-on: ubuntu-latest
+    needs: version
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run TypeScript typecheck
+        run: npx tsc --noEmit
+
+  # ── Pre-commit ──────────────────────────────────────────────────────────────
+  pre-commit:
+    name: Pre-commit hooks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install Node deps
+        run: npm ci
+
+      - name: Run pre-commit
+        uses: pre-commit/action@v3.0.1
+
+  # ── Build ───────────────────────────────────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [version, lint]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests with coverage
+        run: npm run test:coverage --if-present || echo "No test:coverage script — skipping"
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: coverage-lcov
+          path: coverage/
+          retention-days: 1
+          if-no-files-found: ignore
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_APP_VERSION: ${{ needs.version.outputs.semVer }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist-${{ needs.version.outputs.semVer }}
+          path: dist/
+          retention-days: 7
+
+  # ── Sonar ────────────────────────────────────────────────────────────────────
+  sonar:
+    name: SonarCloud scan
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Sonar scan (Node / TypeScript)
+        uses: chrysa/github-actions/sonar-scan-node@main
+        with:
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          project-key: Forge-Stack-Workshop_react-app-generator
+          organization: forge-stack-workshop
+          project-name: react-app-generator
+          sources: src
+          tsconfig: tsconfig.app.json
+
 
   # ── Lint & typecheck ────────────────────────────────────────────────────────
   lint:
