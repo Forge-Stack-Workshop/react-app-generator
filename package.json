@@ -40,8 +40,8 @@
     "globals": "^16.5.0",
     "msw": "^2.13.2",
     "sass-embedded": "^1.99.0",
-    "typescript": "~5.9.3",
-    "typescript-eslint": "^8.48.0",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.58.2",
     "vite": "^8.0.4"
   },
   "msw": {
