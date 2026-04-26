@@ -1,0 +1,16 @@
+{
+  "_notes": {
+    "max_cyclomatic_complexity": "Heuristic complexity estimate — not AST-based, use as a rough guide",
+    "max_file_lines": "Files over this line count trigger a warning",
+    "max_function_lines": "Functions over this line count trigger a warning in verifiable-thresholds hook",
+    "max_lint_warnings": "Informational — enforce 0 lint warnings in CI",
+    "min_test_coverage_pct": "Null = not checked by hook (enforce in CI with pytest-cov or lcov)",
+    "no_todo_fixme_in_new_code": "Warn when TODO/FIXME markers are present in written files"
+  },
+  "max_cyclomatic_complexity": 10,
+  "max_file_lines": 500,
+  "max_function_lines": 50,
+  "max_lint_warnings": 0,
+  "min_test_coverage_pct": null,
+  "no_todo_fixme_in_new_code": true
+}
