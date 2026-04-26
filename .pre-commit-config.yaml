@@ -1,7 +1,11 @@
+default_language_version:
+  python: python3
+fail_fast: false
+minimum_pre_commit_version: 4.1.0
 repos:
   # ── Standard hooks ──────────────────────────────────────────────────────────
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: f1dff44d3a9ae852957f34def96390f28719c232
+    rev: b89c5eef3ba3a74ecd506d968e63a8b80f697abf
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -26,7 +30,7 @@ repos:
 
   # ── Console & debug detection (JS/TS) ───────────────────────────────────────
   - repo: https://github.com/chrysa/pre-commit-tools
-    rev: b97ae91d8a45eb6f556fe938fa8bd58294c9a5e6
+    rev: e538371cdb5dff59d3b67ef5e63dae3dce8bfc37
     hooks:
       - id: console-debug-detection
       - id: console-log-detection
@@ -34,7 +38,7 @@ repos:
 
   # ── Prettier (JS/TS/JSON/YAML formatting) ───────────────────────────────────
   - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.8.1
+    rev: v3.8.3
     hooks:
       - id: prettier
         types_or: [javascript, jsx, ts, tsx, css, scss, json, yaml, markdown]
@@ -46,7 +50,7 @@ repos:
 
   # ── ESLint ──────────────────────────────────────────────────────────────────
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v10.1.0
+    rev: v10.2.0
     hooks:
       - id: eslint
         files: \.(ts|tsx)$
