@@ -1,1 +1,61 @@
-IyBDTEFVREUubWQg4oCUIHJlYWN0LWFwcC1nZW5lcmF0b3IKCiMjIFJvbGUKClRlbXBsYXRlIFJlYWN0IGRlIHLDqWbDqXJlbmNlIHBvdXIgbCfDqWNvc3lzdMOobWUgY2hyeXNhIC8gRm9yZ2UtU3RhY2stV29ya3Nob3AuCkNlIHJlcG8gZXN0IGxhICoqc291cmNlIGRlIHbDqXJpdMOpKiogcG91ciBsYSBzdHJ1Y3R1cmUgZXQgbGUgc3RhY2sgZGUgdG91dGVzIGxlcyBhcHBzIFJlYWN0IGRlIGwnw6ljb3N5c3TDqG1lLgoKIyMgUsOoZ2xlIGZvbmRhbWVudGFsZQoKPiBUb3V0IHByb2pldCBSZWFjdCBkZSBsJ8Njb3N5c3TDqG1lIHV0aWxpc2UgY2V0dGUgc3RydWN0dXJlLiBOZSBwYXMgZMOpdmllciBzYW5zIG1ldHRyZSDDoCBqb3VyIGNlIHRlbXBsYXRlIEVUIGBzaGFyZWQtc3RhbmRhcmRzL2NvcGlsb3QtaW5zdHJ1Y3Rpb25zL2Jhc2UubWRgLgoKIyMgU3RydWN0dXJlIGBzcmMvYAoKYGBgCnNyYy8KICBhcGkvICAgICAgICAgIOKGkiBjb25uZWN0ZXVyIHNldWwuIDEgZmljaGllci9yZXNzb3VyY2UuIFR5cGVzICsgZmV0Y2ggdW5pcXVlbWVudCwgcGFzIGRlIGxvZ2lxdWUgbcOpdGllci4KICBjb21wb25lbnRzLyAgIOKGkiBVSSBnw6luw6lyaXF1ZSByw6V1dGlsaXNhYmxlLiBQYXMgZGUgbG9naXF1ZSBtw6l0aWVyLCBwYXMgZCdhcHBlbHMgQVBJIGRpcmVjdHMuCiAgZG9tYWluLyAgICAgICDihpIgdHlwZXMvaW50ZXJmYWNlcyBkb21haW5lIHBhcnRhZ8OpcyDDoCB0cmF2ZXJzIGwnYXBwLgogIGZlYXR1cmVzLyAgICAg4oaSIHRyYW5jaGVzIHZlcnRpY2FsZXMgYXV0by1jb250ZW51ZXMgKGNvbXBvc2FudHMgKyBsb2dpcXVlIHByb3ByZSDDoCBsYSBmZWF0dXJlKS4KICBob29rcy8gICAgICAgIOKGkiBob29rcyBSZWFjdCBwZXJzb25uYWxpc8Ozcy4KICBpMThuLyAgICAgICAgIOKGkiBmaWNoaWVycyBkZSB0cmFkdWN0aW9uIGV0IGNvbmZpZ3VyYXRpb24gaTE4bmV4dC4KICBwYWdlcy8gICAgICAgIOKGkiAxIGZpY2hpZXIgcGFyIHJvdXRlLiBPcmNoZXN0cmUgbGVzIGZlYXR1cmVzLiBQYXMgZCdhcHBlbHMgQVBJIGRpcmVjdHMuCiAgc3R5bGVzLyAgICAgICDihpIgQ1NTL1NDU1MgZ2xvYmF1eCwgdmFyaWFibGVzLCByZXNldC4KICB1dGlscy8gICAgICAgIOKGkiBmb25jdGlvbnMgcHVyZXMgdXRpbGl0YWlyZXMgKHBhcyBkZSBSZWFjdCwgcGFzIGQnZWZmZXRzKS4KYGBgCgojIyBTdGFjawoKfCBDb3VjaGUgfCBPdXRpbCB8CnwtLS0tLS0tLXwtLS0tLS0tfAp8IEJ1bmRsZXIgfCBWaXRlIDcgfAp8IExhbmdhZ2UgfCBUeXBlU2NyaXB0IDUgc3RyaWN0IHwKfCBVSSB8IFJlYWN0IDE5IHwKfCBSb3V0aW5nIHwgUmVhY3QgUm91dGVyIHY3IHwKfCBTZXJ2ZXIgc3RhdGUgfCBUYW5TdGFjayBSZWFjdCBRdWVyeSB2NSB8CnwgSFRUUCB8IG5hdGl2ZSBgZmV0Y2hgICh0eXBlZCB3cmFwcGVyIGluIGBhcGkvaHR0cC9gKSB8CnwgU3R5bGVzIHwgU0NTUyBNb2R1bGVzICsgQ1NTIHZhcmlhYmxlcyB8CnwgTGludGluZyB8IEVTTGludCA5ICsgdHlwZXNjcmlwdC1lc2xpbnQgKyBQcmV0dGllciB8CnwgUHJlLWNvbW1pdCB8IHByZS1jb21taXQgaG9va3MgfAoKIyMgUsOoZ2xlcyBkZSBjb2RlCgotIFV0aWxpc2VyIGB1c2VRdWVyeWAvYHVzZU11dGF0aW9uYCAoUmVhY3QgUXVlcnkpIHBvdXIgdG91cyBsZXMgYXBwZWxzIHNlcnZldXIuICoqSmFtYWlzKiogYHVzZUVmZmVjdGAgcG91ciBkdSBkYXRhIGZldGNoaW5nLgotIGBhcGkvYCA9IGNvdWNoZSBjb25uZWN0ZXVyIHB1ci4gQWdub3N0aXF1ZSBkdSBwcm92aWRlciAocGV1dCDDqnRyZSByZW1wbGFjw6kgcGFyIE1TVyBvdSB1biBhdXRyZSBiYWNrZW5kKS4KLSBgcGFnZXMvYCBvcmNoZXN0cmUsIG5lIGZldGNoIHBhcyBkaXJlY3RlbWVudC4KLSBgZmVhdHVyZXMvYCA9IGlzb2xhdGlvbiB2ZXJ0aWNhbGUuIFVuZSBmZWF0dXJlIG4naW1wb3J0ZSBwYXMgZGVwdWlzIHVuZSBhdXRyZSBmZWF0dXJlLgoKIyMgU2NhZmZvbGRlcgoKYGBgYmFzaApub2RlIHNjYWZmb2xkLm1qcyAgICMgZ8OpbsOocmUgdW4gbm91dmVhdSBwcm9qZXQgZGVwdWlzIGNlIHRlbXBsYXRlCmBgYAoKTGUgQ0xJIGRlbWFuZGUgOiBub20gZHUgcHJvamV0LCByw6lwZXJ0b2lyZSBkZSBzb3J0aWUsIHBhY2thZ2UgbWFuYWdlciwgZmVhdHVyZXMgw6AgYWN0aXZlci4KCiMjIENJIC8gU3RhbmRhcmRzCgotIENJIHdvcmtmbG93IDogYC5naXRodWIvd29ya2Zsb3dzL2NpLnltbGAKLSBTb25hckNsb3VkIGFjdGl2w6kgKHZvaXIgYmFkZ2VzIFJFQURNRSkKLSBwcmUtY29tbWl0IDogYC5wcmUtY29tbWl0LWNvbmZpZy55YW1sYAotIFZlcnNpb25pbmcgYXV0b21hdGlxdWUgOiBHaXRWZXJzaW9uIChgR2l0VmVyc2lvbi55bWxgKQoKIyMgSXNzdWVzIG91dmVydGVzCgotICMyMiA6IGZlYXQg4oCUIGluw6lncmVyIGxlcyBjaHJ5c2EgQ0kgc3RhbmRhcmRzIChnaXRodWItYWN0aW9ucyBjb21wb3NpdGUgYWN0aW9ucykKCiMjIExpZW5zCgotIFtHaXRIdWJdKGh0dHBzOi8vZ2l0aHViLmNvbS9Gb3JnZS1TdGFjay1Xb3Jrc2hvcC9yZWFjdC1hcHAtZ2VuZXJhdG9yKQotIFtOb3Rpb24g4oCUIHJlYWN0LWFwcC1nZW5lcmF0b3JdKGh0dHBzOi8vd3d3Lm5vdGlvbi5zby9yZWFjdC1hcHAtZ2VuZXJhdG9yLVRlbXBsYXRlLVJlYWN0LXN0YW5kYXJkLTMzOTU5MjkzZTM1ZTgxOTFiNGI3ZDM0OTc2MzFhZDhlKQotIFtTdGFuZGFyZCBkYW5zIHNoYXJlZC1zdGFuZGFyZHNdKGh0dHBzOi8vZ2l0aHViLmNvbS9jaHJ5c2Evc2hhcmVkLXN0YW5kYXJkcy9ibG9iL21haW4vY29waWxvdC1pbnN0cnVjdGlvbnMvYmFzZS5tZCkK
+# CLAUDE.md — react-app-generator
+
+## Role
+
+Template React de référence pour l'écosystème chrysa / Forge-Stack-Workshop.
+Ce repo est la **source de vérité** pour la structure et le stack de toutes les apps React de l'écosystème.
+
+## Structure `src/`
+
+```
+src/
+  api/          ← connecteur seul. 1 fichier/ressource. Types + fetch uniquement, pas de logique métier.
+  components/   ← UI générique réutilisable. Pas de logique métier, pas d'appels API directs.
+  domain/       ← types/interfaces domaine partagés à travers l'app.
+  features/     ← tranches verticales auto-contenues (composants + logique propre à la feature).
+  hooks/        ← hooks React personnalisés.
+  i18n/         ← fichiers de traduction et configuration i18next.
+  pages/        ← 1 fichier par route. Orchestre les features. Pas d'appels API directs.
+  styles/       ← CSS/SCSS globaux, variables, reset.
+  utils/        ← fonctions pures utilitaires (pas de React, pas d'effets).
+```
+
+## Stack
+
+| Couche       | Outil                                         |
+| ------------ | --------------------------------------------- |
+| Bundler      | Vite 7                                        |
+| Langage      | TypeScript 5 strict                           |
+| UI           | React 19                                      |
+| Routing      | React Router v7                               |
+| Server state | TanStack React Query v5                       |
+| HTTP         | native `fetch` (typed wrapper in `api/http/`) |
+| Styles       | SCSS Modules + CSS variables                  |
+| Linting      | ESLint 9 + typescript-eslint + Prettier       |
+| Pre-commit   | pre-commit hooks                              |
+
+## Règles de code
+
+- Utiliser `useQuery`/`useMutation` (React Query) pour tous les appels serveur. **Jamais** `useEffect` pour du data fetching.
+- `api/` = couche connecteur pur. Agnostique du provider (peut être remplacé par MSW ou un autre backend).
+- `pages/` orchestre, ne fetch pas directement.
+- `features/` = isolation verticale. Une feature n'importe pas depuis une autre feature.
+
+## Scaffolder
+
+```bash
+node scaffold.mjs   # génère un nouveau projet depuis ce template
+```
+
+Le CLI demande : nom du projet, répertoire de sortie, package manager, features à activer.
+
+## CI / Standards
+
+- CI workflow : `.github/workflows/ci.yml`
+- SonarCloud activé (voir badges README)
+- pre-commit : `.pre-commit-config.yaml`
+- Versioning automatique : GitVersion (`GitVersion.yml`)
+
+## Issues ouvertes
+
+- #22 : feat — intégrer les chrysa CI standards (github-actions composite actions)
