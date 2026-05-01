@@ -25,3 +25,4 @@ dist-ssr
 
 # pre-commit
 .pre-commit-cache/
+.gitnexus
