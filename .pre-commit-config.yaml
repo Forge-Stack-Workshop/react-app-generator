@@ -30,7 +30,7 @@ repos:
 
   # ── Console & debug detection (JS/TS) ───────────────────────────────────────
   - repo: https://github.com/chrysa/pre-commit-tools
-    rev: v0.1.1-58
+    rev: v0.1.1-72
     hooks:
       - id: console-debug-detection
       - id: console-log-detection
