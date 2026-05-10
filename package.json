@@ -41,7 +41,7 @@
     "msw": "^2.13.6",
     "sass-embedded": "^1.99.0",
     "typescript": "~6.0.3",
-    "typescript-eslint": "^8.59.0",
+    "typescript-eslint": "^8.59.1",
     "vite": "^8.0.10"
   },
   "msw": {
