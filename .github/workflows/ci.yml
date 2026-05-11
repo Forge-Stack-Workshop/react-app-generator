@@ -36,7 +36,8 @@ jobs:
         uses: chrysa/github-actions/gitversion@main
 
       - name: Display version
-        run: echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
+        run: |
+          echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
 
   # ── Lint & typecheck ────────────────────────────────────────────────────────
   lint:
