@@ -46,7 +46,7 @@ repos:
         exclude: |
           (?x)^(
             package-lock\.json|
-            src/public/mockServiceWorker\.js|
+            (src/)?public/mockServiceWorker\.js|
             AGENTS\.md|
             CLAUDE\.md|
             \.claude/.*
