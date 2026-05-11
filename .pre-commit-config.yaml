@@ -46,7 +46,8 @@ repos:
         exclude: |
           (?x)^(
             package-lock\.json|
-            public/mockServiceWorker\.js
+            public/mockServiceWorker\.js|
+            \.claude/.*
           )$
 
   # ── ESLint ──────────────────────────────────────────────────────────────────
