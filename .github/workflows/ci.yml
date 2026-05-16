@@ -87,6 +87,8 @@ jobs:
 
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
+        env:
+          SKIP: no-commit-to-branch
 
   # ── Build ───────────────────────────────────────────────────────────────────
   build:
@@ -134,7 +136,6 @@ jobs:
   sonar:
     name: SonarCloud scan
     runs-on: ubuntu-latest
-    continue-on-error: true
     needs: build
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
