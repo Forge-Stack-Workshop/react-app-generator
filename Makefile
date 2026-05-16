@@ -78,6 +78,9 @@ test: ## Run tests
 test-ci: ## Run tests in CI mode
 	@npm run test:ci 2>/dev/null || npm run test 2>/dev/null || echo "No test script configured"
 
+test-cov: ## Run tests with coverage report
+	@npm run test:coverage 2>/dev/null || npm run coverage 2>/dev/null || echo "No coverage script configured"
+
 # ─── Pre-commit ───────────────────────────────────────────────────────────────
 pre-commit-install: ## Install pre-commit hooks
 	@pre-commit install
