@@ -88,7 +88,7 @@ jobs:
           cd dist && zip -r ../react-app-${{ needs.version.outputs.semVer }}.zip .
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ needs.version.outputs.semVer }}
           name: Release v${{ needs.version.outputs.semVer }}
