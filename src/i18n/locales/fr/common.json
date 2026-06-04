@@ -22,7 +22,8 @@
   },
   "errors": {
     "notFound": "Page not found",
-    "unexpected": "An unexpected error occurred"
+    "unexpected": "An unexpected error occurred",
+    "backendDisconnected": "Impossible de joindre le serveur. Veuillez vérifier votre connexion."
   },
   "searchbar_placeholder": "Rechercher un territoire...",
   "searchbar_all_territories": "Tout les territoires",
