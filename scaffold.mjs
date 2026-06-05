@@ -694,18 +694,43 @@ export function onError(error: unknown): never {
 `;
 }
 
-function genMockServer(domains) {
-  const imports = domains
-    .map(
-      (d) => `import { ${d.id}Handlers } from "./handlers/${d.id}.handlers";`,
-    )
-    .join("\n");
-  const spread = domains.map((d) => `...${d.id}Handlers`).join(", ");
+function genMockServer(domains, hasBugReport = false) {
+  const lines = domains.map(
+    (d) => `import { ${d.id}Handlers } from "./handlers/${d.id}.handlers";`,
+  );
+  const spreads = domains.map((d) => `...${d.id}Handlers`);
+  if (hasBugReport) {
+    lines.push(
+      `import { bugReportHandlers } from "./handlers/bug-report.handlers";`,
+    );
+    spreads.push("...bugReportHandlers");
+  }
+  const imports = lines.join("\n");
+  const spread = spreads.join(", ");
 
   return `import { setupWorker } from "msw/browser";
 ${imports}
 
 export const worker = setupWorker(${spread});
+`;
+}
+
+function genBugReportMockHandler() {
+  return `import { http, HttpResponse, delay } from "msw";
+
+export const bugReportHandlers = [
+  http.post("*/v1/reports", async () => {
+    await delay(300);
+    return HttpResponse.json(
+      {
+        issue_number: 123,
+        issue_url: "https://github.com/chrysa/example-app/issues/123",
+        deduplicated: false,
+      },
+      { status: 201 },
+    );
+  }),
+];
 `;
 }
 
@@ -720,6 +745,389 @@ export const ${domain.id}Handlers = [
     ]);
   }),
 ];
+`;
+}
+
+// ── Bug-report feature (vertical slice under src/features/bug-report/) ─────────
+function genBugReportTypes() {
+  return `export type Severity = "Critical" | "High" | "Medium" | "Low";
+
+export interface EnvironmentInfo {
+  url: string;
+  user_agent: string;
+  app_version: string;
+  console_tail: string[];
+}
+
+export interface BugReportInput {
+  title: string;
+  description: string;
+  severity: Severity;
+  steps: string;
+  expected: string;
+  actual: string;
+  reporter?: string;
+}
+
+export interface BugReportResponse {
+  issue_number: number;
+  issue_url: string;
+  deduplicated: boolean;
+}
+`;
+}
+
+function genBugReportCapture() {
+  return `import type { EnvironmentInfo } from "./types";
+
+const MAX_LINES = 50;
+const buffer: string[] = [];
+let installed = false;
+
+function push(line: string): void {
+  buffer.push(line);
+  if (buffer.length > MAX_LINES) buffer.shift();
+}
+
+/** Start capturing console errors + uncaught errors into a ring buffer. */
+export function installConsoleCapture(): void {
+  if (installed) return;
+  installed = true;
+
+  const original = console.error.bind(console);
+  console.error = (...args: unknown[]) => {
+    push(args.map((a) => String(a)).join(" "));
+    original(...args);
+  };
+
+  window.addEventListener("error", (e) => {
+    push(\`\${e.message} @ \${e.filename}:\${e.lineno}\`);
+  });
+  window.addEventListener("unhandledrejection", (e) => {
+    push(\`Unhandled rejection: \${String(e.reason)}\`);
+  });
+}
+
+export function captureEnvironment(): EnvironmentInfo {
+  return {
+    url: window.location.href,
+    user_agent: navigator.userAgent,
+    app_version: import.meta.env.VITE_APP_VERSION ?? "dev",
+    console_tail: [...buffer],
+  };
+}
+`;
+}
+
+function genBugReportApi() {
+  return `import { captureEnvironment } from "./captureEnvironment";
+import type { BugReportInput, BugReportResponse } from "./types";
+
+const GATEWAY_URL = import.meta.env.VITE_FEEDBACK_GATEWAY_URL ?? "";
+const APP_KEY = import.meta.env.VITE_FEEDBACK_APP_KEY ?? "";
+
+export async function submitBugReport(
+  input: BugReportInput,
+): Promise<BugReportResponse> {
+  const res = await fetch(\`\${GATEWAY_URL}/v1/reports\`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Feedback-Key": APP_KEY,
+    },
+    body: JSON.stringify({
+      ...input,
+      environment: captureEnvironment(),
+      website: "",
+    }),
+  });
+  if (!res.ok) {
+    throw new Error(\`Bug report failed: \${res.status}\`);
+  }
+  return res.json() as Promise<BugReportResponse>;
+}
+`;
+}
+
+function genBugReportHook() {
+  return `import { useMutation } from "@tanstack/react-query";
+import { submitBugReport } from "./api";
+import type { BugReportInput } from "./types";
+
+export function useReportBug() {
+  return useMutation({
+    mutationFn: (input: BugReportInput) => submitBugReport(input),
+  });
+}
+`;
+}
+
+function genBugReportModal() {
+  return `import { useState } from "react";
+import { useReportBug } from "./useReportBug";
+import type { Severity } from "./types";
+import styles from "./BugReport.module.scss";
+
+const SEVERITIES: Severity[] = ["Critical", "High", "Medium", "Low"];
+
+interface Props {
+  onClose: () => void;
+}
+
+export default function ReportBugModal({ onClose }: Props) {
+  const report = useReportBug();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [severity, setSeverity] = useState<Severity>("Medium");
+  const [steps, setSteps] = useState("");
+  const [expected, setExpected] = useState("");
+  const [actual, setActual] = useState("");
+  const [reporter, setReporter] = useState("");
+  const [website, setWebsite] = useState(""); // honeypot
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (website) return; // bot
+    report.mutate({
+      title,
+      description,
+      severity,
+      steps,
+      expected,
+      actual,
+      reporter: reporter || undefined,
+    });
+  }
+
+  if (report.isSuccess) {
+    const url = report.data.issue_url;
+    return (
+      <div className={styles.backdrop} onClick={onClose}>
+        <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+          <h2>Thanks!</h2>
+          <p>
+            Tracked as issue #{report.data.issue_number}.{" "}
+            {url ? (
+              <a href={url} target="_blank" rel="noreferrer">
+                View on GitHub
+              </a>
+            ) : null}
+          </p>
+          <button type="button" onClick={onClose}>
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.backdrop} onClick={onClose}>
+      <form
+        className={styles.modal}
+        onClick={(e) => e.stopPropagation()}
+        onSubmit={handleSubmit}
+      >
+        <h2>Report a bug</h2>
+        <label>
+          Title
+          <input
+            required
+            minLength={3}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </label>
+        <label>
+          Severity
+          <select
+            value={severity}
+            onChange={(e) => setSeverity(e.target.value as Severity)}
+          >
+            {SEVERITIES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Description
+          <textarea
+            required
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </label>
+        <label>
+          Steps to reproduce
+          <textarea value={steps} onChange={(e) => setSteps(e.target.value)} />
+        </label>
+        <label>
+          Expected
+          <input value={expected} onChange={(e) => setExpected(e.target.value)} />
+        </label>
+        <label>
+          Actual
+          <input value={actual} onChange={(e) => setActual(e.target.value)} />
+        </label>
+        <label>
+          Your email (optional)
+          <input
+            type="email"
+            value={reporter}
+            onChange={(e) => setReporter(e.target.value)}
+          />
+        </label>
+        <input
+          className={styles.honeypot}
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+        />
+        {report.isError ? (
+          <p className={styles.error}>Could not send report. Try again.</p>
+        ) : null}
+        <div className={styles.actions}>
+          <button type="button" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" disabled={report.isPending}>
+            {report.isPending ? "Sending…" : "Send report"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+`;
+}
+
+function genBugReportButton() {
+  return `import { useEffect, useState } from "react";
+import ReportBugModal from "./ReportBugModal";
+import { installConsoleCapture } from "./captureEnvironment";
+import styles from "./BugReport.module.scss";
+
+export default function ReportBugButton() {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    installConsoleCapture();
+  }, []);
+
+  return (
+    <>
+      <button
+        type="button"
+        className={styles.fab}
+        onClick={() => setOpen(true)}
+        aria-label="Report a bug"
+        title="Report a bug"
+      >
+        🐞
+      </button>
+      {open ? <ReportBugModal onClose={() => setOpen(false)} /> : null}
+    </>
+  );
+}
+`;
+}
+
+function genBugReportIndex() {
+  return `export { default as ReportBugButton } from "./ReportBugButton";
+export { useReportBug } from "./useReportBug";
+export type { BugReportInput, BugReportResponse, Severity } from "./types";
+`;
+}
+
+function genBugReportEnvExample() {
+  return `# In-app bug report -> feedback-gateway
+# URL of the central feedback-gateway service.
+VITE_FEEDBACK_GATEWAY_URL=http://localhost:8000
+# Opaque per-app key registered in the gateway's APP_REPO_MAP.
+VITE_FEEDBACK_APP_KEY=replace-with-your-app-key
+# Shown in the issue body to help reproduce.
+VITE_APP_VERSION=dev
+`;
+}
+
+function genBugReportScss() {
+  return `.fab {
+  position: fixed;
+  right: var(--space-lg, 16px);
+  bottom: var(--space-lg, 16px);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  background: var(--header-bg, #1f2937);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+}
+
+.modal {
+  background: var(--header-bg, #fff);
+  color: inherit;
+  padding: var(--space-lg, 24px);
+  border-radius: 8px;
+  width: min(480px, 92vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.875rem;
+}
+
+.modal input,
+.modal textarea,
+.modal select {
+  padding: 8px;
+  border: 1px solid rgba(127, 127, 127, 0.4);
+  border-radius: 4px;
+  font: inherit;
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.error {
+  color: #dc2626;
+  font-size: 0.875rem;
+}
 `;
 }
 
@@ -815,13 +1223,17 @@ export default function NotFound() {
 }
 
 function genLayoutTsx(config) {
-  const hasI18n = config.features.some((f) => f.id === "i18n");
-  const hasTheme = config.features.some((f) => f.id === "theming");
+  const hasBugReport = config.features.some((f) => f.id === "bug-report");
+
+  const bugImport = hasBugReport
+    ? `import { ReportBugButton } from "../../features/bug-report";\n`
+    : "";
+  const bugWidget = hasBugReport ? `\n      <ReportBugButton />` : "";
 
   return `import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import styles from "./Layout.module.scss";
+${bugImport}import styles from "./Layout.module.scss";
 
 export default function Layout() {
   return (
@@ -832,7 +1244,7 @@ export default function Layout() {
         <main className={styles.content}>
           <Outlet />
         </main>
-      </div>
+      </div>${bugWidget}
     </div>
   );
 }
@@ -1161,17 +1573,42 @@ function generate(config) {
   write(join(src, "api/http/client.ts"), genHttpClient());
   write(join(src, "api/http/interceptors.ts"), genInterceptors());
 
+  const hasBugReport = config.features.some((f) => f.id === "bug-report");
+
   // api/mock/
   if (config.features.some((f) => f.id === "mock")) {
-    write(join(src, "api/mock/server.ts"), genMockServer(config.domains));
+    write(
+      join(src, "api/mock/server.ts"),
+      genMockServer(config.domains, hasBugReport),
+    );
     for (const d of config.domains) {
       write(
         join(src, `api/mock/handlers/${d.id}.handlers.ts`),
         genMockHandler(d),
       );
     }
+    if (hasBugReport) {
+      write(
+        join(src, "api/mock/handlers/bug-report.handlers.ts"),
+        genBugReportMockHandler(),
+      );
+    }
     // public/mockServiceWorker.js needs to be initialized via `npx msw init`
     mkdir(join(out, "public"));
+  }
+
+  // features/bug-report/ — in-app bug reporting -> feedback-gateway -> GitHub
+  if (hasBugReport) {
+    const bug = join(src, "features/bug-report");
+    write(join(bug, "types.ts"), genBugReportTypes());
+    write(join(bug, "captureEnvironment.ts"), genBugReportCapture());
+    write(join(bug, "api.ts"), genBugReportApi());
+    write(join(bug, "useReportBug.ts"), genBugReportHook());
+    write(join(bug, "ReportBugModal.tsx"), genBugReportModal());
+    write(join(bug, "ReportBugButton.tsx"), genBugReportButton());
+    write(join(bug, "BugReport.module.scss"), genBugReportScss());
+    write(join(bug, "index.ts"), genBugReportIndex());
+    write(join(out, ".env.example"), genBugReportEnvExample());
   }
 
   // domain/
