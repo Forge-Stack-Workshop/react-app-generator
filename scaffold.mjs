@@ -1140,6 +1140,23 @@ function generate(config) {
   write(join(out, "index.html"), genIndexHtml(config));
   write(join(out, "README.md"), genProjectReadme(config));
 
+  // Standardized documentation skeleton (chrysa docs-structure) — copied into every generated app.
+  const DOC_STRUCTURE_DIRS = [
+    "docs",
+    "ai",
+    "prompts",
+    "schemas",
+    "workflows",
+    "decisions",
+    "postmortems",
+    "tests",
+    "examples",
+  ];
+  for (const d of DOC_STRUCTURE_DIRS) {
+    const srcDir = join(__dir, "template-docs", d);
+    if (existsSync(srcDir)) cpSync(srcDir, join(out, d), { recursive: true });
+  }
+
   // src/
   write(join(src, "main.tsx"), genMainTsx(config));
   write(join(src, "App.tsx"), genAppTsx(config));
