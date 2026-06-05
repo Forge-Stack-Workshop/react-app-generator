@@ -69,6 +69,19 @@ features:
     devDeps:
       - msw@^2.12.10
 
+  - id: bug-report
+    name: In-app bug report
+    description: >-
+      Floating "Report a bug" button + modal that POSTs to the central
+      feedback-gateway, which opens a GitHub issue in this app's repo.
+      No deps (native fetch). Configure VITE_FEEDBACK_GATEWAY_URL and
+      VITE_FEEDBACK_APP_KEY (see generated .env.example).
+    default: true
+    env:
+      - VITE_FEEDBACK_GATEWAY_URL
+      - VITE_FEEDBACK_APP_KEY
+      - VITE_APP_VERSION
+
 # ----------------------------------------------------------
 # Domains — scaffold.mjs prompts for these interactively.
 # Each entry generates: types.ts, queries.ts, mapper.ts, index.ts
