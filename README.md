@@ -126,3 +126,18 @@ npm run preview  # Preview the production build
 - available features and their optional dependencies
 - pre-declared domain modules
 - code conventions
+
+## Documentation map
+
+This repo follows the chrysa standardized documentation structure, and **every
+generated app inherits it** (the scaffolder copies these dirs into each new project):
+
+- `docs/` — product, architecture, security, deployment, observability (stubs)
+- `ai/`, `prompts/` — AI assets & agent prompts
+- `schemas/` — JSON Schema data contracts
+- `workflows/` — end-to-end flow docs
+- `decisions/`, `postmortems/` — decision records & incident postmortems
+- `examples/` — reference “perfect” implementations (React/TS)
+- `tests/` — test scenario catalogues
+
+Files marked `status: stub` are placeholders to fill in.
