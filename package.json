@@ -42,7 +42,7 @@
     "sass-embedded": "^1.100.0",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.60.1",
-    "vite": "^8.0.13"
+    "vite": "^8.0.16"
   },
   "msw": {
     "workerDirectory": [
