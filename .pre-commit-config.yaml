@@ -31,11 +31,12 @@ repos:
 
   # ── Console & debug detection (JS/TS) ───────────────────────────────────────
   - repo: https://github.com/chrysa/pre-commit-tools
-    rev: v0.1.1-72
+    rev: v0.1.1-96
     hooks:
       - id: console-debug-detection
       - id: console-log-detection
       - id: console-table-detection
+      - id: css-outside-stylesheet-detection
 
   # ── Prettier (JS/TS/JSON/YAML formatting) ───────────────────────────────────
   - repo: https://github.com/rbubley/mirrors-prettier
