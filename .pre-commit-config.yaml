@@ -53,18 +53,18 @@ repos:
             \.claude/.*
           )$
 
-  # ── ESLint ──────────────────────────────────────────────────────────────────
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v10.3.0
+  # ── ESLint (isolated toolchain, see tools/lint) ─────────────────────────────
+  # The project builds on TypeScript 7, which typescript-eslint does not support
+  # yet (its stable releases require typescript >=4.8.4 <6.1.0). mirrors-eslint
+  # cannot be isolated from the project's TypeScript, so we run ESLint from a
+  # self-contained toolchain in tools/lint that pins typescript@5.9.3. The runner
+  # installs that toolchain on first use, so this hook needs Node/npm on PATH.
+  - repo: local
     hooks:
       - id: eslint
+        name: eslint (isolated TS<6.1 toolchain)
+        language: system
+        entry: node tools/lint/run-eslint.mjs
         files: \.(ts|tsx)$
         types: [file]
-        additional_dependencies:
-          - eslint@9.39.1
-          - typescript@5.9.3
-          - typescript-eslint@8.48.0
-          - eslint-plugin-react-hooks@7.0.1
-          - eslint-plugin-react-refresh@0.4.24
-          - "@eslint/js@9.39.1"
-          - globals@16.5.0
+        require_serial: true
