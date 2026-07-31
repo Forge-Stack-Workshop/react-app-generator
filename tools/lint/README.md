@@ -7,11 +7,11 @@ TypeScript 7 (which `typescript-eslint` cannot parse yet).
 
 ## Structure
 
-| Path                | Purpose                                                        |
-| ------------------- | ------------------------------------------------------------- |
-| `package.json`      | Pinned lint deps (`eslint`, `typescript-eslint`, `typescript@5.9.3`, plugins). |
-| `package-lock.json` | Lockfile for reproducible `npm ci`.                           |
-| `eslint.config.mjs` | Flat config, mirror of the root `../../eslint.config.js`.     |
+| Path                | Purpose                                                                            |
+| ------------------- | ---------------------------------------------------------------------------------- |
+| `package.json`      | Pinned lint deps (`eslint`, `typescript-eslint`, `typescript@5.9.3`, plugins).     |
+| `package-lock.json` | Lockfile for reproducible `npm ci`.                                                |
+| `eslint.config.mjs` | Flat config, mirror of the root `../../eslint.config.js`.                          |
 | `run-eslint.mjs`    | Runner: installs this toolchain on first use, then runs ESLint from the repo root. |
 
 ## Why it exists
