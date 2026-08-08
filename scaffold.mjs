@@ -18,6 +18,7 @@ import { execSync } from "node:child_process";
 import { parseYaml } from "./tools/scaffold/yaml.mjs";
 import { readConfig } from "./tools/scaffold/config.mjs";
 import { sync } from "./tools/scaffold/sync.mjs";
+import { copyBase } from "./tools/scaffold/base.mjs";
 
 // ── Colours ──────────────────────────────────────────────────────────────────
 const c = {
@@ -992,6 +993,20 @@ async function runSync({ out, force }) {
     }
 
     const tokens = { projectName: config.project, apiBaseUrl, timeout };
+
+    const baseDir = join(__dir, "templates", "base");
+    if (existsSync(baseDir)) {
+      const baseResult = copyBase({ projectDir, baseDir, tokens, force });
+      console.log(
+        green("✓") +
+          ` Base skeleton: ${baseResult.written.length} written, ${baseResult.skipped.length} skipped`,
+      );
+    } else {
+      console.log(
+        yellow(`⚠  templates/base not found at ${baseDir} — skipping base skeleton copy.`),
+      );
+    }
+
     const result = sync({ projectDir, featuresDir, config, tokens, force });
 
     console.log(green("✓") + " Sync complete");
