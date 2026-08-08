@@ -1,0 +1,11 @@
+id: mock
+name: MSW Mock API
+description: Mock Service Worker — intercepts /api/* requests in the browser
+default: true
+devDeps:
+  - msw@^2.15.0
+options: {}
+contributes:
+  providers:
+    - import: features/mock/MSWProvider
+      component: MSWProvider

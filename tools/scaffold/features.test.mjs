@@ -128,3 +128,48 @@ describe("theming feature module", () => {
     expect(pkg.devDependencies).toEqual({});
   });
 });
+
+describe("mock feature module", () => {
+  const config = {
+    project: "app",
+    packageManager: "npm",
+    features: { mock: true },
+  };
+
+  it("copies the MSW infrastructure and provider into the project", () => {
+    const r = sync({ projectDir, featuresDir, config, tokens });
+    expect(r.added).toContain("mock");
+    expect(existsSync(join(projectDir, "src/api/mock/browser.ts"))).toBe(true);
+    expect(
+      existsSync(join(projectDir, "src/features/mock/MSWProvider.tsx")),
+    ).toBe(true);
+    expect(existsSync(join(projectDir, "public/mockServiceWorker.js"))).toBe(true);
+  });
+
+  it("adds the msw devDependency to package.json", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const pkg = JSON.parse(readFileSync(join(projectDir, "package.json"), "utf8"));
+    expect(pkg.devDependencies.msw).toBe("^2.15.0");
+  });
+
+  it("wires MSWProvider into the generated providers aggregator at a path that actually resolves", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const providers = readFileSync(
+      join(projectDir, "src/app/providers.generated.tsx"),
+      "utf8",
+    );
+    expect(providers).toContain("MSWProvider");
+    // providers.generated.tsx lives at src/app/, so the import must climb out
+    // with `../` to reach src/features/mock/MSWProvider.tsx.
+    expect(providers).toContain('from "../features/mock/MSWProvider"');
+  });
+
+  it("token-renders the example handler's apiBaseUrl", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const handler = readFileSync(
+      join(projectDir, "src/api/mock/handlers/example.handlers.ts"),
+      "utf8",
+    );
+    expect(handler).toContain("/api/example");
+  });
+});
