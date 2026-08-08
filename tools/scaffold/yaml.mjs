@@ -69,9 +69,6 @@ export function parseYaml(text) {
           parent[key] = child;
         }
         stack.push({ indent, obj: child, listKey: key });
-      } else if (rest === "[]") {
-        parent[key] = [];
-        stack.push({ indent, obj: parent, listKey: key });
       } else {
         parent[key] = parseValue(rest);
         stack.push({ indent, obj: parent, listKey: key });
@@ -83,6 +80,10 @@ export function parseYaml(text) {
 }
 
 function parseValue(v) {
+  if (v.startsWith("[") && v.endsWith("]")) {
+    const inner = v.slice(1, -1).trim();
+    return inner ? inner.split(",").map((item) => item.trim()) : [];
+  }
   if (v === "true") return true;
   if (v === "false") return false;
   if (v === "null" || v === "~") return null;

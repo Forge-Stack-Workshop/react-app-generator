@@ -10,4 +10,9 @@ describe("parseYaml", () => {
     expect(out.meta.name).toBe("forge");
     expect(out.features[0]).toEqual({ id: "i18n", default: true });
   });
+
+  it("parses inline lists", () => {
+    expect(parseYaml("k: [fr, en]").k).toEqual(["fr", "en"]);
+    expect(parseYaml("k: []").k).toEqual([]);
+  });
 });
