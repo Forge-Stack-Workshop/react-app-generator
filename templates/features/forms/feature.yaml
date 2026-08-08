@@ -1,0 +1,9 @@
+id: forms
+name: Forms + validation
+description: react-hook-form + zod typed forms with a Form wrapper and Field components
+default: false
+deps:
+  - react-hook-form@^7.53.0
+  - zod@^3.23.8
+  - "@hookform/resolvers@^3.9.0"
+contributes: {}

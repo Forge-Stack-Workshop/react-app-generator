@@ -351,3 +351,51 @@ describe("notifications feature module", () => {
     expect(pkg.devDependencies).toEqual({});
   });
 });
+
+describe("forms feature module", () => {
+  const config = {
+    project: "app",
+    packageManager: "npm",
+    features: { forms: true },
+  };
+
+  it("copies the react-hook-form + zod source into the project", () => {
+    const r = sync({ projectDir, featuresDir, config, tokens });
+    expect(r.added).toContain("forms");
+    expect(existsSync(join(projectDir, "src/components/form/Form.tsx"))).toBe(
+      true,
+    );
+    expect(existsSync(join(projectDir, "src/components/form/Field.tsx"))).toBe(
+      true,
+    );
+    expect(
+      existsSync(join(projectDir, "src/components/form/useZodForm.ts")),
+    ).toBe(true);
+  });
+
+  it("adds the react-hook-form, zod and @hookform/resolvers dependencies to package.json", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const pkg = JSON.parse(
+      readFileSync(join(projectDir, "package.json"), "utf8"),
+    );
+    expect(pkg.dependencies["react-hook-form"]).toBe("^7.53.0");
+    expect(pkg.dependencies.zod).toBe("^3.23.8");
+    expect(pkg.dependencies["@hookform/resolvers"]).toBe("^3.9.0");
+  });
+
+  it("is inert for the generated aggregators (contributes is empty)", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const routes = readFileSync(
+      join(projectDir, "src/app/routes.generated.tsx"),
+      "utf8",
+    );
+    const providers = readFileSync(
+      join(projectDir, "src/app/providers.generated.tsx"),
+      "utf8",
+    );
+    expect(routes).not.toContain("Form");
+    expect(routes).not.toContain("Field");
+    expect(providers).not.toContain("Form");
+    expect(providers).not.toContain("Field");
+  });
+});
