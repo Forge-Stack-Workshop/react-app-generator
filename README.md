@@ -23,6 +23,29 @@ node scaffold.mjs
 
 The CLI will ask for a project name, output directory, package manager, features to enable, and domain modules to scaffold.
 
+### Config-driven scaffolding
+
+For scripting or CI, skip the prompts:
+
+```bash
+# Fresh generation
+node scaffold.mjs --out ../my-app --name my-app --features i18n,theming,mock,auth
+cd ../my-app && pnpm install
+```
+
+To add or remove a feature from an already-generated project, edit its
+`forge.config.yaml` (feature ids map to `true`/`false`, or an object for
+per-feature options like `i18n`'s `languages`), then sync it in place:
+
+```bash
+node scaffold.mjs --sync --out ../my-app
+cd ../my-app && pnpm install   # dependencies may have changed
+```
+
+`--sync` copies/removes only the enabled feature folders, regenerates the
+`*.generated.*` aggregators, and reconciles `package.json`. Full reference:
+[`docs/features.md`](docs/features.md).
+
 ### Use the template directly
 
 ```bash

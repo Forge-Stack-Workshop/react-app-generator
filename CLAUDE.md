@@ -57,6 +57,17 @@ node scaffold.mjs   # generates a new project from this template
 
 The CLI prompts for: project name, output directory, package manager, features to enable.
 
+## Feature modules
+
+Optional functionality (i18n, theming, mock API, auth, dataTable, notifications, forms) lives
+as self-contained modules under `templates/features/<id>/`, each with a `feature.yaml` manifest
+and a `files/**` tree. `template.yaml` is the manifest source of truth for the base app's
+dependencies and their versions (mirrored per-feature in each `feature.yaml`). Selection for a
+generated project is driven by that project's `forge.config.yaml`; running
+`node scaffold.mjs --sync` reads it and syncs the enabled features in place (copying/removing
+files, regenerating the `*.generated.*` aggregators, reconciling `package.json`). See
+[`docs/features.md`](docs/features.md) for the full catalog and the add-a-feature recipe.
+
 ## CI / Standards
 
 - CI workflow: `.github/workflows/ci.yml`
