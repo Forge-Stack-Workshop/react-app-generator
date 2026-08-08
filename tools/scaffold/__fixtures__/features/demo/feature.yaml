@@ -1,0 +1,9 @@
+id: demo
+name: Demo
+description: Fixture feature
+default: false
+deps:
+  - zod@^3.23.8
+contributes:
+  routes:
+    - { path: /demo, import: "./features/demo/DemoPage", component: DemoPage }
