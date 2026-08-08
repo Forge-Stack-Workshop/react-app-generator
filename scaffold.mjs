@@ -16,6 +16,8 @@ import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
 import { parseYaml } from "./tools/scaffold/yaml.mjs";
+import { readConfig } from "./tools/scaffold/config.mjs";
+import { sync } from "./tools/scaffold/sync.mjs";
 
 // ── Colours ──────────────────────────────────────────────────────────────────
 const c = {
@@ -1246,8 +1248,103 @@ async function promptDomains(rl) {
   return domains;
 }
 
+// ── CLI flags ─────────────────────────────────────────────────────────────────
+function printHelp() {
+  console.log(`
+${bold("Forge-Stack React Scaffolder")}
+
+${bold("Usage:")}
+  node scaffold.mjs                 Interactive project generation
+  node scaffold.mjs --sync          Sync features into an existing project
+                                     (reads forge.config.yaml)
+
+${bold("Options:")}
+  --help           Show this help message and exit
+  --sync           Non-interactive: read forge.config.yaml and sync enabled
+                    features into the project (add/remove files, reconcile deps)
+  --force          With --sync: overwrite locally-edited files instead of
+                    warning and skipping
+  --out <dir>      Target project directory for --sync (default: cwd)
+`);
+}
+
+function parseFlags(argv) {
+  const flags = { help: false, sync: false, force: false, out: undefined };
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === "--help" || arg === "-h") flags.help = true;
+    else if (arg === "--sync") flags.sync = true;
+    else if (arg === "--force") flags.force = true;
+    else if (arg === "--out") flags.out = argv[++i];
+  }
+  return flags;
+}
+
+async function runSync({ out, force }) {
+  const projectDir = out ? resolve(process.cwd(), out) : process.cwd();
+  const configPath = join(projectDir, "forge.config.yaml");
+
+  try {
+    const config = readConfig(configPath);
+    const featuresDir = join(__dir, "templates", "features");
+
+    if (!existsSync(featuresDir)) {
+      console.log(
+        yellow(
+          `⚠  templates/features not found at ${featuresDir} — nothing to sync yet.`,
+        ),
+      );
+      return;
+    }
+
+    let apiBaseUrl = "/api";
+    let timeout = "8000";
+    const manifestPath = join(__dir, "template.yaml");
+    if (existsSync(manifestPath)) {
+      const manifest = parseYaml(readFileSync(manifestPath, "utf8"));
+      if (manifest.conventions?.apiBaseUrl) {
+        apiBaseUrl = manifest.conventions.apiBaseUrl;
+      }
+      if (manifest.conventions?.timeout) {
+        timeout = String(manifest.conventions.timeout);
+      }
+    }
+
+    const tokens = { projectName: config.project, apiBaseUrl, timeout };
+    const result = sync({ projectDir, featuresDir, config, tokens, force });
+
+    console.log(green("✓") + " Sync complete");
+    console.log(
+      `  ${dim("Added:")}   ${result.added.length ? result.added.join(", ") : dim("(none)")}`,
+    );
+    console.log(
+      `  ${dim("Removed:")} ${result.removed.length ? result.removed.join(", ") : dim("(none)")}`,
+    );
+    for (const w of result.warnings) {
+      console.log(`  ${yellow("⚠")} ${w}`);
+    }
+
+    console.log(`\nRun: ${bold(`${config.packageManager} install`)}`);
+  } catch (err) {
+    console.error(red("✗ Sync failed:"), err.message);
+    process.exitCode = 1;
+  }
+}
+
 // ── Entry point ───────────────────────────────────────────────────────────────
 async function main() {
+  const flags = parseFlags(process.argv.slice(2));
+
+  if (flags.help) {
+    printHelp();
+    return;
+  }
+
+  if (flags.sync) {
+    await runSync({ out: flags.out, force: flags.force });
+    return;
+  }
+
   // Load manifest
   const manifestPath = join(__dir, "template.yaml");
   if (!existsSync(manifestPath)) {
