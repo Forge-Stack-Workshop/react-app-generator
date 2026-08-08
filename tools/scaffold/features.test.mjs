@@ -80,3 +80,41 @@ describe("i18n feature module", () => {
     expect(providers).toContain("./features/i18n/I18nProvider");
   });
 });
+
+describe("theming feature module", () => {
+  const config = {
+    project: "app",
+    packageManager: "npm",
+    features: { theming: true },
+  };
+
+  it("copies the theming source and new provider into the project", () => {
+    const r = sync({ projectDir, featuresDir, config, tokens });
+    expect(r.added).toContain("theming");
+    expect(existsSync(join(projectDir, "src/hooks/useTheme.ts"))).toBe(true);
+    expect(
+      existsSync(join(projectDir, "src/features/theming/ThemeProvider.tsx")),
+    ).toBe(true);
+    expect(
+      existsSync(join(projectDir, "src/features/theming/ThemeToggle.tsx")),
+    ).toBe(true);
+    expect(existsSync(join(projectDir, "src/styles/_theme.scss"))).toBe(true);
+  });
+
+  it("wires ThemeProvider into the generated providers aggregator", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const providers = readFileSync(
+      join(projectDir, "src/app/providers.generated.tsx"),
+      "utf8",
+    );
+    expect(providers).toContain("ThemeProvider");
+    expect(providers).toContain("./features/theming/ThemeProvider");
+  });
+
+  it("adds no new dependencies to package.json", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const pkg = JSON.parse(readFileSync(join(projectDir, "package.json"), "utf8"));
+    expect(pkg.dependencies).toEqual({});
+    expect(pkg.devDependencies).toEqual({});
+  });
+});
