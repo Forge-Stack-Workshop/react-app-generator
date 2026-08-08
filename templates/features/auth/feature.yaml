@@ -1,0 +1,15 @@
+id: auth
+name: Auth + route guards
+description: Login page, token storage, protected routes, useAuth, 401 handling
+default: false
+deps: []
+contributes:
+  routes:
+    - path: /login
+      import: features/auth/LoginPage
+      component: LoginPage
+  providers:
+    - import: features/auth/AuthProvider
+      component: AuthProvider
+  http:
+    - responseErrorHandler: features/auth/onUnauthorized

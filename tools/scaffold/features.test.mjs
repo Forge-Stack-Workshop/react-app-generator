@@ -173,3 +173,71 @@ describe("mock feature module", () => {
     expect(handler).toContain("/api/example");
   });
 });
+
+describe("auth feature module", () => {
+  const config = {
+    project: "app",
+    packageManager: "npm",
+    features: { auth: true },
+  };
+
+  it("copies the auth source files into the project", () => {
+    const r = sync({ projectDir, featuresDir, config, tokens });
+    expect(r.added).toContain("auth");
+    expect(
+      existsSync(join(projectDir, "src/features/auth/AuthProvider.tsx")),
+    ).toBe(true);
+    expect(existsSync(join(projectDir, "src/features/auth/useAuth.ts"))).toBe(true);
+    expect(
+      existsSync(join(projectDir, "src/features/auth/LoginPage.tsx")),
+    ).toBe(true);
+    expect(
+      existsSync(join(projectDir, "src/features/auth/ProtectedRoute.tsx")),
+    ).toBe(true);
+    expect(
+      existsSync(join(projectDir, "src/features/auth/onUnauthorized.ts")),
+    ).toBe(true);
+  });
+
+  it("wires the LoginPage route into the routes aggregator at a resolving path", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const routes = readFileSync(
+      join(projectDir, "src/app/routes.generated.tsx"),
+      "utf8",
+    );
+    expect(routes).toContain("LoginPage");
+    // routes.generated.tsx lives at src/app/, so the import must climb out with
+    // `../` to reach src/features/auth/LoginPage.tsx.
+    expect(routes).toContain('from "../features/auth/LoginPage"');
+  });
+
+  it("wires AuthProvider into the providers aggregator at a resolving path", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const providers = readFileSync(
+      join(projectDir, "src/app/providers.generated.tsx"),
+      "utf8",
+    );
+    expect(providers).toContain("AuthProvider");
+    expect(providers).toContain('from "../features/auth/AuthProvider"');
+  });
+
+  it("wires onUnauthorized into the http hooks aggregator", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const hooks = readFileSync(
+      join(projectDir, "src/api/http/hooks.generated.ts"),
+      "utf8",
+    );
+    // hooks.generated.ts lives at src/api/http/, so the import must climb out
+    // with `../../` to reach src/features/auth/onUnauthorized.ts.
+    expect(hooks).toContain('from "../../features/auth/onUnauthorized"');
+    expect(hooks).toContain("onUnauthorized");
+    expect(hooks).toContain("responseErrorHandlers = [h0]");
+  });
+
+  it("adds no new dependencies to package.json", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const pkg = JSON.parse(readFileSync(join(projectDir, "package.json"), "utf8"));
+    expect(pkg.dependencies).toEqual({});
+    expect(pkg.devDependencies).toEqual({});
+  });
+});
