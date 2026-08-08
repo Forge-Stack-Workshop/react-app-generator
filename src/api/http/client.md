@@ -1,30 +1,30 @@
 # client.ts
 
-Ce fichier expose le **client HTTP unique** utilisé par toute l’application.
+This file exposes the **single HTTP client** used across the whole application.
 
-Il encapsule :
+It encapsulates:
 
-- la baseURL
-- les headers par défaut
-- le timeout
-- les cookies
-- la stratégie de sérialisation
-- l’intégration des interceptors
+- the baseURL
+- default headers
+- the timeout
+- cookies
+- the serialization strategy
+- interceptor integration
 
 ---
 
-## Objectif
+## Goal
 
-Fournir un client HTTP :
+Provide an HTTP client that is:
 
-- centralisé
+- centralized
 - configurable
 - stable
-- indépendant du reste du code
+- independent of the rest of the code
 
 ---
 
-## Contenu typique
+## Typical content
 
 ```ts
 import axios from "axios";
@@ -39,19 +39,19 @@ export const client = axios.create({
 });
 ```
 
-## Pourquoi un client unique ?
+## Why a single client?
 
-- éviter la duplication de configuration
-- éviter les axios.get() dispersés dans le code
-- permettre d’ajouter un token ou un header global en un seul endroit
-- permettre d’ajouter un retry global
-- permettre de logger toutes les requêtes
-- permettre de changer d’API sans casser le domain
+- avoid duplicating configuration
+- avoid scattered `axios.get()` calls throughout the code
+- allow adding a token or global header in one place
+- allow adding a global retry
+- allow logging every request
+- allow swapping the API without breaking the domain
 
-## Ce que client.ts ne doit jamais contenir
+## What client.ts must never contain
 
-- logique métier
-- mapping DTO → Domain
-- gestion du cache
+- business logic
+- DTO → Domain mapping
+- cache management
 - React Query
 - mocks

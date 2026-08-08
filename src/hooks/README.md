@@ -1,26 +1,26 @@
 # Hooks
 
-Ce dossier contient les **hooks transverses** ou génériques de l’application.
-Un _hook_ est une fonction React qui commence par `use` et qui permet d’encapsuler de la **logique réutilisable** sans afficher d’UI.
+This folder holds the **cross-cutting** or generic hooks of the application.
+A _hook_ is a React function starting with `use` that encapsulates **reusable logic** without rendering UI.
 
-## Rôle
+## Role
 
-- Encapsuler la logique React réutilisable (état, effets, comportements).
-- Fournir des hooks pour récupérer des données (ex : `useTerritories`).
-- Gérer des comportements globaux (ex : `useWebsocket`, `useAuth`).
-- Simplifier les composants en déplaçant la logique hors de l’UI.
-- Centraliser des patterns communs (pagination, filtres, stockage local…).
+- Encapsulate reusable React logic (state, effects, behaviors).
+- Provide hooks to fetch data (e.g. `useTerritories`).
+- Handle global behaviors (e.g. `useWebsocket`, `useAuth`).
+- Simplify components by moving logic out of the UI.
+- Centralize common patterns (pagination, filters, local storage…).
 
-## Qu’est‑ce qu’un hook ?
+## What is a hook?
 
-Un hook est une fonction qui :
+A hook is a function that:
 
-- commence par `use` (ex : `useMonitoring`, `useShuttles`),
-- utilise les hooks React internes (`useState`, `useEffect`, etc.),
-- ne retourne **pas** de JSX,
-- ne sert qu’à gérer de la logique (pas d’affichage).
+- starts with `use` (e.g. `useMonitoring`, `useShuttles`),
+- uses React's built-in hooks (`useState`, `useEffect`, etc.),
+- does **not** return JSX,
+- only manages logic (no rendering).
 
-Exemple simple :
+Simple example:
 
 ```ts
 function useCounter() {
@@ -29,16 +29,16 @@ function useCounter() {
 }
 ```
 
-## Ce qu'on met ici
+## What belongs here
 
-- Hooks de récupération de données (API + état local).
-- Hooks de connexion temps réel (WebSocket).
-- Hooks d’état global (si Zustand ou autre).
-- Hooks utilitaires (debounce, pagination, stockage local).
-- Hooks transverses utilisés dans plusieurs pages ou features.
+- Data-fetching hooks (API + local state).
+- Real-time connection hooks (WebSocket).
+- Global state hooks (if Zustand or another store).
+- Utility hooks (debounce, pagination, local storage).
+- Cross-cutting hooks used across several pages or features.
 
-## Ce qu’on ne met pas ici
+## What does NOT belong here
 
-- Pas de types métier (dans `domain/`).
-- Pas de composants.
-- Pas de logique pure (dans `domain/`).
+- No business types (they go in `domain/`).
+- No components.
+- No pure logic (goes in `domain/`).

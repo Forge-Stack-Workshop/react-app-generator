@@ -1,32 +1,32 @@
-# Features (UI métier)
+# Features (business UI)
 
-Ce dossier contient les **composants et la logique UI métier**.
-Chaque feature correspond à un domaine fonctionnel du SaaS : territoires, navettes, providers, météo, monitoring temps réel…
+This folder holds the **business UI components and logic**.
+Each feature maps to a functional domain of the SaaS: territories, shuttles, providers, weather, real-time monitoring…
 
-Les features utilisent :
+Features use:
 
-- les types et règles du dossier `domain`,
-- les données fournies par les hooks,
-- les composants UI agnostiques du dossier `components`.
+- the types and rules from the `domain` folder,
+- the data provided by hooks,
+- the provider-agnostic UI components from the `components` folder.
 
-## Rôle
+## Role
 
-- Regrouper l’UI métier (listes, formulaires, panneaux, cartes…).
-- Organiser le code par domaine fonctionnel.
-- Connecter le métier (`domain`) à l’interface utilisateur.
-- Fournir des composants réutilisables dans les pages.
+- Group the business UI (lists, forms, panels, maps…).
+- Organize code by functional domain.
+- Connect business logic (`domain`) to the user interface.
+- Provide reusable components for the pages.
 
-## Structure recommandée
+## Recommended structure
 
-Chaque feature peut avoir :
+Each feature may have:
 
-- `FeatureComponent.tsx` (UI métier)
+- `FeatureComponent.tsx` (business UI)
 - `FeatureForm.tsx`
 - `FeatureList.tsx`
-- `hooks/` (logique React métier)
+- `hooks/` (feature-specific React logic)
 - `index.ts`
 
-## Exemples
+## Examples
 
 - `features/territories/TerritoryList.tsx`
 - `features/shuttles/ShuttleStatusBadge.tsx`
@@ -46,17 +46,17 @@ export function TerritoryList({ territories }: { territories: Territory[] }) {
 }
 ```
 
-## Ce qu’on met ici
+## What belongs here
 
-- Composants React métier (ex : `TerritoryList`, `ShuttleStatusBadge`).
-- Formulaires métier (ex : `TerritoryForm`).
-- Vues spécifiques (ex : `MapView`, `AlertsPanel`).
-- Hooks métier internes à la feature (ex : `useTerritoryForm`).
-- Sous‑dossiers par domaine (territories, shuttles, monitoring…).
+- Business React components (e.g. `TerritoryList`, `ShuttleStatusBadge`).
+- Business forms (e.g. `TerritoryForm`).
+- Specific views (e.g. `MapView`, `AlertsPanel`).
+- Feature-internal business hooks (e.g. `useTerritoryForm`).
+- Per-domain subfolders (territories, shuttles, monitoring…).
 
-## Ce qu’on ne met pas ici
+## What does NOT belong here
 
-- Pas de types métier (dans `domain/`).
-- Pas de logique métier pure (dans `domain/`).
-- Pas d’appels API directs (dans `api/`).
-- Pas de composants UI génériques (dans `components/`).
+- No business types (they go in `domain/`).
+- No pure business logic (goes in `domain/`).
+- No direct API calls (they go in `api/`).
+- No generic UI components (they go in `components/`).

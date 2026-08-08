@@ -1,20 +1,20 @@
 # Utils
 
-Ce dossier contient les **helpers génériques**, sans lien avec React ou le métier.
+This folder holds **generic helpers**, unrelated to React or business logic.
 
-## Rôle
+## Role
 
-- Fonctions utilitaires (formatage, dates, maths…).
-- Helpers réutilisables dans tout le projet.
+- Utility functions (formatting, dates, math…).
+- Reusable helpers across the whole project.
 
-## Exemples
+## Examples
 
 - `formatters.ts`
 - `validators.ts`
 - `math.ts`
 
-## Ce qu’on ne met pas ici
+## What does NOT belong here
 
-- Pas de logique métier (dans `domain/`).
-- Pas de logique React (dans `hooks/`).
-- Pas de composants.
+- No business logic (goes in `domain/`).
+- No React logic (goes in `hooks/`).
+- No components.

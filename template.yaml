@@ -13,26 +13,26 @@ meta:
 # Base dependencies — always installed regardless of features
 # ----------------------------------------------------------
 dependencies:
-  - react@^19.2.0
-  - react-dom@^19.2.0
-  - react-router-dom@^7.13.1
-  - "@tanstack/react-query@^5.90.21"
-  - lucide-react@^0.576.0
+  - react@^19.2.8
+  - react-dom@^19.2.8
+  - react-router-dom@^7.18.1
+  - "@tanstack/react-query@^5.101.4"
+  - lucide-react@^1.27.0
 
 devDependencies:
-  - vite@^7.3.1
-  - typescript@~5.9.3
-  - "@vitejs/plugin-react@^5.1.4"
-  - "@types/react@^19.2.7"
+  - vite@^8.1.5
+  - typescript@~7.0.2
+  - "@vitejs/plugin-react@^6.0.4"
+  - "@types/react@^19.2.17"
   - "@types/react-dom@^19.2.3"
-  - "@types/node@^24.10.1"
-  - sass-embedded@^1.97.3
-  - "@eslint/js@^9.39.1"
-  - eslint@^9.39.1
-  - eslint-plugin-react-hooks@^7.0.1
-  - eslint-plugin-react-refresh@^0.4.24
-  - globals@^16.5.0
-  - typescript-eslint@^8.48.0
+  - "@types/node@^26.1.1"
+  - sass-embedded@^1.100.0
+  - "@eslint/js@^10.0.1"
+  - eslint@^10.8.0
+  - eslint-plugin-react-hooks@^7.1.1
+  - eslint-plugin-react-refresh@^0.5.3
+  - globals@^17.8.0
+  - typescript-eslint@^8.65.0
 
 # ----------------------------------------------------------
 # Features — toggled interactively during scaffolding
@@ -44,8 +44,8 @@ features:
     description: i18next, browser language detection, LanguageSwitcher component
     default: true
     deps:
-      - i18next@^25.8.13
-      - react-i18next@^16.5.4
+      - i18next@^26.3.6
+      - react-i18next@^17.0.11
       - i18next-browser-languagedetector@^8.2.1
     options:
       languages:
@@ -67,7 +67,7 @@ features:
     default: true
     workerDirectory: public
     devDeps:
-      - msw@^2.12.10
+      - msw@^2.15.0
 
 # ----------------------------------------------------------
 # Domains — scaffold.mjs prompts for these interactively.

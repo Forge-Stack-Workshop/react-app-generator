@@ -1,26 +1,26 @@
-# Domain (métier)
+# Domain (business logic)
 
-Ce dossier contient la **logique métier** de l’application.
-Il regroupe tout ce qui décrit _ce qu’est_ une entité métier (territoire, navette, provider…), indépendamment de l’UI ou de React.
+This folder holds the **business logic** of the application.
+It gathers everything that describes _what_ a business entity is (territory, shuttle, provider…), independent of the UI or React.
 
-Le domaine représente la **vérité métier** : les types, les règles, les validations et les transformations.
+The domain represents the **business truth**: types, rules, validations, and transformations.
 
-## Rôle
+## Role
 
-- Définir les types métier (ex : `Territory`, `Shuttle`, `Provider`).
-- Définir les règles métier (ex : `canDeactivate`, `isCriticalAlert`).
-- Mapper les données API vers les types internes (DTO → modèle).
-- Centraliser la logique pure, indépendante de React.
-- Fournir une base stable utilisée par les features, les hooks et les pages.
+- Define business types (e.g. `Territory`, `Shuttle`, `Provider`).
+- Define business rules (e.g. `canDeactivate`, `isCriticalAlert`).
+- Map API data to internal types (DTO → model).
+- Centralize pure logic, independent of React.
+- Provide a stable base used by features, hooks, and pages.
 
-## Ce qu’on met ici
+## What belongs here
 
-- Types et interfaces métier.
-- Règles métier (conditions, statuts, validations).
-- Mappers (transformations entre API et domaine).
-- Fonctions utilitaires métier (ex : calculs, statuts dérivés).
+- Business types and interfaces.
+- Business rules (conditions, statuses, validations).
+- Mappers (transformations between API and domain).
+- Business utility functions (e.g. computations, derived statuses).
 
-## Exemples
+## Examples
 
 - `territories.ts`
 - `shuttles.ts`
@@ -41,10 +41,10 @@ export function canDeactivate(territory: Territory) {
 }
 ```
 
-## Ce qu’on ne met pas ici
+## What does NOT belong here
 
-- Pas de composants React.
-- Pas de hooks.
-- Pas d’appels API (dans `api/`).
-- Pas de logique d’affichage.
-- Pas de CSS ou styles.
+- No React components.
+- No hooks.
+- No API calls (they go in `api/`).
+- No display logic.
+- No CSS or styles.

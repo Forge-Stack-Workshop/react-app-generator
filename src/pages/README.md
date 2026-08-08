@@ -1,15 +1,15 @@
 # Pages
 
-Ce dossier contient **toutes les pages du back-office**.
-Chaque fichier représente une route de l’application (ex : `/territories`, `/monitoring`).
+This folder holds **all back-office pages**.
+Each file represents an application route (e.g. `/territories`, `/monitoring`).
 
-## Rôle
+## Role
 
-- Définir la structure des écrans.
-- Assembler les composants métier (features) et les composants UI agnostiques.
-- Utiliser les hooks pour récupérer les données.
+- Define the screen structure.
+- Assemble business components (features) and provider-agnostic UI components.
+- Use hooks to fetch data.
 
-## Ce qu’on met ici
+## What belongs here
 
 - `MonitoringPage.tsx`
 - `TerritoriesPage.tsx`
@@ -17,8 +17,8 @@ Chaque fichier représente une route de l’application (ex : `/territories`, `/
 - `ProvidersPage.tsx`
 - `WeatherPage.tsx`
 
-## Ce qu’on ne met pas ici
+## What does NOT belong here
 
-- Pas de logique métier.
-- Pas d’appels API directs.
-- Pas de composants réutilisables.
+- No business logic.
+- No direct API calls.
+- No reusable components.

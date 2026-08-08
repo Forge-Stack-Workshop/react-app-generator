@@ -1,33 +1,29 @@
----
-
-# 📄 `api/http/interceptors.md`
-
-```md
 # interceptors.ts
 
-Ce fichier contient les **interceptors HTTP** du client.
+This file contains the client's **HTTP interceptors**.
 
-Les interceptors sont des middlewares appliqués :
-- avant l’envoi d’une requête (request interceptor)
-- après la réception d’une réponse (response interceptor)
+Interceptors are middlewares applied:
 
-Ils permettent d’ajouter des comportements transversaux **sans polluer les services API**.
+- before a request is sent (request interceptor)
+- after a response is received (response interceptor)
 
----
-
-## Objectifs
-
-- Ajouter automatiquement un token JWT
-- Ajouter des headers dynamiques
-- Logger les requêtes/réponses
-- Gérer les erreurs globales (401, 403, 500…)
-- Rafraîchir un token expiré
-- Retenter une requête échouée
-- Uniformiser les erreurs réseau
+They add cross-cutting behaviors **without polluting the API services**.
 
 ---
 
-## Exemple typique
+## Goals
+
+- Automatically attach a JWT token
+- Add dynamic headers
+- Log requests/responses
+- Handle global errors (401, 403, 500…)
+- Refresh an expired token
+- Retry a failed request
+- Normalize network errors
+
+---
+
+## Typical example
 
 ```ts
 import { client } from "./client";
@@ -44,24 +40,24 @@ client.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // refresh token ou redirection login
+      // refresh token or redirect to login
     }
     return Promise.reject(error);
   },
 );
 ```
 
-## Pourquoi séparer client et interceptors ?
+## Why separate client and interceptors?
 
-- meilleure lisibilité
-- meilleure testabilité
-- meilleure modularité
-- possibilité d’ajouter/supprimer des interceptors sans toucher au client
-- éviter un fichier de 300 lignes
+- better readability
+- better testability
+- better modularity
+- ability to add/remove interceptors without touching the client
+- avoid a 300-line file
 
-## Ce que interceptors.ts ne doit jamais contenir
+## What interceptors.ts must never contain
 
-- logique métier
-- mapping DTO → Domain
+- business logic
+- DTO → Domain mapping
 - React Query
 - mocks
