@@ -16,7 +16,7 @@ import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
 import { parseYaml } from "./tools/scaffold/yaml.mjs";
-import { readConfig } from "./tools/scaffold/config.mjs";
+import { readConfig, writeConfig } from "./tools/scaffold/config.mjs";
 import { sync } from "./tools/scaffold/sync.mjs";
 import { copyBase } from "./tools/scaffold/base.mjs";
 
@@ -937,29 +937,171 @@ ${bold("Forge-Stack React Scaffolder")}
 
 ${bold("Usage:")}
   node scaffold.mjs                 Interactive project generation
+  node scaffold.mjs --out DIR --name NAME --features a,b,c
+                                     Non-interactive fresh generation of a
+                                     complete, installable project
   node scaffold.mjs --sync          Sync features into an existing project
                                      (reads forge.config.yaml)
 
 ${bold("Options:")}
   --help           Show this help message and exit
+  --out <dir>      Target project directory (fresh-gen: created; --sync: default cwd)
+  --name <name>    Project name for fresh generation (default: my-app)
+  --features <a,b,c> Comma-separated feature ids to enable for fresh generation
+                    (e.g. i18n,theming,mock,auth,dataTable,notifications,forms)
   --sync           Non-interactive: read forge.config.yaml and sync enabled
                     features into the project (add/remove files, reconcile deps)
-  --force          With --sync: overwrite locally-edited files instead of
-                    warning and skipping
-  --out <dir>      Target project directory for --sync (default: cwd)
+  --force          Overwrite locally-edited files instead of warning and skipping
 `);
 }
 
 function parseFlags(argv) {
-  const flags = { help: false, sync: false, force: false, out: undefined };
+  const flags = {
+    help: false,
+    sync: false,
+    force: false,
+    out: undefined,
+    name: undefined,
+    features: undefined,
+  };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === "--help" || arg === "-h") flags.help = true;
     else if (arg === "--sync") flags.sync = true;
     else if (arg === "--force") flags.force = true;
     else if (arg === "--out") flags.out = argv[++i];
+    else if (arg === "--name") flags.name = argv[++i];
+    else if (arg === "--features") flags.features = argv[++i];
   }
   return flags;
+}
+
+// Read code-convention tokens (apiBaseUrl, timeout) from template.yaml.
+function readManifestConventions() {
+  let apiBaseUrl = "/api";
+  let timeout = "8000";
+  const manifestPath = join(__dir, "template.yaml");
+  if (existsSync(manifestPath)) {
+    const manifest = parseYaml(readFileSync(manifestPath, "utf8"));
+    if (manifest.conventions?.apiBaseUrl) {
+      apiBaseUrl = manifest.conventions.apiBaseUrl;
+    }
+    if (manifest.conventions?.timeout) {
+      timeout = String(manifest.conventions.timeout);
+    }
+  }
+  return { apiBaseUrl, timeout };
+}
+
+// Shared core for both fresh generation and --sync: copy templates/base,
+// then run the feature sync engine (features + aggregators + dep reconcile).
+function copyBaseAndSync({ projectDir, config, tokens, force }) {
+  const featuresDir = join(__dir, "templates", "features");
+  if (!existsSync(featuresDir)) {
+    console.log(
+      yellow(
+        `⚠  templates/features not found at ${featuresDir} — nothing to sync yet.`,
+      ),
+    );
+    return undefined;
+  }
+
+  const baseDir = join(__dir, "templates", "base");
+  if (existsSync(baseDir)) {
+    const baseResult = copyBase({ projectDir, baseDir, tokens, force });
+    console.log(
+      green("✓") +
+        ` Base skeleton: ${baseResult.written.length} written, ${baseResult.skipped.length} skipped`,
+    );
+  } else {
+    console.log(
+      yellow(
+        `⚠  templates/base not found at ${baseDir} — skipping base skeleton copy.`,
+      ),
+    );
+  }
+
+  const result = sync({ projectDir, featuresDir, config, tokens, force });
+
+  console.log(green("✓") + " Sync complete");
+  console.log(
+    `  ${dim("Added:")}   ${result.added.length ? result.added.join(", ") : dim("(none)")}`,
+  );
+  console.log(
+    `  ${dim("Removed:")} ${result.removed.length ? result.removed.join(", ") : dim("(none)")}`,
+  );
+  for (const w of result.warnings) {
+    console.log(`  ${yellow("⚠")} ${w}`);
+  }
+  return result;
+}
+
+// Build a package.json seeded with the BASE deps/devDeps from template.yaml.
+// Feature deps are added afterwards by sync's reconcileDeps.
+function genBasePackageJson(projectName) {
+  const manifestPath = join(__dir, "template.yaml");
+  const manifest = existsSync(manifestPath)
+    ? parseYaml(readFileSync(manifestPath, "utf8"))
+    : {};
+  const deps = Object.fromEntries(
+    (manifest.dependencies ?? []).map((d) => splitPackage(d)),
+  );
+  const devDeps = Object.fromEntries(
+    (manifest.devDependencies ?? []).map((d) => splitPackage(d)),
+  );
+  const pkg = {
+    name: projectName,
+    private: true,
+    version: "0.0.0",
+    type: "module",
+    scripts: {
+      dev: "vite",
+      build: "tsc -b && vite build",
+      lint: "eslint .",
+      preview: "vite preview",
+    },
+    dependencies: Object.fromEntries(Object.entries(deps).sort()),
+    devDependencies: Object.fromEntries(Object.entries(devDeps).sort()),
+  };
+  return JSON.stringify(pkg, null, 2) + "\n";
+}
+
+// Non-interactive fresh generation: writes a COMPLETE, installable project
+// (package.json, tsconfig*, vite/eslint config, forge.config.yaml) then runs
+// the shared base-copy + sync core.
+async function runFreshGen({ out, name, features, force }) {
+  const projectName = name || "my-app";
+  const projectDir = resolve(process.cwd(), out);
+  mkdir(projectDir);
+
+  write(join(projectDir, "package.json"), genBasePackageJson(projectName));
+  write(join(projectDir, "vite.config.ts"), genViteConfig());
+  write(join(projectDir, "tsconfig.json"), genTsConfig());
+  write(join(projectDir, "tsconfig.app.json"), genTsConfigApp());
+  write(join(projectDir, "tsconfig.node.json"), genTsConfigNode());
+  write(join(projectDir, "eslint.config.js"), genEslintConfig());
+
+  const featuresConfig = {};
+  for (const id of features) {
+    featuresConfig[id] = id === "i18n" ? { languages: ["fr", "en"] } : true;
+  }
+  const config = {
+    project: projectName,
+    packageManager: "pnpm",
+    features: featuresConfig,
+  };
+  writeConfig(join(projectDir, "forge.config.yaml"), config);
+
+  const tokens = { projectName, ...readManifestConventions() };
+
+  console.log(`\n${bold("Generating project...")}`);
+  console.log(`  ${dim("Project:")}  ${cyan(projectName)}`);
+  console.log(`  ${dim("Output:")}   ${cyan(projectDir)}`);
+  console.log(`  ${dim("Features:")} ${cyan(features.join(", ") || "(none)")}`);
+
+  copyBaseAndSync({ projectDir, config, tokens, force });
+
+  console.log(`\nRun: ${bold(`cd ${projectDir} && pnpm install`)}`);
 }
 
 async function runSync({ out, force }) {
@@ -968,58 +1110,8 @@ async function runSync({ out, force }) {
 
   try {
     const config = readConfig(configPath);
-    const featuresDir = join(__dir, "templates", "features");
-
-    if (!existsSync(featuresDir)) {
-      console.log(
-        yellow(
-          `⚠  templates/features not found at ${featuresDir} — nothing to sync yet.`,
-        ),
-      );
-      return;
-    }
-
-    let apiBaseUrl = "/api";
-    let timeout = "8000";
-    const manifestPath = join(__dir, "template.yaml");
-    if (existsSync(manifestPath)) {
-      const manifest = parseYaml(readFileSync(manifestPath, "utf8"));
-      if (manifest.conventions?.apiBaseUrl) {
-        apiBaseUrl = manifest.conventions.apiBaseUrl;
-      }
-      if (manifest.conventions?.timeout) {
-        timeout = String(manifest.conventions.timeout);
-      }
-    }
-
-    const tokens = { projectName: config.project, apiBaseUrl, timeout };
-
-    const baseDir = join(__dir, "templates", "base");
-    if (existsSync(baseDir)) {
-      const baseResult = copyBase({ projectDir, baseDir, tokens, force });
-      console.log(
-        green("✓") +
-          ` Base skeleton: ${baseResult.written.length} written, ${baseResult.skipped.length} skipped`,
-      );
-    } else {
-      console.log(
-        yellow(`⚠  templates/base not found at ${baseDir} — skipping base skeleton copy.`),
-      );
-    }
-
-    const result = sync({ projectDir, featuresDir, config, tokens, force });
-
-    console.log(green("✓") + " Sync complete");
-    console.log(
-      `  ${dim("Added:")}   ${result.added.length ? result.added.join(", ") : dim("(none)")}`,
-    );
-    console.log(
-      `  ${dim("Removed:")} ${result.removed.length ? result.removed.join(", ") : dim("(none)")}`,
-    );
-    for (const w of result.warnings) {
-      console.log(`  ${yellow("⚠")} ${w}`);
-    }
-
+    const tokens = { projectName: config.project, ...readManifestConventions() };
+    copyBaseAndSync({ projectDir, config, tokens, force });
     console.log(`\nRun: ${bold(`${config.packageManager} install`)}`);
   } catch (err) {
     console.error(red("✗ Sync failed:"), err.message);
@@ -1038,6 +1130,25 @@ async function main() {
 
   if (flags.sync) {
     await runSync({ out: flags.out, force: flags.force });
+    return;
+  }
+
+  // Non-interactive fresh generation: triggered by --features (and/or --name).
+  if (flags.features !== undefined || flags.name !== undefined) {
+    if (!flags.out) {
+      console.error(red("✗ --out <dir> is required for fresh generation."));
+      process.exit(1);
+    }
+    const features = (flags.features ?? "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    await runFreshGen({
+      out: flags.out,
+      name: flags.name,
+      features,
+      force: flags.force,
+    });
     return;
   }
 
