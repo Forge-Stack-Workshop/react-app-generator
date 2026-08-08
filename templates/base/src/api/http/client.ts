@@ -24,7 +24,8 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     });
 
     if (!res.ok) {
-      const error = new Error(`HTTP ${res.status} — ${res.statusText}`);
+      const error = new Error(`HTTP ${res.status} — ${res.statusText}`) as Error & { status?: number };
+      error.status = res.status;
       for (const handler of responseErrorHandlers) handler(error);
       throw error;
     }
