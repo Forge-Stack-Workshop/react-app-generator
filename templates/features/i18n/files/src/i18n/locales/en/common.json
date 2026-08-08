@@ -34,7 +34,7 @@
   },
   "users_kpi_title": "Users",
   "users_connected": "connected users",
-  "users_total": "out of {{ total }}",
+  "users_total": "out of {{total}}",
   "shuttles_kpi_title": "Shuttles",
   "shuttles_online": "Online",
   "shuttles_unstable": "Unstable",

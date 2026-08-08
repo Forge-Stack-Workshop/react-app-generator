@@ -59,6 +59,17 @@ describe("i18n feature module", () => {
     expect(pkg.dependencies["i18next-browser-languagedetector"]).toBe("^8.2.1");
   });
 
+  it("copies locale JSON raw, preserving i18next {{var}} interpolation", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const en = readFileSync(
+      join(projectDir, "src/i18n/locales/en/common.json"),
+      "utf8",
+    );
+    // JSON is copied byte-for-byte, so i18next's own {{total}} interpolation
+    // survives untouched — it must NOT collide with the scaffold token renderer.
+    expect(en).toContain("{{total}}");
+  });
+
   it("wires I18nProvider into the generated providers aggregator", () => {
     sync({ projectDir, featuresDir, config, tokens });
     const providers = readFileSync(

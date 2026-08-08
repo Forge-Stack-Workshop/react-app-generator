@@ -34,7 +34,7 @@
   },
   "users_kpi_title": "Utilisateurs",
   "users_connected": "utilisateurs connectés",
-  "users_total": "sur {{ total }}",
+  "users_total": "sur {{total}}",
   "shuttles_kpi_title": "Véhicules",
   "shuttles_online": "En ligne",
   "shuttles_unstable": "Instables",

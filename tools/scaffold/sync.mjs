@@ -14,11 +14,15 @@ import { reconcileDeps } from "./deps.mjs";
 import { readState, writeState, hashContent } from "./state.mjs";
 import { renderTokens, listFiles } from "./render.mjs";
 
+// NB: ".json" is intentionally excluded. Scaffold tokens ({{token}}) only ever
+// appear in code/config/HTML, never in JSON data — and i18next locale files use
+// the same {{var}} syntax for their own runtime interpolation. Rendering JSON
+// would collide with that. JSON is therefore copied raw; package.json deps are
+// reconciled separately by reconcileDeps, not via renderTokens.
 const TEXT_EXTENSIONS = new Set([
   ".ts",
   ".tsx",
   ".scss",
-  ".json",
   ".md",
   ".html",
   ".css",

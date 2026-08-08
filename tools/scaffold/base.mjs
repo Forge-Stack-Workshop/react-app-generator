@@ -8,6 +8,10 @@ import {
 import { dirname, join } from "node:path";
 import { renderTokens, listFiles } from "./render.mjs";
 
+// NB: ".json" is intentionally excluded — scaffold tokens ({{token}}) never
+// appear in JSON data, and i18next locale JSON uses the same {{var}} syntax for
+// runtime interpolation. JSON is copied raw to avoid that collision. See
+// sync.mjs for the matching rationale.
 const TEXT_EXTENSIONS = new Set([
   ".ts",
   ".tsx",
@@ -15,7 +19,6 @@ const TEXT_EXTENSIONS = new Set([
   ".jsx",
   ".scss",
   ".css",
-  ".json",
   ".md",
   ".html",
   ".txt",
