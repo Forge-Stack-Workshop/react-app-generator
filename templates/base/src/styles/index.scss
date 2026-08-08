@@ -1,0 +1,19 @@
+@use "./mixins" as *;
+@import "./reset";
+@import "./variables";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+::selection {
+  background: var(--primary);
+  color: white;
+}
