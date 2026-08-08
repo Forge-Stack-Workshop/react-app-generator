@@ -69,6 +69,30 @@ features:
     devDeps:
       - msw@^2.15.0
 
+  - id: auth
+    name: Auth + route guards
+    description: Login page, token storage, protected routes, useAuth, 401 handling
+    default: false
+
+  - id: dataTable
+    name: Data table
+    description: Sortable, client-paginated generic table wired for any row type
+    default: false
+
+  - id: notifications
+    name: Toasts + error boundary
+    description: Toast notifications, a global error boundary, and 403/500 error pages
+    default: false
+
+  - id: forms
+    name: Forms + validation
+    description: react-hook-form + zod typed forms with a Form wrapper and Field components
+    default: false
+    deps:
+      - react-hook-form@^7.53.0
+      - zod@^3.23.8
+      - "@hookform/resolvers@^3.9.0"
+
 # ----------------------------------------------------------
 # Domains — scaffold.mjs prompts for these interactively.
 # Each entry generates: types.ts, queries.ts, mapper.ts, index.ts

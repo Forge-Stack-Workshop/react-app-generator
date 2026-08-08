@@ -15,13 +15,8 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "lcov"],
-      include: ["src/**/*.{ts,tsx}"],
-      exclude: [
-        "src/**/*.test.{ts,tsx}",
-        "src/test/**",
-        "src/main.tsx",
-        "src/**/*.d.ts",
-      ],
+      include: ["tools/scaffold/**/*.mjs"],
+      exclude: ["tools/scaffold/**/*.test.mjs"],
       thresholds: {
         lines: 85,
         functions: 85,

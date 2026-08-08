@@ -1072,36 +1072,42 @@ function genBasePackageJson(projectName) {
 async function runFreshGen({ out, name, features, force }) {
   const projectName = name || "my-app";
   const projectDir = resolve(process.cwd(), out);
-  mkdir(projectDir);
 
-  write(join(projectDir, "package.json"), genBasePackageJson(projectName));
-  write(join(projectDir, "vite.config.ts"), genViteConfig());
-  write(join(projectDir, "tsconfig.json"), genTsConfig());
-  write(join(projectDir, "tsconfig.app.json"), genTsConfigApp());
-  write(join(projectDir, "tsconfig.node.json"), genTsConfigNode());
-  write(join(projectDir, "eslint.config.js"), genEslintConfig());
+  try {
+    mkdir(projectDir);
 
-  const featuresConfig = {};
-  for (const id of features) {
-    featuresConfig[id] = id === "i18n" ? { languages: ["fr", "en"] } : true;
+    write(join(projectDir, "package.json"), genBasePackageJson(projectName));
+    write(join(projectDir, "vite.config.ts"), genViteConfig());
+    write(join(projectDir, "tsconfig.json"), genTsConfig());
+    write(join(projectDir, "tsconfig.app.json"), genTsConfigApp());
+    write(join(projectDir, "tsconfig.node.json"), genTsConfigNode());
+    write(join(projectDir, "eslint.config.js"), genEslintConfig());
+
+    const featuresConfig = {};
+    for (const id of features) {
+      featuresConfig[id] = id === "i18n" ? { languages: ["fr", "en"] } : true;
+    }
+    const config = {
+      project: projectName,
+      packageManager: "pnpm",
+      features: featuresConfig,
+    };
+    writeConfig(join(projectDir, "forge.config.yaml"), config);
+
+    const tokens = { projectName, ...readManifestConventions() };
+
+    console.log(`\n${bold("Generating project...")}`);
+    console.log(`  ${dim("Project:")}  ${cyan(projectName)}`);
+    console.log(`  ${dim("Output:")}   ${cyan(projectDir)}`);
+    console.log(`  ${dim("Features:")} ${cyan(features.join(", ") || "(none)")}`);
+
+    copyBaseAndSync({ projectDir, config, tokens, force });
+
+    console.log(`\nRun: ${bold(`cd ${projectDir} && pnpm install`)}`);
+  } catch (err) {
+    console.error(red("✗ Generation failed:"), err.message);
+    process.exitCode = 1;
   }
-  const config = {
-    project: projectName,
-    packageManager: "pnpm",
-    features: featuresConfig,
-  };
-  writeConfig(join(projectDir, "forge.config.yaml"), config);
-
-  const tokens = { projectName, ...readManifestConventions() };
-
-  console.log(`\n${bold("Generating project...")}`);
-  console.log(`  ${dim("Project:")}  ${cyan(projectName)}`);
-  console.log(`  ${dim("Output:")}   ${cyan(projectDir)}`);
-  console.log(`  ${dim("Features:")} ${cyan(features.join(", ") || "(none)")}`);
-
-  copyBaseAndSync({ projectDir, config, tokens, force });
-
-  console.log(`\nRun: ${bold(`cd ${projectDir} && pnpm install`)}`);
 }
 
 async function runSync({ out, force }) {
