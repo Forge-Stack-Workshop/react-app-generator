@@ -10,5 +10,5 @@ options:
   languages: "[fr, en]"
 contributes:
   providers:
-    - import: ./features/i18n/I18nProvider
+    - import: features/i18n/I18nProvider
       component: I18nProvider

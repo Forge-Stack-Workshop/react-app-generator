@@ -4,5 +4,5 @@ description: CSS variables for dark mode, useTheme hook, Header toggle
 default: true
 contributes:
   providers:
-    - import: ./features/theming/ThemeProvider
+    - import: features/theming/ThemeProvider
       component: ThemeProvider

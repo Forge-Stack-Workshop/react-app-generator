@@ -70,14 +70,19 @@ describe("i18n feature module", () => {
     expect(en).toContain("{{total}}");
   });
 
-  it("wires I18nProvider into the generated providers aggregator", () => {
+  it("wires I18nProvider into the generated providers aggregator at a path that actually resolves", () => {
     sync({ projectDir, featuresDir, config, tokens });
     const providers = readFileSync(
       join(projectDir, "src/app/providers.generated.tsx"),
       "utf8",
     );
     expect(providers).toContain("I18nProvider");
-    expect(providers).toContain("./features/i18n/I18nProvider");
+    // providers.generated.tsx lives at src/app/, so the import must climb out
+    // with `../` to reach src/features/i18n/I18nProvider.tsx.
+    expect(providers).toContain('from "../features/i18n/I18nProvider"');
+    expect(
+      existsSync(join(projectDir, "src/features/i18n/I18nProvider.tsx")),
+    ).toBe(true);
   });
 });
 
@@ -101,14 +106,19 @@ describe("theming feature module", () => {
     expect(existsSync(join(projectDir, "src/styles/_theme.scss"))).toBe(true);
   });
 
-  it("wires ThemeProvider into the generated providers aggregator", () => {
+  it("wires ThemeProvider into the generated providers aggregator at a path that actually resolves", () => {
     sync({ projectDir, featuresDir, config, tokens });
     const providers = readFileSync(
       join(projectDir, "src/app/providers.generated.tsx"),
       "utf8",
     );
     expect(providers).toContain("ThemeProvider");
-    expect(providers).toContain("./features/theming/ThemeProvider");
+    // providers.generated.tsx lives at src/app/, so the import must climb out
+    // with `../` to reach src/features/theming/ThemeProvider.tsx.
+    expect(providers).toContain('from "../features/theming/ThemeProvider"');
+    expect(
+      existsSync(join(projectDir, "src/features/theming/ThemeProvider.tsx")),
+    ).toBe(true);
   });
 
   it("adds no new dependencies to package.json", () => {
