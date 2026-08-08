@@ -1,0 +1,17 @@
+id: notifications
+name: Toasts + error boundary
+description: Toast notifications, a global error boundary, and 403/500 error pages
+default: false
+contributes:
+  providers:
+    - import: features/notifications/ErrorBoundary
+      component: ErrorBoundary
+    - import: features/notifications/ToastProvider
+      component: ToastProvider
+  routes:
+    - path: /403
+      import: pages/Forbidden
+      component: Forbidden
+    - path: /500
+      import: pages/ServerError
+      component: ServerError

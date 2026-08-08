@@ -286,3 +286,68 @@ describe("dataTable feature module", () => {
     expect(providers).not.toContain("DataTable");
   });
 });
+
+describe("notifications feature module", () => {
+  const config = {
+    project: "app",
+    packageManager: "npm",
+    features: { notifications: true },
+  };
+
+  it("copies the notifications source and error pages into the project", () => {
+    const r = sync({ projectDir, featuresDir, config, tokens });
+    expect(r.added).toContain("notifications");
+    expect(
+      existsSync(join(projectDir, "src/features/notifications/ErrorBoundary.tsx")),
+    ).toBe(true);
+    expect(
+      existsSync(join(projectDir, "src/features/notifications/ToastProvider.tsx")),
+    ).toBe(true);
+    expect(
+      existsSync(join(projectDir, "src/features/notifications/useToast.ts")),
+    ).toBe(true);
+    expect(existsSync(join(projectDir, "src/pages/Forbidden.tsx"))).toBe(true);
+    expect(existsSync(join(projectDir, "src/pages/ServerError.tsx"))).toBe(true);
+  });
+
+  it("wires ErrorBoundary and ToastProvider into the providers aggregator, ErrorBoundary outermost", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const providers = readFileSync(
+      join(projectDir, "src/app/providers.generated.tsx"),
+      "utf8",
+    );
+    expect(providers).toContain("ErrorBoundary");
+    expect(providers).toContain("ToastProvider");
+    expect(providers).toContain('from "../features/notifications/ErrorBoundary"');
+    expect(providers).toContain('from "../features/notifications/ToastProvider"');
+    // ErrorBoundary must nest OUTSIDE ToastProvider: its opening tag comes
+    // first in the generated JSX so it catches errors thrown by ToastProvider
+    // and the rest of the app.
+    const errorBoundaryOpenIdx = providers.indexOf("<ErrorBoundary");
+    const toastProviderOpenIdx = providers.indexOf("<ToastProvider");
+    expect(errorBoundaryOpenIdx).toBeGreaterThan(-1);
+    expect(toastProviderOpenIdx).toBeGreaterThan(-1);
+    expect(errorBoundaryOpenIdx).toBeLessThan(toastProviderOpenIdx);
+  });
+
+  it("wires Forbidden and ServerError routes into the routes aggregator at resolving paths", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const routes = readFileSync(
+      join(projectDir, "src/app/routes.generated.tsx"),
+      "utf8",
+    );
+    expect(routes).toContain("Forbidden");
+    expect(routes).toContain("ServerError");
+    expect(routes).toContain('from "../pages/Forbidden"');
+    expect(routes).toContain('from "../pages/ServerError"');
+  });
+
+  it("adds no new dependencies to package.json", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const pkg = JSON.parse(
+      readFileSync(join(projectDir, "package.json"), "utf8"),
+    );
+    expect(pkg.dependencies).toEqual({});
+    expect(pkg.devDependencies).toEqual({});
+  });
+});
