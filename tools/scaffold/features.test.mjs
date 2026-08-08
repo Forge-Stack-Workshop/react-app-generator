@@ -241,3 +241,48 @@ describe("auth feature module", () => {
     expect(pkg.devDependencies).toEqual({});
   });
 });
+
+describe("dataTable feature module", () => {
+  const config = {
+    project: "app",
+    packageManager: "npm",
+    features: { dataTable: true },
+  };
+
+  it("copies the DataTable component source into the project", () => {
+    const r = sync({ projectDir, featuresDir, config, tokens });
+    expect(r.added).toContain("dataTable");
+    expect(
+      existsSync(join(projectDir, "src/components/table/DataTable.tsx")),
+    ).toBe(true);
+    expect(
+      existsSync(join(projectDir, "src/components/table/useTableState.ts")),
+    ).toBe(true);
+    expect(
+      existsSync(join(projectDir, "src/components/table/DataTable.module.scss")),
+    ).toBe(true);
+  });
+
+  it("adds no new dependencies to package.json", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const pkg = JSON.parse(readFileSync(join(projectDir, "package.json"), "utf8"));
+    expect(pkg.dependencies).toEqual({});
+    expect(pkg.devDependencies).toEqual({});
+  });
+
+  it("is inert for the generated aggregators (contributes is empty)", () => {
+    sync({ projectDir, featuresDir, config, tokens });
+    const routes = readFileSync(
+      join(projectDir, "src/app/routes.generated.tsx"),
+      "utf8",
+    );
+    const providers = readFileSync(
+      join(projectDir, "src/app/providers.generated.tsx"),
+      "utf8",
+    );
+    expect(routes).not.toContain("dataTable");
+    expect(routes).not.toContain("DataTable");
+    expect(providers).not.toContain("dataTable");
+    expect(providers).not.toContain("DataTable");
+  });
+});

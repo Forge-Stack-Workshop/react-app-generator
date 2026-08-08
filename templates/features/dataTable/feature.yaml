@@ -1,0 +1,5 @@
+id: dataTable
+name: Data table
+description: Sortable, client-paginated generic table wired for any row type
+default: false
+contributes: {}
