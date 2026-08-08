@@ -1,14 +1,14 @@
 # base
 
 **Role.** The always-emitted, hand-written application skeleton. The sync engine
-copies every file under `templates/base/**` verbatim (after `{{token}}` substitution)
+copies every file under `templates/base/**` verbatim (after token substitution)
 into every generated project, regardless of which features are enabled.
 
 ## Structure
 
 | Path                            | Purpose                                                             |
 | ------------------------------- | ------------------------------------------------------------------ |
-| `index.html`                    | Vite entry HTML. `{{projectName}}` fills the `<title>`.            |
+| `index.html`                    | Vite entry HTML. The `projectName` token fills the `<title>`.      |
 | `src/main.tsx`                  | Mounts React, wraps `<App />` in `QueryClientProvider` + `FeatureProviders`. |
 | `src/App.tsx`                   | Renders the router via `RouterProvider`.                           |
 | `src/app/router.tsx`            | Hand-written router; spreads `featureRoutes` from `routes.generated`. |
@@ -33,8 +33,10 @@ into every generated project, regardless of which features are enabled.
 
 ## Rules
 
-- Tokenize project-specific literals with `{{projectName}}`, `{{apiBaseUrl}}`,
-  `{{timeout}}`. Only tokens the sync engine provides may appear.
+- Tokenize project-specific literals with the `projectName`, `apiBaseUrl`, and
+  `timeout` tokens (double-brace form in real source files). Only tokens the sync
+  engine provides may appear, and never in prose or docs like this README — the
+  render step throws on any unknown double-brace sequence.
 - This tree does **not** typecheck in isolation — the `*.generated` imports are
   absent until a project is synced. Full compilation is validated on a synced project.
 - React 19 + React Router v7 (data router) + React Query v5 + SCSS modules.
