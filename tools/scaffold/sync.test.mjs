@@ -58,6 +58,14 @@ describe("sync add/remove", () => {
     expect(r.added).toEqual([]);
   });
 
+  it("merges user-config feature options into render tokens", () => {
+    scaffoldFeature(featuresDir, "opt", { "src/features/opt/config.ts": "export const LANGS = {{langs}};\n" });
+    sync({ projectDir: project, featuresDir,
+      config: { project: "app", packageManager: "npm", features: { opt: { langs: ["fr", "en"] } } }, tokens });
+    const rendered = readFileSync(join(project, "src/features/opt/config.ts"), "utf8");
+    expect(rendered).toContain('["fr","en"]');
+  });
+
   it("refuses to delete a hand-edited owned file without force", () => {
     sync({ projectDir: project, featuresDir,
       config: { project: "app", packageManager: "npm", features: { widget: true } }, tokens });

@@ -42,6 +42,14 @@ function isTextFile(path) {
   return TEXT_EXTENSIONS.has(path.slice(dot).toLowerCase());
 }
 
+// Effective options for a feature: manifest defaults (feature.options)
+// overridden by the user's per-feature config (config.features[id] when object).
+function effectiveOptions(feature, config) {
+  const userOpts = config.features?.[feature.id];
+  const overrides = userOpts && typeof userOpts === "object" ? userOpts : {};
+  return { ...(feature.options ?? {}), ...overrides };
+}
+
 // Option values may be arrays: JSON.stringify arrays; coerce other
 // non-string scalars to their String() form so renderTokens can substitute them.
 function tokensWithOptions(tokens, options) {
@@ -95,7 +103,7 @@ export function sync({ projectDir, featuresDir, config, tokens, force = false })
       continue;
     }
     const srcRoot = join(featuresDir, feature.id, "files");
-    const featureTokens = tokensWithOptions(tokens, feature.options);
+    const featureTokens = tokensWithOptions(tokens, effectiveOptions(feature, config));
     const files = {};
     for (const rel of listFiles(srcRoot)) {
       const hash = copyRendered(join(srcRoot, rel), join(projectDir, rel), featureTokens);
