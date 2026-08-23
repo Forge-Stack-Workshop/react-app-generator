@@ -104,44 +104,7 @@ ${c.cyan}╔══════════════════════�
 `);
 }
 
-// ── File generators ───────────────────────────────────────────────────────────
-
-function genPackageJson(config) {
-  const deps = { ...config.baseDeps };
-  const devDeps = { ...config.baseDevDeps };
-
-  for (const feat of config.features) {
-    for (const d of feat.deps ?? []) {
-      const [name, ver] = splitPackage(d);
-      deps[name] = ver;
-    }
-    for (const d of feat.devDeps ?? []) {
-      const [name, ver] = splitPackage(d);
-      devDeps[name] = ver;
-    }
-  }
-
-  const pkg = {
-    name: config.projectName,
-    private: true,
-    version: "0.0.0",
-    type: "module",
-    scripts: {
-      dev: "vite",
-      build: "tsc -b && vite build",
-      lint: "eslint .",
-      preview: "vite preview",
-    },
-    dependencies: Object.fromEntries(Object.entries(deps).sort()),
-    devDependencies: Object.fromEntries(Object.entries(devDeps).sort()),
-  };
-
-  if (config.features.some((f) => f.id === "mock")) {
-    pkg.msw = { workerDirectory: ["public"] };
-  }
-
-  return JSON.stringify(pkg, null, 2);
-}
+// ── Config-file generators (used by fresh generation) ───────────────────────────
 
 function splitPackage(spec) {
   // "@scope/pkg@version" or "pkg@version"
@@ -253,681 +216,6 @@ export default defineConfig([
   },
 ]);
 `;
-}
-
-function genI18nIndex(languages) {
-  const imports = languages
-    .map((l) => `import ${l.id} from "./locales/${l.id}/common.json";`)
-    .join("\n");
-  const resources = languages
-    .map((l) => `      ${l.id}: { common: ${l.id} },`)
-    .join("\n");
-
-  return `import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
-${imports}
-
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    fallbackLng: "${languages[0]?.id ?? "en"}",
-    detection: {
-      order: ["localStorage", "navigator", "htmlTag"],
-      caches: ["localStorage"],
-    },
-    interpolation: { escapeValue: false },
-    resources: {
-${resources}
-    },
-  });
-`;
-}
-
-function genCommonJson(langId) {
-  const base = {
-    loading: "Loading...",
-    not_found: "Page not found",
-    go_home: "Go back home",
-    error: "An error occurred",
-    retry: "Retry",
-    theme: {
-      toggle: langId === "fr" ? "Changer le thème" : "Toggle theme",
-    },
-    nav: {
-      home: langId === "fr" ? "Accueil" : "Home",
-    },
-  };
-  return JSON.stringify(base, null, 2);
-}
-
-function genMockServer(domains) {
-  const imports = domains
-    .map(
-      (d) => `import { ${d.id}Handlers } from "./handlers/${d.id}.handlers";`,
-    )
-    .join("\n");
-  const spread = domains.map((d) => `...${d.id}Handlers`).join(", ");
-
-  return `import { setupWorker } from "msw/browser";
-${imports}
-
-export const worker = setupWorker(${spread});
-`;
-}
-
-function genMockHandler(domain) {
-  return `import { http, HttpResponse, delay } from "msw";
-
-export const ${domain.id}Handlers = [
-  http.get("/api/${domain.id}", async () => {
-    await delay(500);
-    return HttpResponse.json([
-      // Add mock data for ${domain.name ?? domain.id} here
-    ]);
-  }),
-];
-`;
-}
-
-function genDomainTypes(domain) {
-  const typeName = capitalize(domain.id);
-  return `// ${domain.name ?? capitalize(domain.id)} domain types
-
-export interface ${typeName} {
-  id: string;
-  name: string;
-  // TODO: add fields
-}
-
-export type ${typeName}Status = "active" | "inactive";
-`;
-}
-
-function genDomainQueries(domain) {
-  const typeName = capitalize(domain.id);
-  return `import { useQuery } from "@tanstack/react-query";
-import type { ${typeName} } from "./types";
-
-export function use${typeName}sQuery() {
-  return useQuery<${typeName}[]>({
-    queryKey: ["${domain.id}"],
-    queryFn: async () => {
-      const res = await fetch("/api/${domain.id}");
-      if (!res.ok) throw new Error("Failed to fetch ${domain.id}");
-      return res.json();
-    },
-  });
-}
-`;
-}
-
-function genDomainMapper(domain) {
-  const typeName = capitalize(domain.id);
-  return `import type { ${typeName} } from "./types";
-
-// Map raw API response to domain model
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function map${typeName}(raw: any): ${typeName} {
-  return {
-    id: String(raw.id),
-    name: String(raw.name),
-  };
-}
-`;
-}
-
-function genDomainIndex(domain) {
-  return `export * from "./types";
-export * from "./queries";
-`;
-}
-
-function genPageTsx(name, hasScss = true) {
-  const cssImport = hasScss
-    ? `import styles from "./${name}.module.scss";\n`
-    : "";
-  return `${cssImport}
-export default function ${name}() {
-  return (
-    <div${hasScss ? ` className={styles.page}` : ""}>
-      <h1>${name}</h1>
-    </div>
-  );
-}
-`;
-}
-
-function genPageScss(name) {
-  return `.page {
-  padding: var(--space-lg);
-}
-`;
-}
-
-function genNotFound() {
-  return `import { Link } from "react-router-dom";
-import styles from "./NotFound.module.scss";
-
-export default function NotFound() {
-  return (
-    <div className={styles.page}>
-      <h1>404</h1>
-      <p>Page not found.</p>
-      <Link to="/">Go back home</Link>
-    </div>
-  );
-}
-`;
-}
-
-function genLayoutTsx(config) {
-  const hasI18n = config.features.some((f) => f.id === "i18n");
-  const hasTheme = config.features.some((f) => f.id === "theming");
-
-  return `import { Outlet } from "react-router-dom";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
-import styles from "./Layout.module.scss";
-
-export default function Layout() {
-  return (
-    <div className={styles.layout}>
-      <Header />
-      <div className={styles.body}>
-        <Sidebar />
-        <main className={styles.content}>
-          <Outlet />
-        </main>
-      </div>
-    </div>
-  );
-}
-`;
-}
-
-function genLayoutScss() {
-  return `.layout {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-.body {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
-
-.content {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--space-lg);
-}
-`;
-}
-
-function genHeaderTsx(config) {
-  const hasTheme = config.features.some((f) => f.id === "theming");
-  const hasI18n = config.features.some((f) => f.id === "i18n");
-
-  const themeImport = hasTheme
-    ? `import { useTheme } from "../../hooks/useTheme";\n`
-    : "";
-  const i18nImport = hasI18n
-    ? `import LanguageSwitcher from "../languages/LanguageSwitcher";\n`
-    : "";
-
-  const themeHook = hasTheme
-    ? `\n  const { theme, setTheme } = useTheme();`
-    : "";
-  const themeButton = hasTheme
-    ? `\n        <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-          {theme === "dark" ? "☀️" : "🌙"}
-        </button>`
-    : "";
-  const i18nWidget = hasI18n ? `\n        <LanguageSwitcher />` : "";
-
-  return `${themeImport}${i18nImport}import styles from "./Header.module.scss";
-
-export default function Header() {${themeHook}
-
-  return (
-    <header className={styles.header}>
-      <div className={styles.logo}>${config.projectName}</div>
-      <div className={styles.actions}>${themeButton}${i18nWidget}
-      </div>
-    </header>
-  );
-}
-`;
-}
-
-function genHeaderScss() {
-  return `.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 56px;
-  padding: 0 var(--space-lg);
-  background: var(--header-bg);
-  border-bottom: var(--border-light);
-}
-
-.logo {
-  font-weight: 700;
-  font-size: var(--font-lg);
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-}
-`;
-}
-
-function genSidebarTsx(config) {
-  const links = [
-    { path: "/", label: "Home" },
-    ...config.domains.map((d) => ({
-      path: `/${d.id}`,
-      label: d.name ?? capitalize(d.id),
-    })),
-  ];
-
-  const navLinks = links
-    .map((l) => `        <NavLink to="${l.path}">${l.label}</NavLink>`)
-    .join("\n");
-
-  return `import { NavLink } from "react-router-dom";
-import styles from "./Sidebar.module.scss";
-
-export default function Sidebar() {
-  return (
-    <nav className={styles.sidebar}>
-${navLinks}
-    </nav>
-  );
-}
-`;
-}
-
-function genSidebarScss() {
-  return `.sidebar {
-  width: 200px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  padding: var(--space-md);
-  background: var(--bg-secondary);
-  border-right: var(--border-light);
-
-  a {
-    padding: var(--space-sm) var(--space-md);
-    border-radius: var(--radius-md);
-    text-decoration: none;
-    color: var(--text);
-    font-size: var(--font-sm);
-    transition: background var(--transition-fast);
-
-    &:hover {
-      background: var(--surface-hover);
-    }
-
-    &.active {
-      background: var(--primary);
-      color: white;
-    }
-  }
-}
-`;
-}
-
-function genGlobalLoader() {
-  return `import styles from "./GlobalLoader.module.scss";
-
-export default function GlobalLoader() {
-  return (
-    <div className={styles.overlay}>
-      <div className={styles.spinner} />
-    </div>
-  );
-}
-`;
-}
-
-function genGlobalLoaderScss() {
-  return `.overlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg);
-  z-index: 9999;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--border);
-  border-top-color: var(--primary);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-`;
-}
-
-function genUseTheme() {
-  return `import { useState, useEffect } from "react";
-
-export function useTheme() {
-  const [theme, setTheme] = useState<"light" | "dark">(
-    () => (localStorage.getItem("theme") as "light" | "dark") ?? "light"
-  );
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  return { theme, setTheme };
-}
-`;
-}
-
-function genUseLanguage(languages) {
-  const langMap = languages
-    .map(
-      (l) =>
-        `  ${l.id}: { label: "${l.name}", flag: "${l.flag ?? l.id + ".svg"}" },`,
-    )
-    .join("\n");
-
-  return `import { useTranslation } from "react-i18next";
-
-export function useLanguage() {
-  const { i18n } = useTranslation();
-  const languages = {
-${langMap}
-  };
-  const current = i18n.language || "${languages[0]?.id ?? "en"}";
-  return { current, languages, change: (lng: string) => i18n.changeLanguage(lng) };
-}
-`;
-}
-
-function genLanguageSwitcher() {
-  return `import { useLanguage } from "../../hooks/useLanguage";
-import styles from "./LanguageSwitcher.module.scss";
-
-export default function LanguageSwitcher() {
-  const { current, languages, change } = useLanguage();
-
-  return (
-    <div className={styles.switcher}>
-      {Object.entries(languages)
-        .filter(([id]) => id !== current)
-        .map(([id, lang]) => (
-          <button key={id} onClick={() => change(id)} className={styles.btn}>
-            {lang.label}
-          </button>
-        ))}
-    </div>
-  );
-}
-`;
-}
-
-function genLanguageSwitcherScss() {
-  return `.switcher {
-  display: flex;
-  gap: var(--space-xs);
-}
-
-.btn {
-  font-size: var(--font-xs);
-  padding: 2px 8px;
-  border: var(--border-light);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
-  transition: background var(--transition-fast);
-
-  &:hover {
-    background: var(--surface-hover);
-  }
-}
-`;
-}
-
-// ── Capitalize helper ─────────────────────────────────────────────────────────
-function capitalize(s) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-// ── Summary printer ───────────────────────────────────────────────────────────
-function printSummary(config) {
-  console.log(`\n${bold("Configuration summary:")}`);
-  console.log(`  ${dim("Project:")}  ${cyan(config.projectName)}`);
-  console.log(`  ${dim("Output:")}   ${cyan(config.outputDir)}`);
-  console.log(`  ${dim("Features:")}`);
-  for (const f of config.features) {
-    console.log(`    ${green("✓")} ${f.name}`);
-  }
-  if (config.domains.length) {
-    console.log(`  ${dim("Domains:")}`);
-    for (const d of config.domains) {
-      console.log(`    ${blue("◆")} ${d.name ?? d.id} → ${dim(`/${d.id}`)}`);
-    }
-  }
-  console.log();
-}
-
-// ── Main generator ────────────────────────────────────────────────────────────
-function generate(config) {
-  const out = config.outputDir;
-  mkdir(out);
-
-  const src = join(out, "src");
-
-  // Root config files
-  write(join(out, "package.json"), genPackageJson(config));
-  write(join(out, "vite.config.ts"), genViteConfig(config));
-  write(join(out, "tsconfig.json"), genTsConfig());
-  write(join(out, "tsconfig.app.json"), genTsConfigApp());
-  write(join(out, "tsconfig.node.json"), genTsConfigNode());
-  write(join(out, "eslint.config.js"), genEslintConfig());
-  write(join(out, "README.md"), genProjectReadme(config));
-  // NOTE: index.html is part of the base skeleton — see templates/base/index.html.
-  // It is copied by the sync engine, no longer string-generated here.
-
-  // Standardized documentation skeleton (chrysa docs-structure) — copied into every generated app.
-  const DOC_STRUCTURE_DIRS = [
-    "docs",
-    "ai",
-    "prompts",
-    "schemas",
-    "workflows",
-    "decisions",
-    "postmortems",
-    "tests",
-    "examples",
-  ];
-  for (const d of DOC_STRUCTURE_DIRS) {
-    const srcDir = join(__dir, "template-docs", d);
-    if (existsSync(srcDir)) cpSync(srcDir, join(out, d), { recursive: true });
-  }
-
-  // src/
-  // NOTE: the base skeleton (main.tsx, App.tsx, app/router.tsx, styles/**,
-  // api/http/client.ts, api/http/interceptors.ts) now lives under templates/base
-  // and is copied by the sync engine. It is no longer string-generated here.
-
-  // api/mock/
-  if (config.features.some((f) => f.id === "mock")) {
-    write(join(src, "api/mock/server.ts"), genMockServer(config.domains));
-    for (const d of config.domains) {
-      write(
-        join(src, `api/mock/handlers/${d.id}.handlers.ts`),
-        genMockHandler(d),
-      );
-    }
-    // public/mockServiceWorker.js needs to be initialized via `npx msw init`
-    mkdir(join(out, "public"));
-  }
-
-  // domain/
-  for (const d of config.domains) {
-    write(join(src, `domain/${d.id}/types.ts`), genDomainTypes(d));
-    write(join(src, `domain/${d.id}/queries.ts`), genDomainQueries(d));
-    write(join(src, `domain/${d.id}/mapper.ts`), genDomainMapper(d));
-    write(join(src, `domain/${d.id}/index.ts`), genDomainIndex(d));
-  }
-
-  // features/
-  for (const d of config.domains) {
-    write(join(src, `features/${d.id}/.gitkeep`), "");
-  }
-
-  // pages/
-  write(join(src, "pages/Home.tsx"), genPageTsx("Home"));
-  write(join(src, "pages/Home.module.scss"), genPageScss("Home"));
-  write(join(src, "pages/NotFound.tsx"), genNotFound());
-  write(join(src, "pages/NotFound.module.scss"), genPageScss("NotFound"));
-  for (const d of config.domains) {
-    const name = d.page ?? capitalize(d.id);
-    write(join(src, `pages/${name}.tsx`), genPageTsx(name));
-    write(join(src, `pages/${name}.module.scss`), genPageScss(name));
-  }
-
-  // components/layouts/
-  write(join(src, "components/layouts/Layout.tsx"), genLayoutTsx(config));
-  write(join(src, "components/layouts/Layout.module.scss"), genLayoutScss());
-  write(join(src, "components/layouts/Header.tsx"), genHeaderTsx(config));
-  write(join(src, "components/layouts/Header.module.scss"), genHeaderScss());
-  write(join(src, "components/layouts/Sidebar.tsx"), genSidebarTsx(config));
-  write(join(src, "components/layouts/Sidebar.module.scss"), genSidebarScss());
-
-  // components/loaders/
-  write(join(src, "components/loaders/GlobalLoader.tsx"), genGlobalLoader());
-  write(
-    join(src, "components/loaders/GlobalLoader.module.scss"),
-    genGlobalLoaderScss(),
-  );
-
-  // components/ui/ — placeholder
-  write(
-    join(src, "components/ui/Skeleton.tsx"),
-    `import styles from "./Skeleton.module.scss";\n\ninterface Props { width?: string; height?: string; radius?: string; }\n\nexport default function Skeleton({ width = "100%", height = "16px", radius }: Props) {\n  return <div className={styles.skeleton} style={{ width, height, borderRadius: radius }} />;\n}\n`,
-  );
-  write(
-    join(src, "components/ui/Skeleton.module.scss"),
-    `.skeleton {\n  background: var(--skeleton-base);\n  animation: shimmer 1.5s infinite;\n}\n\n@keyframes shimmer {\n  0%, 100% { opacity: 1; }\n  50% { opacity: 0.5; }\n}\n`,
-  );
-
-  // hooks/
-  if (config.features.some((f) => f.id === "theming")) {
-    write(join(src, "hooks/useTheme.ts"), genUseTheme());
-  }
-
-  const i18nFeat = config.features.find((f) => f.id === "i18n");
-  if (i18nFeat) {
-    const langs = i18nFeat.options?.languages ?? [
-      { id: "en", name: "English" },
-    ];
-    write(join(src, "hooks/useLanguage.ts"), genUseLanguage(langs));
-    write(join(src, "i18n/index.ts"), genI18nIndex(langs));
-    for (const l of langs) {
-      write(join(src, `i18n/locales/${l.id}/common.json`), genCommonJson(l.id));
-    }
-    write(
-      join(src, "components/languages/LanguageSwitcher.tsx"),
-      genLanguageSwitcher(),
-    );
-    write(
-      join(src, "components/languages/LanguageSwitcher.module.scss"),
-      genLanguageSwitcherScss(),
-    );
-  }
-
-  // utils/
-  write(join(src, "utils/.gitkeep"), "");
-
-  // assets/
-  write(join(src, "assets/.gitkeep"), "");
-}
-
-function genProjectReadme(config) {
-  const featuresList = config.features.map((f) => `- **${f.name}**`).join("\n");
-  const domainsList = config.domains.length
-    ? config.domains.map((d) => `- \`${d.id}\` → \`/${d.id}\``).join("\n")
-    : "_No domains configured_";
-
-  return `# ${config.projectName}
-
-Generated with **Forge-Stack React Scaffolder**.
-
-## Getting started
-
-\`\`\`bash
-npm install
-npm run dev
-\`\`\`
-
-## Features
-
-${featuresList}
-
-## Domains
-
-${domainsList}
-
-## Scripts
-
-| Command | Description |
-|---|---|
-| \`npm run dev\` | Start dev server |
-| \`npm run build\` | Production build |
-| \`npm run lint\` | Lint check |
-| \`npm run preview\` | Preview build |
-`;
-}
-
-// ── Prompts ───────────────────────────────────────────────────────────────────
-async function promptDomains(rl) {
-  const domains = [];
-  console.log(
-    `\n  ${cyan("?")} ${bold("Define your domain modules")} ${dim("(empty name to stop)")}`,
-  );
-
-  while (true) {
-    const id = (await ask(rl, `Domain id (e.g. products): `))
-      .trim()
-      .toLowerCase();
-    if (!id) break;
-    if (!/^[a-z][a-z0-9_-]*$/.test(id)) {
-      console.log(
-        `  ${yellow("⚠")} Invalid id — use lowercase letters, numbers, hyphens only.`,
-      );
-      continue;
-    }
-    const name =
-      (await ask(rl, `Display name (e.g. Products): `)).trim() ||
-      capitalize(id);
-    const route = `/${id}`;
-    const page = capitalize(id);
-    domains.push({ id, name, route, page });
-    console.log(`  ${green("✓")} Domain ${cyan(id)} added`);
-  }
-  return domains;
 }
 
 // ── CLI flags ─────────────────────────────────────────────────────────────────
@@ -1066,43 +354,58 @@ function genBasePackageJson(projectName) {
   return JSON.stringify(pkg, null, 2) + "\n";
 }
 
-// Non-interactive fresh generation: writes a COMPLETE, installable project
-// (package.json, tsconfig*, vite/eslint config, forge.config.yaml) then runs
-// the shared base-copy + sync core.
+// Shared fresh-generation core used by BOTH the non-interactive `--features`
+// path and the no-flag interactive path. Writes a COMPLETE, installable project
+// (package.json seeded from template.yaml base deps, tsconfig*, vite/eslint
+// config, forge.config.yaml) then runs the shared base-copy + sync core so the
+// generated app actually builds. `features` is a list of feature ids.
+function freshGenCore({ projectDir, projectName, packageManager, features, force }) {
+  mkdir(projectDir);
+
+  write(join(projectDir, "package.json"), genBasePackageJson(projectName));
+  write(join(projectDir, "vite.config.ts"), genViteConfig());
+  write(join(projectDir, "tsconfig.json"), genTsConfig());
+  write(join(projectDir, "tsconfig.app.json"), genTsConfigApp());
+  write(join(projectDir, "tsconfig.node.json"), genTsConfigNode());
+  write(join(projectDir, "eslint.config.js"), genEslintConfig());
+
+  const featuresConfig = {};
+  for (const id of features) {
+    // Every feature is enabled as a plain boolean; no feature currently takes
+    // config options (i18n ships fr/en statically — see docs/features.md).
+    featuresConfig[id] = true;
+  }
+  const config = {
+    project: projectName,
+    packageManager,
+    features: featuresConfig,
+  };
+  writeConfig(join(projectDir, "forge.config.yaml"), config);
+
+  const tokens = { projectName, ...readManifestConventions() };
+
+  console.log(`\n${bold("Generating project...")}`);
+  console.log(`  ${dim("Project:")}  ${cyan(projectName)}`);
+  console.log(`  ${dim("Output:")}   ${cyan(projectDir)}`);
+  console.log(`  ${dim("Features:")} ${cyan(features.join(", ") || "(none)")}`);
+
+  copyBaseAndSync({ projectDir, config, tokens, force });
+  return config;
+}
+
+// Non-interactive fresh generation entry (`--features`/`--name`).
 async function runFreshGen({ out, name, features, force }) {
   const projectName = name || "my-app";
   const projectDir = resolve(process.cwd(), out);
 
   try {
-    mkdir(projectDir);
-
-    write(join(projectDir, "package.json"), genBasePackageJson(projectName));
-    write(join(projectDir, "vite.config.ts"), genViteConfig());
-    write(join(projectDir, "tsconfig.json"), genTsConfig());
-    write(join(projectDir, "tsconfig.app.json"), genTsConfigApp());
-    write(join(projectDir, "tsconfig.node.json"), genTsConfigNode());
-    write(join(projectDir, "eslint.config.js"), genEslintConfig());
-
-    const featuresConfig = {};
-    for (const id of features) {
-      featuresConfig[id] = id === "i18n" ? { languages: ["fr", "en"] } : true;
-    }
-    const config = {
-      project: projectName,
+    freshGenCore({
+      projectDir,
+      projectName,
       packageManager: "pnpm",
-      features: featuresConfig,
-    };
-    writeConfig(join(projectDir, "forge.config.yaml"), config);
-
-    const tokens = { projectName, ...readManifestConventions() };
-
-    console.log(`\n${bold("Generating project...")}`);
-    console.log(`  ${dim("Project:")}  ${cyan(projectName)}`);
-    console.log(`  ${dim("Output:")}   ${cyan(projectDir)}`);
-    console.log(`  ${dim("Features:")} ${cyan(features.join(", ") || "(none)")}`);
-
-    copyBaseAndSync({ projectDir, config, tokens, force });
-
+      features,
+      force,
+    });
     console.log(`\nRun: ${bold(`cd ${projectDir} && pnpm install`)}`);
   } catch (err) {
     console.error(red("✗ Generation failed:"), err.message);
@@ -1217,26 +520,14 @@ async function main() {
     "Select features to enable",
     availableFeatures,
   );
+  const featureIds = selectedFeatures.map((f) => f.id ?? f);
 
-  // 5. Domains
-  const domains = await promptDomains(rl);
+  // 5. Confirm
+  console.log(`\n${bold("Configuration summary:")}`);
+  console.log(`  ${dim("Project:")}  ${cyan(projectName)}`);
+  console.log(`  ${dim("Output:")}   ${cyan(outputDir)}`);
+  console.log(`  ${dim("Features:")} ${cyan(featureIds.join(", ") || "(none)")}`);
 
-  // 6. Confirm
-  const config = {
-    projectName,
-    outputDir,
-    pm,
-    features: selectedFeatures,
-    domains,
-    baseDeps: Object.fromEntries(
-      (manifest.dependencies ?? []).map((d) => splitPackage(d)),
-    ),
-    baseDevDeps: Object.fromEntries(
-      (manifest.devDependencies ?? []).map((d) => splitPackage(d)),
-    ),
-  };
-
-  printSummary(config);
   const go = await confirm(rl, "Generate project?", true);
   rl.close();
 
@@ -1245,13 +536,23 @@ async function main() {
     process.exit(0);
   }
 
-  // 7. Generate files
-  console.log(`\n${bold("Generating project...")} `);
-  generate(config);
-  console.log(green("✓") + " Files written");
+  // 6. Generate — SAME fresh-generation core as the non-interactive path.
+  try {
+    freshGenCore({
+      projectDir: outputDir,
+      projectName,
+      packageManager: pm,
+      features: featureIds,
+      force: flags.force,
+    });
+    console.log(green("✓") + " Files written");
+  } catch (err) {
+    console.error(red("✗ Generation failed:"), err.message);
+    process.exit(1);
+  }
 
-  // 8. Install MSW worker if mock enabled
-  if (selectedFeatures.some((f) => f.id === "mock")) {
+  // 7. Install MSW worker if mock enabled
+  if (featureIds.includes("mock")) {
     console.log(`${bold("Initializing MSW Service Worker...")}`);
     try {
       execSync(

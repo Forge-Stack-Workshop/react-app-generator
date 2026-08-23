@@ -35,7 +35,7 @@ describe("i18n feature module", () => {
   const config = {
     project: "app",
     packageManager: "npm",
-    features: { i18n: { languages: ["fr", "en"] } },
+    features: { i18n: true },
   };
 
   it("copies the i18n source and new provider into the project", () => {
@@ -328,6 +328,33 @@ describe("notifications feature module", () => {
     expect(errorBoundaryOpenIdx).toBeGreaterThan(-1);
     expect(toastProviderOpenIdx).toBeGreaterThan(-1);
     expect(errorBoundaryOpenIdx).toBeLessThan(toastProviderOpenIdx);
+  });
+
+  it("keeps ErrorBoundary outermost when other provider features are enabled too", () => {
+    // With auth + i18n + notifications all enabled, the feature-id sort would
+    // otherwise place notifications LAST (inner). ErrorBoundary's priority: -100
+    // must pull it back out to be the OUTERMOST wrapper of all providers.
+    sync({
+      projectDir,
+      featuresDir,
+      config: {
+        project: "app",
+        packageManager: "npm",
+        features: { auth: true, i18n: true, notifications: true },
+      },
+      tokens,
+    });
+    const providers = readFileSync(
+      join(projectDir, "src/app/providers.generated.tsx"),
+      "utf8",
+    );
+    const ebIdx = providers.indexOf("<ErrorBoundary");
+    expect(ebIdx).toBeGreaterThan(-1);
+    for (const other of ["<AuthProvider", "<I18nProvider", "<ToastProvider"]) {
+      const otherIdx = providers.indexOf(other);
+      expect(otherIdx).toBeGreaterThan(-1);
+      expect(ebIdx).toBeLessThan(otherIdx);
+    }
   });
 
   it("wires Forbidden and ServerError routes into the routes aggregator at resolving paths", () => {

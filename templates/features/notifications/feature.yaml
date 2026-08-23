@@ -6,6 +6,7 @@ contributes:
   providers:
     - import: features/notifications/ErrorBoundary
       component: ErrorBoundary
+      priority: -100
     - import: features/notifications/ToastProvider
       component: ToastProvider
   routes:

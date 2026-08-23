@@ -59,6 +59,49 @@ describe("buildAggregators", () => {
       'from "../../features/auth/onUnauthorized"',
     );
   });
+  it("places a lower-priority provider outermost, across features", () => {
+    // Two provider features plus notifications, whose ErrorBoundary carries
+    // priority: -100. Regardless of feature-id order, ErrorBoundary must nest
+    // OUTSIDE every other provider (its open tag comes first).
+    const authFeat = {
+      id: "auth",
+      contributes: {
+        routes: [],
+        nav: [],
+        providers: [{ import: "features/auth/AuthProvider", component: "AuthProvider" }],
+        http: [],
+      },
+    };
+    const i18nFeat = {
+      id: "i18n",
+      contributes: {
+        routes: [],
+        nav: [],
+        providers: [{ import: "features/i18n/I18nProvider", component: "I18nProvider" }],
+        http: [],
+      },
+    };
+    const notifFeat = {
+      id: "notifications",
+      contributes: {
+        routes: [],
+        nav: [],
+        providers: [
+          { import: "features/notifications/ErrorBoundary", component: "ErrorBoundary", priority: -100 },
+          { import: "features/notifications/ToastProvider", component: "ToastProvider" },
+        ],
+        http: [],
+      },
+    };
+    const out = buildAggregators([authFeat, i18nFeat, notifFeat]);
+    const providers = out["src/app/providers.generated.tsx"];
+    const ebIdx = providers.indexOf("<ErrorBoundary");
+    for (const other of ["<AuthProvider", "<I18nProvider", "<ToastProvider"]) {
+      expect(ebIdx).toBeGreaterThan(-1);
+      expect(ebIdx).toBeLessThan(providers.indexOf(other));
+    }
+  });
+
   it("is inert for no features", () => {
     const out = buildAggregators([]);
     expect(out["src/app/routes.generated.tsx"]).toContain("export const featureRoutes");

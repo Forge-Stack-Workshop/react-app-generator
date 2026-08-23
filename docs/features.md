@@ -45,6 +45,10 @@ Seven features ship today. Source: each `templates/features/<id>/feature.yaml`.
 | id | description | default | deps | devDeps | contributes |
 | --- | --- | --- | --- | --- | --- |
 | `i18n` | i18next, browser language detection, LanguageSwitcher component | `true` | `i18next`, `react-i18next`, `i18next-browser-languagedetector` | — | providers |
+
+The `i18n` feature ships two locales, `fr` and `en`; to add a language, add a
+locale file under `src/i18n/locales/<lang>/` and extend the `Lang` type and map
+in `src/hooks/useLanguage.ts` (it is not driven by a config option).
 | `theming` | CSS variables for dark mode, `useTheme` hook, Header toggle | `true` | — | — | providers |
 | `mock` | Mock Service Worker — intercepts `/api/*` requests in the browser | `true` | — | `msw` | providers |
 | `auth` | Login page, token storage, protected routes, `useAuth`, 401 handling | `false` | — | — | routes, providers, http |
@@ -65,8 +69,7 @@ A generated project's `forge.config.yaml` looks like this:
 project: my-app
 packageManager: pnpm
 features:
-  i18n:
-    languages: [fr, en]
+  i18n: true
   theming: true
   mock: true
   auth: false
@@ -80,9 +83,10 @@ features:
 - `features` — a map of feature id to either:
   - `true` / `false` — enable or disable the feature with its default
     options, or
-  - an object — enable the feature and override its `options` (e.g. `i18n`'s
-    `languages` list). Any key not overridden falls back to the feature's
-    `feature.yaml` `options` defaults.
+  - an object — enable the feature and override any `options` it declares in
+    its `feature.yaml`. Any key not overridden falls back to the feature's
+    `options` defaults. (No shipped feature currently declares options; this is
+    the extension point for features that add them.)
 
 A feature id that is `false`, omitted, or absent from the map is disabled.
 

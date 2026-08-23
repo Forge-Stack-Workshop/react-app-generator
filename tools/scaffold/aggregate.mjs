@@ -52,9 +52,27 @@ ${entries}
 function buildProviders(features) {
   // src/app/providers.generated.tsx is one level under src/.
   const prefix = "../";
-  const items = features.flatMap((f) =>
-    f.contributes.providers.map((p) => ({ ...p, alias: importName(p.component, f.id, "provider") })),
-  );
+  // Providers carry an optional numeric `priority` (default 0). LOWER priority
+  // is emitted FIRST → becomes the OUTERMOST wrapper. This lets a feature like
+  // notifications' ErrorBoundary sit outside every other provider so it can
+  // catch errors thrown by its siblings. Ties break on feature id, then the
+  // provider's original order within its feature — keeping output deterministic.
+  const items = features
+    .flatMap((f) =>
+      f.contributes.providers.map((p, order) => ({
+        ...p,
+        alias: importName(p.component, f.id, "provider"),
+        priority: typeof p.priority === "number" ? p.priority : 0,
+        featureId: f.id,
+        order,
+      })),
+    )
+    .sort(
+      (a, b) =>
+        a.priority - b.priority ||
+        a.featureId.localeCompare(b.featureId) ||
+        a.order - b.order,
+    );
   const imports = items
     .map((p) => `import { ${p.component} as ${p.alias} } from "${resolveImport(p.import, prefix)}";`)
     .join("\n");
