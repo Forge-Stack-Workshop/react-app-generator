@@ -33,7 +33,7 @@ jobs:
 
       - name: Compute version
         id: gitversion
-        uses: chrysa/github-actions/gitversion@main
+        uses: ./.github/actions/gitversion
 
       - name: Display version
         run: |
@@ -145,7 +145,7 @@ jobs:
           fetch-depth: 0
 
       - name: Sonar scan (Node / TypeScript)
-        uses: chrysa/github-actions/sonar-scan-node@main
+        uses: ./.github/actions/sonar-scan-node
         with:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}

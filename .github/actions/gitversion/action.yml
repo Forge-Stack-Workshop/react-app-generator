@@ -1,0 +1,37 @@
+description: Setup and execute GitVersion to compute semver from git history
+name: GitVersion
+outputs:
+  fullSemVer:
+    description: Full semver including pre-release and build metadata
+    value: ${{ steps.gitversion.outputs.fullSemVer }}
+  major:
+    description: Major version number
+    value: ${{ steps.gitversion.outputs.major }}
+  majorMinorPatch:
+    description: Major.Minor.Patch version (e.g. 1.2.3)
+    value: ${{ steps.gitversion.outputs.majorMinorPatch }}
+  minor:
+    description: Minor version number
+    value: ${{ steps.gitversion.outputs.minor }}
+  patch:
+    description: Patch version number
+    value: ${{ steps.gitversion.outputs.patch }}
+  preReleaseTag:
+    description: Pre-release tag (e.g. rc.1)
+    value: ${{ steps.gitversion.outputs.preReleaseTag }}
+  semVer:
+    description: Full semantic version (e.g. 1.2.3)
+    value: ${{ steps.gitversion.outputs.semVer }}
+runs:
+  steps:
+  - name: Setup GitVersion
+    uses: gittools/actions/gitversion/setup@v4.4.2
+    with:
+      versionSpec: 6.x
+  - id: gitversion
+    name: Execute GitVersion
+    uses: gittools/actions/gitversion/execute@v4.4.2
+    with:
+      configFilePath: GitVersion.yml
+      useConfigFile: true
+  using: composite
