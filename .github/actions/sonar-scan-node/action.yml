@@ -30,6 +30,11 @@ name: SonarCloud scan (Node.js / TypeScript)
 runs:
   steps:
     - name: Download coverage artifact
+      # Coverage is an optional input to the scan: when the build produced no
+      # coverage (e.g. a template with no tests yet), the artifact is absent and
+      # download-artifact errors. Tolerate it so Sonar still runs — it simply
+      # reports 0% coverage rather than failing the whole check.
+      continue-on-error: true
       uses: actions/download-artifact@v7
       with:
         name: coverage-lcov
