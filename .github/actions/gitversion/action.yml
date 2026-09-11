@@ -24,14 +24,14 @@ outputs:
     value: ${{ steps.gitversion.outputs.semVer }}
 runs:
   steps:
-  - name: Setup GitVersion
-    uses: gittools/actions/gitversion/setup@v4.4.2
-    with:
-      versionSpec: 6.x
-  - id: gitversion
-    name: Execute GitVersion
-    uses: gittools/actions/gitversion/execute@v4.4.2
-    with:
-      configFilePath: GitVersion.yml
-      useConfigFile: true
+    - name: Setup GitVersion
+      uses: gittools/actions/gitversion/setup@v4.4.2
+      with:
+        versionSpec: 6.x
+    - id: gitversion
+      name: Execute GitVersion
+      uses: gittools/actions/gitversion/execute@v4.4.2
+      with:
+        configFilePath: GitVersion.yml
+        useConfigFile: true
   using: composite

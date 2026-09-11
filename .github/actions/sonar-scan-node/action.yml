@@ -1,18 +1,18 @@
 description: Run SonarCloud scan for JavaScript / TypeScript projects
 inputs:
   github-token:
-    default: ''
+    default: ""
     description: GitHub token (optional, used for PR decoration)
     required: false
   organization:
-    default: ''
+    default: ""
     description: SonarCloud organization slug
     required: false
   project-key:
     description: SonarCloud project key (e.g. MyOrg_my-project)
     required: true
   project-name:
-    default: ''
+    default: ""
     description: SonarCloud project display name (defaults to project-key if empty)
     required: false
   sonar-token:
@@ -29,25 +29,26 @@ inputs:
 name: SonarCloud scan (Node.js / TypeScript)
 runs:
   steps:
-  - name: Download coverage artifact
-    uses: actions/download-artifact@v7
-    with:
-      name: coverage-lcov
-      path: coverage/
-  - name: List reports available for SonarCloud
-    run: ls -lh coverage/ || echo "coverage/ directory is empty or missing"
-    shell: bash
-  - env:
-      GITHUB_TOKEN: ${{ inputs.github-token || github.token }}
-      SONAR_TOKEN: ${{ inputs.sonar-token }}
-    name: SonarCloud Scan
-    uses: SonarSource/sonarqube-scan-action@v4.2.1
-    with:
-      args: '-Dsonar.projectKey=${{ inputs.project-key }} -Dsonar.organization=${{
-        inputs.organization }} -Dsonar.projectName=${{ inputs.project-name || inputs.project-key
-        }} -Dsonar.sourceEncoding=UTF-8 -Dsonar.sources=${{ inputs.sources }} -Dsonar.typescript.tsconfigPath=${{
-        inputs.tsconfig }} -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-        -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/public/**
+    - name: Download coverage artifact
+      uses: actions/download-artifact@v7
+      with:
+        name: coverage-lcov
+        path: coverage/
+    - name: List reports available for SonarCloud
+      run: ls -lh coverage/ || echo "coverage/ directory is empty or missing"
+      shell: bash
+    - env:
+        GITHUB_TOKEN: ${{ inputs.github-token || github.token }}
+        SONAR_TOKEN: ${{ inputs.sonar-token }}
+      name: SonarCloud Scan
+      uses: SonarSource/sonarqube-scan-action@v4.2.1
+      with:
+        args:
+          "-Dsonar.projectKey=${{ inputs.project-key }} -Dsonar.organization=${{
+          inputs.organization }} -Dsonar.projectName=${{ inputs.project-name || inputs.project-key
+          }} -Dsonar.sourceEncoding=UTF-8 -Dsonar.sources=${{ inputs.sources }} -Dsonar.typescript.tsconfigPath=${{
+          inputs.tsconfig }} -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+          -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/public/**
 
-        '
+          "
   using: composite
