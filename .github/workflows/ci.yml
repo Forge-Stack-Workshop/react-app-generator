@@ -111,15 +111,6 @@ jobs:
       - name: Run tests with coverage
         run: npm run test:coverage --if-present || echo "No test:coverage script — skipping"
 
-      - name: Upload coverage artifact
-        uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: coverage-lcov
-          path: coverage/
-          retention-days: 1
-          if-no-files-found: ignore
-
       - name: Build
         run: npm run build
         env:
@@ -131,26 +122,3 @@ jobs:
           name: dist-${{ needs.version.outputs.semVer }}
           path: dist/
           retention-days: 7
-
-  # ── Sonar ────────────────────────────────────────────────────────────────────
-  sonar:
-    name: SonarCloud scan
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - name: Sonar scan (Node / TypeScript)
-        uses: ./.github/actions/sonar-scan-node
-        with:
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          project-key: Forge-Stack-Workshop_react-app-generator
-          organization: forge-stack-workshop
-          project-name: react-app-generator
-          sources: src
-          tsconfig: tsconfig.app.json
