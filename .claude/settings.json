@@ -78,6 +78,16 @@
             "type": "command"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/ape/ape_hook.py\" --spec \"$CLAUDE_PROJECT_DIR/.claude/ape/ape-transform-v2.md\" 2>/dev/null",
+            "statusMessage": "APE",
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
       }
     ]
   }
