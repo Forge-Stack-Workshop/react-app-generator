@@ -23,6 +23,12 @@
             "name": "verifiable-thresholds",
             "timeout": 10000,
             "type": "command"
+          },
+          {
+            "command": "node .claude/hooks/lint-on-edit.cjs",
+            "name": "lint-on-edit",
+            "timeout": 15000,
+            "type": "command"
           }
         ],
         "matcher": "Write|Edit|MultiEdit"
