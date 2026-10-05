@@ -1,3 +1,8 @@
+---
+name: api-design
+description: "Auto-invoke when: designing new API endpoints, reviewing API responses, adding HTTP status codes, writing FastAPI routes, defining request/response schemas."
+---
+
 # Skill: REST API Design
 
 ## When to invoke
