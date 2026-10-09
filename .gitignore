@@ -35,3 +35,4 @@ dist-ssr
 *.key
 secrets/
 .claude/settings.local.json
+CLAUDE.local.md
