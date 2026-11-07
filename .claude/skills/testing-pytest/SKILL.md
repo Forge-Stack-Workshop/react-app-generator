@@ -1,3 +1,8 @@
+---
+name: testing-pytest
+description: "Auto-invoke when: writing tests, modifying test files, adding new pytest fixtures, debugging test failures, migrating unittest → pytest."
+---
+
 # Skill: Testing with pytest
 
 ## When to invoke
