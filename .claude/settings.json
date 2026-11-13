@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "autoCompact": true,
   "autoCompactThreshold": 0.85,
   "effortLevel": "medium",
@@ -19,13 +20,16 @@
       {
         "hooks": [
           {
-            "command": "node .claude/hooks/verifiable-thresholds.cjs",
+            "command": "node",
             "name": "verifiable-thresholds",
             "timeout": 10000,
-            "type": "command"
+            "type": "command",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/verifiable-thresholds.cjs"
+            ]
           }
         ],
-        "matcher": "Write|Edit|MultiEdit"
+        "matcher": "Write|Edit"
       }
     ],
     "PreCompact": [
@@ -43,16 +47,22 @@
       {
         "hooks": [
           {
-            "command": "node .claude/hooks/secret-scanner.cjs",
+            "command": "node",
             "name": "secret-scanner",
             "timeout": 10000,
-            "type": "command"
+            "type": "command",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/secret-scanner.cjs"
+            ]
           },
           {
-            "command": "node .claude/hooks/circuit-breaker.cjs",
+            "command": "node",
             "name": "circuit-breaker",
             "timeout": 5000,
-            "type": "command"
+            "type": "command",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/circuit-breaker.cjs"
+            ]
           }
         ],
         "matcher": "Bash"
@@ -72,10 +82,13 @@
         "matcher": "*",
         "hooks": [
           {
-            "command": "node .claude/hooks/frustration-detection.cjs",
+            "command": "node",
             "name": "frustration-detection",
             "timeout": 5000,
-            "type": "command"
+            "type": "command",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/frustration-detection.cjs"
+            ]
           }
         ]
       }

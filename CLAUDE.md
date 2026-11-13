@@ -1,5 +1,7 @@
 # CLAUDE.md — react-app-generator
 
+@AGENTS.md
+
 ## Role
 
 Template React de référence pour l'écosystème chrysa / Forge-Stack-Workshop.
