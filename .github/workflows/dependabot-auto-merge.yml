@@ -1,0 +1,21 @@
+name: Dependabot Auto-merge
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+# Required: the reusable workflow declares contents:write + pull-requests:write.
+# A reusable workflow cannot exceed the caller's token scope, and the repo
+# default is read-only, so the caller must grant write explicitly (otherwise
+# the run fails at startup).
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  call:
+    uses: chrysa/github-actions/.github/workflows/dependabot-auto-merge.yml@v1.2.1

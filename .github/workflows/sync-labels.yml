@@ -1,0 +1,29 @@
+"on":
+  push:
+    branches:
+      - develop
+      - main
+      - master
+    paths:
+      - .github/labels.yml
+  schedule:
+    - cron: 0 2 * * 1
+  workflow_dispatch:
+jobs:
+  sync-labels:
+    name: Synchronize labels
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - name: Sync labels
+        uses: crazy-max/ghaction-github-labeler@548a7c3603594ec17c819e1239f281a3b801ab4d  # v6.0.0
+        with:
+          yaml-file: .github/labels.yml
+          skip-delete: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+name: Sync GitHub Labels
+permissions:
+  contents: read
+  issues: write
+run-name: "🏷️ Sync labels from config"

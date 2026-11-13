@@ -1,0 +1,88 @@
+# yamllint disable rule:line-length
+# (embedded github-script JS lines exceed the default 80-char limit)
+"on":
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
+jobs:
+  detect-conflicts:
+    name: Detect conflicts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check merge conflicts and manage PR status
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const prNumber = pr.number;
+            const conflictsLabel = 'Conflicts';
+            const titlePrefix = '[CONFLICTS] ';
+            const baseBranch = pr.base.ref;
+
+            let mergeable = pr.mergeable;
+            if (mergeable === null) {
+              for (let i = 0; i < 10; i++) {
+                await new Promise(r => setTimeout(r, 3000));
+                const { data: freshPr } = await github.rest.pulls.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: prNumber
+                });
+                mergeable = freshPr.mergeable;
+                if (mergeable !== null) break;
+              }
+            }
+
+            const labels = pr.labels.map(l => l.name);
+            const hasConflictsLabel = labels.includes(conflictsLabel);
+
+            if (mergeable === false) {
+              if (!hasConflictsLabel) {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  issue_number: prNumber, labels: [conflictsLabel]
+                });
+              }
+              const currentTitle = pr.title;
+              const alreadyPrefixed = currentTitle.startsWith(titlePrefix);
+              if (!pr.draft || !alreadyPrefixed) {
+                const newTitle = alreadyPrefixed ? currentTitle : titlePrefix + currentTitle;
+                await github.rest.pulls.update({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  pull_number: prNumber, draft: true, title: newTitle
+                });
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  issue_number: prNumber,
+                  body: `⚠️ **Conflicts detected — PR set to draft**\n\nConflicts with \`${baseBranch}\`. Resolve them, then switch back to "Ready for review".`
+                });
+              }
+            } else if (mergeable === true && hasConflictsLabel) {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: prNumber, name: conflictsLabel
+              });
+              const currentTitle = pr.title;
+              if (currentTitle.startsWith(titlePrefix)) {
+                await github.rest.pulls.update({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  pull_number: prNumber, title: currentTitle.slice(titlePrefix.length)
+                });
+              }
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: prNumber,
+                body: `✅ Conflicts resolved.`
+              });
+            }
+    timeout-minutes: 5
+name: Check Conflicts
+permissions:
+  contents: read
+  pull-requests: write
+run-name: Check Conflicts
