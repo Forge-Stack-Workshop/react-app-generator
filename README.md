@@ -136,4 +136,12 @@ generated app inherits it** (the scaffolder copies these dirs into each new proj
 - `examples/` — reference “perfect” implementations (React/TS)
 - `tests/` — test scenario catalogues
 
+Each generated app also gets, at its root:
+
+- `DESIGN.md` — product design contract skeleton (surface, journeys, identity, links to the
+  `src/styles/` tokens, states, motion, accessibility, assets, acceptance criteria). It links
+  `docs/ux-rules.md` and `docs/brand-brief.md` and imposes no palette, brand or library.
+- `AGENTS.md` — agent instructions, telling agents to read `DESIGN.md` before UI work;
+  `CLAUDE.md` imports it.
+
 Files marked `status: stub` are placeholders to fill in.

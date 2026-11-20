@@ -1139,6 +1139,9 @@ function generate(config) {
   write(join(out, "eslint.config.js"), genEslintConfig());
   write(join(out, "index.html"), genIndexHtml(config));
   write(join(out, "README.md"), genProjectReadme(config));
+  write(join(out, "DESIGN.md"), genDesignMd(config));
+  write(join(out, "AGENTS.md"), genAgentsMd(config));
+  write(join(out, "CLAUDE.md"), genClaudeMd());
 
   // Standardized documentation skeleton (chrysa docs-structure) — copied into every generated app.
   const DOC_STRUCTURE_DIRS = [
@@ -1305,6 +1308,225 @@ ${domainsList}
 | \`npm run build\` | Production build |
 | \`npm run lint\` | Lint check |
 | \`npm run preview\` | Preview build |
+
+## Design
+
+Product design contract: [\`DESIGN.md\`](DESIGN.md).
+`;
+}
+
+// Product design contract skeleton. Links the generated code; imposes no palette,
+// brand or component library.
+function genDesignMd(config) {
+  const hasTheme = config.features.some((f) => f.id === "theming");
+  const hasI18n = config.features.some((f) => f.id === "i18n");
+  const today = new Date().toISOString().slice(0, 10);
+  const routes = [
+    "`/` Home",
+    ...config.domains.map((d) => `\`/${d.id}\` ${d.name ?? capitalize(d.id)}`),
+    "`*` not found",
+  ].join(", ");
+
+  const colourRow = hasTheme
+    ? `| Colour roles and themes | [\`src/styles/_theme.scss\`](src/styles/_theme.scss) | [implemented] roles \`--bg\`, \`--bg-secondary\`, \`--header-bg\`, \`--text\`, \`--text-muted\`, \`--border\`, \`--primary\`, \`--primary-hover\`, \`--surface-hover\`, \`--skeleton-*\`; light on \`:root\`, dark on \`html.dark\` ([\`useTheme.ts\`](src/hooks/useTheme.ts)). Values are placeholders. <contrast pairs verified> |`
+    : `| Colour roles and themes | none generated (theming disabled) | <define the roles used by the styles: \`--bg\`, \`--bg-secondary\`, \`--text\`, \`--text-muted\`, \`--border\`, \`--primary\`, \`--skeleton-base\`> |`;
+
+  const gaps = [
+    "No `prefers-reduced-motion` rule: the loader spin and the skeleton shimmer always animate.",
+    "No entrance motion for views, panels or new items.",
+    "No breakpoint or responsive rule.",
+    "No `:focus-visible` style.",
+    "No empty, error or offline component.",
+    "`::selection` text colour is hard-coded (`white`) in [`src/styles/index.scss`](src/styles/index.scss).",
+    hasTheme
+      ? "The theme toggle in [`Header.tsx`](src/components/layouts/Header.tsx) shows an emoji only and has no accessible name."
+      : "Colour variables are referenced by the styles but not defined (theming disabled).",
+  ]
+    .map((g) => `  - ${g}`)
+    .join("\n");
+
+  return `# ${config.projectName} — Design contract
+
+> Product design entry point. Read it before any interface, component, style, navigation,
+> interaction or asset work, and update it in the same change. A statement lives in one file
+> only: link the detailed docs, do not copy them.
+>
+> Status of every statement: **[implemented]** with a link to the code · **[decided]** with who
+> and when · **[proposed]** not yet agreed. A mock-up or a plan is never described as shipped.
+> Replace the guidance in \`<…>\` once filled. This file imposes no palette, brand or component
+> library: those choices belong to the product.
+
+## 1. Surface and status
+
+- **Surface:** web app, React single-page application built with Vite [implemented] — entry
+  [\`src/main.tsx\`](src/main.tsx), routes [\`src/App.tsx\`](src/App.tsx).
+- **Lifecycle:** <prototype · shipped · migrating · retired> — scaffolded on ${today}.
+- **Detailed specs:** [\`docs/app-spec.md\`](docs/app-spec.md), flows in [\`workflows/\`](workflows/).
+
+## 2. Users, devices and priority tasks
+
+Personas: [\`docs/personas.md\`](docs/personas.md).
+
+| User  | Context and device               | Priority tasks (three at most) |
+| ----- | -------------------------------- | ------------------------------ |
+| <who> | <where, which device, how often> | <task 1 · task 2 · task 3>     |
+
+<For each main view: the one primary action a user must identify at a glance.>
+
+## 3. Journeys and navigation
+
+- **Journeys:** <J1 — name: start → steps → success signal → failure and recovery path. Keep
+  two to four here; longer ones go in [\`workflows/\`](workflows/).>
+- **Route map** [implemented]: ${routes} — [\`src/App.tsx\`](src/App.tsx), pages lazy-loaded
+  from [\`src/pages/\`](src/pages/).
+- **Navigation** [implemented]: header ([\`Header.tsx\`](src/components/layouts/Header.tsx)) and
+  sidebar links ([\`Sidebar.tsx\`](src/components/layouts/Sidebar.tsx)) around the routed page
+  ([\`Layout.tsx\`](src/components/layouts/Layout.tsx)).
+- **Density:** <compact · comfortable — and why it fits the content.>
+
+## 4. Identity
+
+- **Brand brief:** [\`docs/brand-brief.md\`](docs/brand-brief.md) — job, audience, mood words,
+  metaphor.
+- **Why this identity fits this product:** <the reasoning, not adjectives.>
+- **Signature element:** <the one memorable device and where it lives.>
+- **References:** <inspirations and what was adapted. No third-party logo, proprietary
+  typeface, trade dress or layout is copied.>
+- The generated colours and the system font stack are neutral placeholders, not an identity
+  [implemented]. Replace them in the token files below.
+
+## 5. Tokens and components (owned by code)
+
+Token values live once, in code. This section links them and states how to use them; it never
+copies values.
+
+| Concern | Source of truth | Rules of use |
+| ------- | --------------- | ------------ |
+${colourRow}
+| Typography | [\`src/styles/_variables.scss\`](src/styles/_variables.scss) (\`--font-*\`), family in [\`src/styles/index.scss\`](src/styles/index.scss) | <roles: display · title · body · caption · data> |
+| Spacing, grid, breakpoints | [\`src/styles/_variables.scss\`](src/styles/_variables.scss) (\`--space-*\`) | <grid, max widths, breakpoints> |
+| Shape and elevation | [\`src/styles/_variables.scss\`](src/styles/_variables.scss) (\`--radius-*\`, \`--border-light\`) | <shadows, elevation levels> |
+| Motion | [\`src/styles/_variables.scss\`](src/styles/_variables.scss) (\`--transition-*\`) | entrance and reduced-motion rules in section 6 |
+| Mixins | [\`src/styles/_mixins.scss\`](src/styles/_mixins.scss) | layout helpers and the \`card\` surface |
+| Components | [\`src/components/\`](src/components/) | generic and domain-agnostic; business UI in \`src/features/\` |
+
+- **Global styles:** [\`src/styles/index.scss\`](src/styles/index.scss) imports the reset
+  ([\`_reset.scss\`](src/styles/_reset.scss)), the theme and the variables [implemented].
+- **Design debt and drift:** <where code and this contract disagree.>
+
+## 6. Interaction and states
+
+- **Rules:** interaction and usability rules in [\`docs/ux-rules.md\`](docs/ux-rules.md); wording
+  in [\`docs/copywriting-guide.md\`](docs/copywriting-guide.md).
+- **Component states:** every interactive element defines default, hover, focus-visible,
+  active, disabled and loading, plus error where relevant [proposed].
+- **Action feedback:** <what the user sees for success, failure and pending work.>
+- **Forms:** <validation timing, error placement and wording; input is kept after an error.>
+- **Data states:**
+
+  | State | Where it appears | Behaviour |
+  | ----- | ---------------- | --------- |
+  | Loading | route change; data views | [implemented] full-screen spinner as the route fallback ([\`GlobalLoader.tsx\`](src/components/loaders/GlobalLoader.tsx)); placeholder block ([\`Skeleton.tsx\`](src/components/ui/Skeleton.tsx)). [proposed] shape-accurate skeletons in data views. |
+  | Empty | <view> | [proposed] explains why and offers the next action. |
+  | Error | <view> | [proposed] says what happened and what to do, with retry. The HTTP client throws on non-2xx responses and timeouts ([\`client.ts\`](src/api/http/client.ts)). |
+  | Offline / backend unreachable | <view> | [proposed] banner, actions disabled, input kept. |
+  | Stale data | <view> | [proposed] shows the data age while a refetch runs. |
+  | Reconnect | <view> | [proposed] backoff, refetch, banner cleared. |
+
+- **Live updates:** <what updates live>. An update never moves focus, clears input, resets a
+  selection or jumps the scroll position; new items do not shift the control under the pointer
+  [proposed].
+- **Motion:** views, panels and new items enter with a short fade or slide that uses the
+  \`--transition-*\` tokens [proposed]. Under \`prefers-reduced-motion: reduce\`, entrance and
+  looping animations are removed or replaced by an instant change [proposed].
+
+## 7. Responsive and support conventions
+
+- **Layout:** header, sidebar and content area [implemented]; no breakpoint is generated.
+- **Sizes tested:** <for example 320, 768 and 1280 CSS px wide>; no loss of content or function
+  and no horizontal scrolling at 320 CSS px [proposed].
+- **Touch:** <minimum target size, for example 44 × 44 CSS px on touch layouts>.
+
+## 8. Accessibility
+
+- **Target:** WCAG 2.1 AA.
+- **Keyboard:** every action is reachable by keyboard with a visible focus, in a logical order;
+  Escape closes overlays; no keyboard trap [proposed].
+- **Perception:** text contrast at least 4.5:1 (3:1 for large text and UI components); status
+  never conveyed by colour alone; text resizable to 200 % [proposed].
+- **Assistive technology:** landmarks \`header\`, \`nav\` and \`main\`
+  ([\`Layout.tsx\`](src/components/layouts/Layout.tsx)) and document language
+  ([\`index.html\`](index.html)) [implemented]${hasI18n ? "; translations in [`src/i18n/locales/`](src/i18n/locales/)" : ""}. Accessible names on icon-only controls and a
+  live region for asynchronous status [proposed].
+
+## 9. Assets
+
+| Asset | Source or generator | Author | Licence and attribution | Permitted use | Formats and variants | Location |
+| ----- | ------------------- | ------ | ----------------------- | ------------- | -------------------- | -------- |
+| Font | system font stack (\`system-ui\`) | operating system | not shipped | rendering only | — | [\`src/styles/index.scss\`](src/styles/index.scss) |
+| Icon set | \`lucide-react\` (declared in [\`package.json\`](package.json), not used yet) | Lucide contributors | ISC | <check before use> | React components | \`node_modules/lucide-react\` |
+| <font / icon set / image / logo> | <URL or tool + prompt reference> | <author> | <SPDX id; attribution text> | <use> | <SVG, WOFF2, sizes> | [\`src/assets/\`](src/assets/) |
+
+Prefer local, optimised assets. A generated asset is not assumed free of third-party rights:
+record the tool, its terms and any check done.
+
+## 10. Acceptance criteria and evidence
+
+- **Criteria** (adapt to the priority tasks):
+  1. Each priority task completes with the keyboard only, with a visible focus.
+  2. No automated accessibility violation (for example axe) on each route, in every theme.
+  3. Each data view shows the loading, empty, error and offline states of section 6.
+  4. A live update keeps focus, input, selection and scroll position.
+  5. Views and new items have an entrance motion; none under reduced motion.
+  6. No loss of content or function at 320 CSS px wide.
+  7. Every colour, size and duration comes from a token in [\`src/styles/\`](src/styles/).
+  8. Every shipped asset has a row in section 9.
+- **Evidence log:**
+
+  | Date | Change | Checks run (tool, sizes, modes) | Result | Not run, and why |
+  | ---- | ------ | ------------------------------- | ------ | ---------------- |
+  | ${today} | App scaffolded | none | — | no product UI built yet |
+
+## 11. Open choices, known gaps and maintenance
+
+- **Open choices** [proposed]: palette and identity, typography, component library (none is
+  imposed), breakpoints.
+- **Known gaps** in the generated code:
+${gaps}
+- **Maintenance:** owner <name>; update this file in every UI change; review <trigger>.
+`;
+}
+
+function genAgentsMd(config) {
+  return `# ${config.projectName} — agent instructions
+
+Shared instructions for coding agents. [\`CLAUDE.md\`](CLAUDE.md) imports this file.
+
+## Before UI work
+
+Read [\`DESIGN.md\`](DESIGN.md) before any interface, component, style, navigation, interaction
+or asset change, and update it in the same change. It links the token files in
+[\`src/styles/\`](src/styles/), [\`docs/ux-rules.md\`](docs/ux-rules.md) and
+[\`docs/brand-brief.md\`](docs/brand-brief.md).
+
+## Commands
+
+| Command | Description |
+|---|---|
+| \`npm run dev\` | Start dev server |
+| \`npm run build\` | Type-check and production build |
+| \`npm run lint\` | Lint check |
+
+## Documentation
+
+- [\`README.md\`](README.md) — getting started, features, domains.
+- [\`docs/\`](docs/) — product, architecture, security, deployment.
+- [\`decisions/\`](decisions/) — decision records.
+`;
+}
+
+function genClaudeMd() {
+  return `@AGENTS.md
 `;
 }
 
