@@ -1,5 +1,5 @@
 default_language_version:
-  python: python3
+  python: python3.14
 fail_fast: false
 minimum_pre_commit_version: 4.1.0
 repos:
@@ -31,7 +31,7 @@ repos:
 
   # ── Console & debug detection (JS/TS) ───────────────────────────────────────
   - repo: https://github.com/chrysa/pre-commit-tools
-    rev: v0.1.1-97
+    rev: v0.2.0-253
     hooks:
       - id: console-debug-detection
       - id: console-log-detection
@@ -39,6 +39,22 @@ repos:
       - id: css-outside-stylesheet-detection
 
   # ── Prettier (JS/TS/JSON/YAML formatting) ───────────────────────────────────
+      - id: makefile-check
+      - exclude: ^(\.github/|workflows/|templates/|docker-compose)|(^|/)(pnpm-lock|yarn|uv|poetry)\.(yaml|lock)$|(^|/)\.pre-commit-config\.yaml$
+        id: yaml-sorter
+      - id: json-sorter
+      - id: env-file-check
+      - id: env-example-sync
+      - id: adr-gate
+      - id: claude-skill-frontmatter
+      - id: claude-agent-frontmatter
+      - id: claude-mcp-config
+      - id: python-no-unittest-import
+      - id: claude-assets-present
+      - id: react-console-error-detection
+      - id: no-console-warn
+      - id: ts-unreachable-code
+      - id: import-no-relative-parent
   - repo: https://github.com/rbubley/mirrors-prettier
     rev: v3.8.3
     hooks:
@@ -68,3 +84,53 @@ repos:
         files: \.(ts|tsx)$
         types: [file]
         require_serial: true
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.48.0
+    hooks:
+      - args:
+          - --fix
+        id: markdownlint
+        stages:
+          - manual
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.15.1
+    hooks:
+      - args:
+          - --error
+          - DL3006
+          - --error
+          - DL3007
+          - --failure-threshold
+          - error
+        files: (^|/)Dockerfile[^/]*$
+        id: hadolint-docker
+        types:
+          - file
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages:
+          - commit-msg
+        args:
+          - feat
+          - fix
+          - docs
+          - style
+          - refactor
+          - test
+          - chore
+          - perf
+          - revert
+          - ci
+  - repo: https://github.com/chrysa/guideline-checker
+    rev: v1.30.10
+    hooks:
+      - id: guideline-check
+        args:
+          - check
+          - --fail-on
+          - error
+          - --baseline
+          - .guideline-baseline.json
+exclude: (^|/)quality_gate\.py$|^\.claude/ape/

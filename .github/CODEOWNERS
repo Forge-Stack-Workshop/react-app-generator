@@ -1,0 +1,22 @@
+# CODEOWNERS
+# Default owner for all files
+* @chrysa
+
+# Backend / Python source
+/backend/ @chrysa
+/src/ @chrysa
+/api/ @chrysa
+/code/ @chrysa
+
+# Frontend / Node source
+/frontend/ @chrysa
+
+# Infrastructure / CI
+/.github/ @chrysa
+/Dockerfile @chrysa
+/docker-compose*.yml @chrysa
+/k8s/ @chrysa
+
+# Documentation
+*.md @chrysa
+/docs/ @chrysa

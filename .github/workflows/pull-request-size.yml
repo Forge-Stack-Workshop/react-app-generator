@@ -1,0 +1,20 @@
+"on": pull_request_target
+name: Label Pull Request Size
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  size-label:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    name: Label PR by size
+    steps:
+      - name: Label pull request by size
+        uses: codelytv/pr-size-labeler@095a41fca88b8764fd9e008ad269bcdb82bb38b9 # v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          xs_max_size: 20
+          s_max_size: 50
+          m_max_size: 200
+          l_max_size: 800
+          fail_if_xl: false
